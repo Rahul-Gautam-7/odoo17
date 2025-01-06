@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    
+    <record id="game_view_tree" model="ir.ui.view">
+      <field name="name">Gametree</field>
+      <field name="model">game.industry</field>
+      <field name="arch" type="xml">
+        <tree>
+            <field name="name" />
+            <field name="year" />
+             <field name="active" optional="show"/>
+            <field name="ref" />
+        </tree>
+      </field>
+    </record>
+    <record id="game_view_form" model="ir.ui.view">
+        <field name="name">GameBoy</field>
+        <field name="model">game.industry</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                    <group>
+                        <field name="name" default_focus="1" />
+                        <field name="active"/>
+                        <field name="ref" />
+                    </group>
+                    <group>
+                        <field name="year"/>
+                    </group>
+                    </group>
+                    <notebook>
+                        <page string='Versionss' name="versions">
+                            <field name="desc" placeholder="Write your version of game here for more info" options="{'collaborative':true,'resizable':true}" />
+                        </page>
+                        <page string="Awards" name='awards'>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                   <field name="message_follower_ids" group="base.group_user" />
+                   <field name="activity_ids" />
+                   <field name="message_ids" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="game_search" model="ir.ui.view">
+      <field name="name">SearchForGames</field>
+      <field name="model">game.industry</field>
+      <field name="arch" type="xml">
+        <search>
+            <field name="name" filter_domain="['|',('name','ilike',self),('year','ilike',self)]" />
+            <field name="year" />
+            <filter name="year_fil" string="2019" domain="[('year','=','2019')]" />
+            <separator />
+            <filter name="archived" string="Archive" domain="[('active','=',False)]" />
+            <group expand="0" string="Year">
+               <filter string="Year" name="group_by_year" context="{'group_by':'year'}" />
+            </group>
+           
+        </search>
+      </field>
+    </record>
+
+    <record id="games" model="ir.actions.act_window">
+        <field name="name">Game</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">game.industry</field>
+        <field name="context">{'search_default_year_fil':1}</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create new games
+            </p>
+        </field>
+    </record>
+    <menuitem id="game_level_2"
+        parent="game_level_1"
+        action="games"
+        name="action"
+        sequence='1'
+    />
+</odoo>

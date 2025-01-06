@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+
+
+    <record id="check_form" model="ir.ui.view">
+        <field name="name" >checks</field>
+        <field name="model">check</field>
+        <field name="arch" type="xml" >
+            <form>
+                <sheet>
+                <group>
+                    <field name="name" />
+                </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_chk" model="ir.actions.act_window">
+        <field name="name">Game Tag</field>
+        <field name="res_model" >check</field>
+        <field name="view_mode" >tree,form</field>
+        <field name="type" >ir.actions.act_window</field>
+        <field name="context" >{}</field>
+        <field name="target">inline</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Generate tags here
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="chks"
+     parent="game_level_0"
+     name="Check"
+     action="view_chk"
+     />
+</odoo>

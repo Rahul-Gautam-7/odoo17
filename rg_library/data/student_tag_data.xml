@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="pid" model="student.tag">
+        <field name="name" >wish</field>
+    </record>
+
+    <record id="pid1" model="student.tag">
+        <field name="name" >wi</field>
+    </record>
+
+    <record id="pid2" model="student.tag">
+        <field name="name" >win</field>
+    </record>
+
+    <record id="pid3" model="student.tag">
+        <field name="name" >loss</field>
+    </record>
+</odoo>

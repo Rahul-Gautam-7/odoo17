@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <menuitem id='menu_library_root'
+     web_icon='rg_library,static/description/lib.png'
+     name='library'
+     sequence="0"/>
+
+    <menuitem id='menu_student'
+     name='student'
+     parent='menu_library_root'
+     sequence="0">
+        <menuitem id="male_stud"
+        name="male student"
+        action="male_view"
+        sequence="45"
+    />
+     </menuitem>  
+
+     <menuitem id='cancel_book'
+     name='CancelBook'
+     parent='menu_student'
+     action="action_cancel_is"
+     sequence="12"/>
+</odoo>

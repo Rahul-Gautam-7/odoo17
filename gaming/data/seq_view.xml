@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="seq" model="ir.sequence">
+        <field name="name">gmseq</field>
+        <field name="code">gamess</field>
+        <field name="prefix" >UI</field>
+        <field name="padding">7</field>
+        <field name="company_id" eval="False"></field>
+    </record>
+</odoo>

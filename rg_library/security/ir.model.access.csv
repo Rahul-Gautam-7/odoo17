@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+rg_library.access_student_library,access_student_library,rg_library.model_student_library,base.group_user,True,True,True,True
+rg_library.access_enroll_stud,access_enroll_stud,rg_library.model_enroll_stud,base.group_user,1,1,1,1,
+rg_library.access_books,access_books,rg_library.model_books,base.group_user,1,1,1,1,
+rg_library.access_student_tag,access_student_tag,rg_library.model_student_tag,base.group_user,1,1,1,1,
+rg_library.access_cancel_issue,access_cancel_issue,rg_library.model_cancel_issue,base.group_user,1,1,1,1,
+rg_library.access_in_si,access_in_si,rg_library.model_in_si,base.group_user,1,1,1,1,
+
+

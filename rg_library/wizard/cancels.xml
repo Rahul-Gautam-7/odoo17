@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="cancel_form" model="ir.ui.view">
+        <field name="name" >CancelF</field>
+        <field name="model" >cancel.issue</field>
+        <field name="arch" type="xml" >
+            <form>
+                <group>
+                    <field name="enroll_id" invisible="context.get('hide_enrollment')" />
+                    <field name="reasons" />
+                    <field name="cancel_date" />
+                </group>
+                <footer>
+                    <button name="action_cancel" string="Cancel student" type="object" class="btn-primary" />
+                    <button special="cancel" string="Discard" type="object" class="btn-secondary" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_cancel_is" model="ir.actions.act_window">
+        <field name="name">Cancelissue</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">cancel.issue</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+
+    </record>
+
+</odoo>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>    
+        <record id="enroll_tree" model="ir.ui.view">
+         <field name="name">EnrollTree</field>
+         <field name="model">enroll.stud</field>
+         <field name="arch" type="xml">
+                <tree  decoration-success="state == 'done'" 
+                        decoration-danger="state == 'cancel'"
+                        decoration-info="state == 'new'"
+                        decoration-warning="state == 'draft'" sample="1"  multi_edit="1" > 
+                    <field name="student_id" />
+                    <field name="activity_ids" widget="list_activity" />
+                    <field name="joining_time" optional="show" /> 
+                    <field name="joining_date" optional="show" />
+                    <field name="librarian_id" widget="many2one_avatar_user" />
+                    <field name='ref' optional="show" />
+                    <field name="pro_ref" />
+                     <field name="gender" />
+                     <field name="state" widget="badge" decoration-success="state == 'done'"
+                        decoration-danger="state == 'cancel'"
+                        decoration-info="state == 'new'"
+                        decoration-warning="state == 'draft'"
+                      />   
+                </tree>
+         </field>
+        </record>
+
+        <record id="enroll_activity" model="ir.ui.view">
+         <field name="name">EnrollActivity</field>
+         <field name="model">enroll.stud</field>
+         <field name="arch" type="xml">
+                <activity string="Enrollments">
+                        <field name="student_id" />
+                        <field  name="ref" />
+                        <templates>
+                                <div t-name="activity-box">
+                                        <img t-att-src="activity_image('enroll.stud','image',record.student_id.raw_value) " t-att-title="record.student_id.value" t-att-alt="record.student_id.value" />
+                                        <div>
+                                                <field name="ref" display="full" />
+                                        </div>
+                                </div>
+                        </templates>
+                </activity>
+         </field>
+        </record>
+
+
+
+
+        <record id="enroll_form" model="ir.ui.view">
+                <field name="name">enroll</field>
+                <field name="model">enroll.stud</field>
+                <field name="arch" type="xml">
+                        <form >
+                                <header>
+                                <!-- options="{'clickable':'1'}"  -->
+                                        <field name='state' widget='statusbar' nolabel='1' 
+                                        statusbar_visible="new,draft,done" />
+                                         <button name="action_draft" string="Draft" type="object" class="oe_highlight"  invisible="state == 'draft' or state == 'done' " data-hotkey='8' />
+                                        <button name="action_done" string="Done" type="object" class="oe_highlight" invisible="state == 'done' " data-hotkey='0' />
+                                        <!-- <button name="action_cancel" string="Cancel" invisible="state == 'cancel' or state == 'done'"  type="object" data-hotkey='9' /> -->
+                                        <button name="%(rg_library.action_cancel_is)d" string="Cancel" invisible="state == 'cancel' or state == 'done'"  type="action" data-hotkey='9' context="{'default_enroll_id':active_id , 'hide_enrollment':1} " />
+                                         <!-- <button name="%(rg_library.action_cancel_is)d" string="Cancel" invisible="state == 'cancel' or state == 'done'"  type="action" data-hotkey='9'  /> -->
+                                </header>      
+                        <sheet>
+                                <div>
+                                <h1><field name="pro_ref" /></h1>
+                                        <h1>
+                                                
+                                                <field name='priority' widget='priority' />
+                                        </h1>
+                                </div>
+                                
+                                
+                                <field name="image" widget="image" class="oe_avatar" />
+                                <group>
+                               <field name="student_id" />
+                               <field name="hide_price" invisible="1"  />
+                               <field name="hide_price" groups="base.group_no_one"  />
+                               <field name="joining_time"   /> 
+                                <field name="joining_date" />
+                                <field name='ref'/> 
+                                 <field name="gender" />
+                                  <field name="tag_ids" widget="many2many_tags" options="{'color_field':'color'}" />
+                                  <field name="librarian_id" widget="many2one_avatar_user" /> 
+                                <button name='action_test' type='object' string='Object' class='oe_highlight' help="btn will print in log" confirm="Are you sure you want to run these?" groups="base.group_no_one" />
+                                <button name='%(rg_library.action_rg_lib)d' type='action' string='Action' class='oe_highlight' help="btn will redirect to home page" confirm="Are you sure you want to redirect?"  groups="base.group_no_one" />
+                               </group>
+                               <notebook>
+                                        <page string="Describe" name="desc">
+                                                <field name='detail' placeholder="Enter your book name here ..." options="{'collaborative':true,'resizable':true ,'codeview':true }"/>
+                                        </page>
+                                        <page string="Book" name='book'>
+                                                <field name="book_line_ids" >
+                                                        <tree editable="bottom" >
+                                                                <field name="product_id" />
+                                                                <field name="price" invisible="parent.hide_price == True" />
+                                                                <field name="qty" />
+                                                        </tree>
+                                                        <form  >
+                                                                <field name="product_id" />
+                                                                <field name="price" invisible="parent.hide_price == True" />
+                                                                <field name="qty" />
+                                                        </form>
+                                                                
+                                                </field>       
+                                        </page>
+                                </notebook>
+                               </sheet>
+                        </form>
+                </field>
+        </record>
+
+         <record id="enroll_search" model="ir.ui.view">
+          <field name="name">Enroll Search</field>
+          <field name="model">enroll.stud</field>
+          <field name="arch" type="xml">
+            <search>
+            </search>
+          </field>
+        </record>
+
+    <record id="action_rg_enr" model="ir.actions.act_window">
+    <field name="name">Student</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">enroll.stud</field>
+    <field name="view_mode">tree,form,activity</field>
+    <field name="context">{}</field>
+    <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create Your first Student</p>
+    </field>
+    </record>
+    <menuitem id='enroll'
+     action='action_rg_enr'
+     name='ENrollment'
+     parent='menu_student'
+     sequence="5"/>
+</odoo>

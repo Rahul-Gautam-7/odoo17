@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <menuitem id="master1"
+     name="Prod"
+     sequence='0' />
+
+     <menuitem id="child1"
+     name="prods1"
+     parent="master1"
+     sequence='0' />
+</odoo>

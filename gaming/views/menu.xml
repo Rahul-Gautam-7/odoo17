@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <menuitem id="game_level_0"
+        name="Game"
+        web_icon="gaming,static/description/game.png"
+        sequence='0'
+    />
+    <menuitem id="game_level_1" parent="game_level_0" name="game category" sequence='0'>
+        <menuitem id="game_level_3" action="gnm" name="gamess" sequence='2'/>
+    </menuitem >
+
+    <menuitem id="game_level_6"
+        parent="game_level_1"
+        action="action_cancel_gm"
+        name="game cancel"
+        sequence='12'
+    />
+
+     
+
+    
+</odoo>

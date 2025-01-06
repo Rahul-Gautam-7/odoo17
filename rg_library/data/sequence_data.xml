@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="seque" model="ir.sequence">
+        <field name="name">Seque</field>
+        <field name="code">rg_lib</field>
+        <field name="prefix" >HI</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False" />
+
+    </record>
+</odoo>

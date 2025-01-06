@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="a" model="tags">
+        <field name='name' >One</field>
+    </record>
+
+    <record id="b" model="tags">
+        <field name='name' >tow</field>
+    </record>
+
+    <record id="c" model="tags">
+        <field name='name' >tree</field>
+    </record>
+
+    <record id="d" model="tags">
+        <field name='name' >four</field>
+    </record>
+</odoo>

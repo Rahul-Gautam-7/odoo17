@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <menuitem id="trans_root_0"
+     name="Transport labels"
+     sequence='0'/>
+
+    <menuitem id="trans_root_1"
+     name="Transport"
+     parent="trans_root_0"
+     sequence='0'/>
+     
+</odoo>

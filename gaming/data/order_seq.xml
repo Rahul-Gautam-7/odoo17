@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="order_seq" model="ir.sequence">
+        <field name="name">order_sequence</field>
+        <field name="code">or_ref</field>
+        <field name="prefix">OR</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"></field>
+    </record>
+
+</odoo>

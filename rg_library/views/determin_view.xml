@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+
+    <record id="inline_view" model="ir.ui.view">
+        <field name="name">inlineview</field>
+        <field name="model">in.si</field>
+        <field name="arch" type="xml">
+                    <form string="Views">
+                        <sheet>
+                            <group>
+                                <field name="name" />
+                            </group>
+                        </sheet>
+                    </form>
+        </field>
+    </record>
+
+    <record id="viess" model="ir.actions.act_window">
+      <field name="name" >Views Students</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">in.si</field>
+      <field name="view_mode">tree,form</field>
+      <field name="target">inline</field>
+      <field name="help" type="xml">
+        <p class="o_view_nocontent_smiling_face">
+            Generate your views
+        </p>
+      </field>
+    </record>
+
+
+    <menuitem id="justview"
+        parent="menu_library_root"
+        name="Viewscheck"
+        action="viess"
+        sequence="2"
+    />
+    
+
+</odoo>

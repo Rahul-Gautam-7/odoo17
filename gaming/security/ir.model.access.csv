@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+gaming.access_game_industry,access_game_industry,gaming.model_game_industry,base.group_user,True,True,True,True
+gaming.access_gm_game,access_gm_game,gaming.model_gm_game,base.group_user,1,1,1,1,
+gaming.access_gms,access_gms,gaming.model_gms,base.group_user,1,1,1,1,
+gaming.access_tags,access_tags,gaming.model_tags,base.group_user,1,1,1,1,
+gaming.access_cancel_game,access_cancel_game,gaming.model_cancel_game,base.group_user,1,1,1,1,
+gaming.access_check,access_check,gaming.model_check,base.group_user,1,1,1,1,      
