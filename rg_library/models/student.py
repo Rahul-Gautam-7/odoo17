@@ -1,6 +1,7 @@
 from odoo import api, fields, models
 from datetime import date
 import logging 
+from odoo.exceptions import ValidationError
 
 _logger=logging.getLogger(__name__)
 
@@ -31,7 +32,12 @@ class StudentLibrary(models.Model):
             x.display_name = f'{x.ref} {x.name}'
     
     
-    
+    @api.constrains('dob')
+    def _check_dob(self):
+        for rec in self:
+            if rec.dob and rec.dob > fields.Date.today():
+                raise ValidationError(("Enter a valid date"))
+        
     
     @api.model 
     def create(self,vals):

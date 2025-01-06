@@ -1,5 +1,6 @@
 from odoo import api, fields,models
 import logging
+from odoo.exceptions import ValidationError
 
 _logger=logging.getLogger(__name__)
 
@@ -13,6 +14,13 @@ class GameDev(models.Model):
     active=fields.Boolean(string="Active")
     ref=fields.Char(string='reference',help="reference for games")
     desc=fields.Html(string='desc')
+    
+    @api.constrains('year')
+    def _check_year(self):
+        for rec in self:
+            if rec.year and rec.year > 2025 :
+                raise ValidationError(("Enter valid year"))                
+        
    
     def create(self,vals):
         _logger.info(vals)
