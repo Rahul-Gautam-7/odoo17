@@ -1,5 +1,6 @@
-from odoo import models, fields,api
+from odoo import models, fields,api,_ 
 import logging 
+from odoo.exceptions import ValidationError
 
 _logger=logging.getLogger(__name__)
 
@@ -42,6 +43,10 @@ class EnrollStud(models.Model):
         record=super(EnrollStud,self).create(vals)
         return record
     
+    def unlink(self):
+        if self.state == 'done':
+            raise ValidationError(_("You cannot delete the done record state"))
+        return super(EnrollStud,self).unlink()
     
     
     @api.onchange('student_id')

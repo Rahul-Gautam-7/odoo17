@@ -14,6 +14,14 @@ class GameDev(models.Model):
     active=fields.Boolean(string="Active")
     ref=fields.Char(string='reference',help="reference for games")
     desc=fields.Html(string='desc')
+    gm_count=fields.Integer(string="Game_count" ,compute="_compute_gm_count" , store=True)
+    
+    game_ids=fields.One2many('gm.game','game_id',string="GameCounts")
+    
+    @api.depends('game_ids')
+    def _compute_gm_count(self):
+        for rec in self:
+            rec.gm_count=self.env['gm.game'].search_count([('game_id','=',rec.id)])
     
     @api.constrains('year')
     def _check_year(self):

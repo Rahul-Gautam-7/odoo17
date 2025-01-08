@@ -27,6 +27,7 @@
                     </group>
                     <group>
                         <field name="year"/>
+                        <field name="gm_count" />
                     </group>
                     </group>
                     <notebook>

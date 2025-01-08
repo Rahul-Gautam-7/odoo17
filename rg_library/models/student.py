@@ -18,6 +18,14 @@ class StudentLibrary(models.Model):
     active=fields.Boolean(string="Active")
     details=fields.Html(string='details')
     image=fields.Image(string="Image")
+    enrollment_count=fields.Integer(string="Enroll Count" ,compute='_compute_enrollment_count', store=True)
+    
+    student_ids=fields.One2many('enroll.stud','student_id',string="Student")
+    
+    @api.depends('student_ids')
+    def _compute_enrollment_count(self):
+        for rec in self:
+            rec.enrollment_count=self.env['enroll.stud'].search_count([('student_id','=',rec.id)])
     
     # @api.model
     # def create(self,vals):

@@ -7,6 +7,9 @@
     'description':'Product Modules',
     'data':[
             'security/ir.model.access.csv',
+            'data/order_seq.xml',
+            'data/pro_seq.xml',
+            'wizard/canc_view.xml',
             'views/menu.xml',
             'views/productss.xml',
             'views/prs_view.xml',

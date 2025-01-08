@@ -5,7 +5,7 @@
          <field name="name">StudentTree</field>
          <field name="model">student.library</field>
          <field name="arch" type="xml">
-                <tree multi_edit="1">
+                <tree multi_edit="1" export_xlsx="0">
                         <field name='name'/>
                         <field name='dob'/>
                         <field name='age'/>
@@ -32,6 +32,7 @@
                                                 </group>
                                                 <group>
                                                         <field name="age"/>
+                                                        <field name='enrollment_count'/>
                                                 </group>
                                         </group>
                                         <notebook>

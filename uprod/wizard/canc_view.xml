@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="can_form" model="ir.ui.view">
+        <field name="name">Cancel_form</field>
+        <field name="model">cancelss</field>
+        <field name="arch" type="xml">
+                    <form >
+                        <sheet>
+                            <group>
+                                <field name="ors_id" invisible="context.get('hide_this')" />    
+                                <field name="reason" />
+                                <field name="cancel_date" />
+                            </group>
+                        </sheet>
+                    </form>
+        </field>
+    </record>
+
+
+    <record id="canc_or" model="ir.actions.act_window">
+        <field name="name">CancOR</field>
+        <field name="type" >ir.actions.act_window</field>
+        <field name="res_model">cancelss</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        
+    </record>
+
+
+    
+</odoo>

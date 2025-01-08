@@ -1,5 +1,6 @@
-from odoo import fields,models ,api 
+from odoo import fields,models ,api , _ 
 import logging
+from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -38,7 +39,11 @@ class GNM(models.Model):
         record=super(GNM,self).create(vals)
         return record
     
-
+    def unlink(self):
+        if self.state == 'done':
+            raise ValidationError(_("Done state cannot be deleted"))
+        return super(GNM,self).unlink()
+            
         
         
     def objects_act(self):

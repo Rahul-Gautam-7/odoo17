@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <record id="pro_sqe" model="ir.sequence">
+        <field name="name">PROSEQ</field>
+        <field name="code">prose</field>
+        <field name="prefix">PRO</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"></field>
+    </record>
+</odoo>
