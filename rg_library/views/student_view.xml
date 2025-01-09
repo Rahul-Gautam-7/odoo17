@@ -22,9 +22,15 @@
                         <form>
                                 <sheet>
                                  <field name="image" widget="image" class="oe_avatar" />
+                                 <div class="oe_title">
+                                        <label for="name" string="Name"  />
+                                        <h1>
+                                        <field name="name"/>
+                                        </h1>
+                                 </div>
                                         <group>
                                                 <group>
-                                                        <field name="name"/>
+                                                        
                                                         <field name="gender" default_focus="1" invisible="context.get('hide_gender')" />
                                                         <field name='dob'/>
                                                         <field name='ref'/>
@@ -33,6 +39,17 @@
                                                 <group>
                                                         <field name="age"/>
                                                         <field name='enrollment_count'/>
+                                                </group>
+                                        </group>
+                                        <group string="Other information" >
+                                                <group >
+                                                        <field name="parent" invisible="age&lt;=18 or gender=='male'" />
+                                                        <field name="branch" />
+                                                        <field  name="branch_name" 
+                                                        readonly="branch=='mca'" 
+                                                        required="branch=='bca'"
+                                                        
+                                                         />
                                                 </group>
                                         </group>
                                         <notebook>

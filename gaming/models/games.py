@@ -15,8 +15,11 @@ class GameDev(models.Model):
     ref=fields.Char(string='reference',help="reference for games")
     desc=fields.Html(string='desc')
     gm_count=fields.Integer(string="Game_count" ,compute="_compute_gm_count" , store=True)
-    
     game_ids=fields.One2many('gm.game','game_id',string="GameCounts")
+    
+    parent=fields.Char(string='parent')
+    martial_status=fields.Selection([('single','Single'),('married','Married'),('unmarried','Unmarried')])
+    parent_name=fields.Char(string="ParentName")
     
     @api.depends('game_ids')
     def _compute_gm_count(self):
@@ -39,3 +42,7 @@ class GameDev(models.Model):
     def _compute_display_name(self):
         for x in self:
             x.display_name=f'{x.ref}{x.name}'
+            
+    def action_click(self):
+        _logger.info("Button got clicked !!!!!!!!!!!")
+        return

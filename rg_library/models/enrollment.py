@@ -10,7 +10,7 @@ class EnrollStud(models.Model):
     _inherit=['mail.thread','mail.activity.mixin']
     _rec_name='student_id'
     
-    student_id=fields.Many2one('student.library',string="Student")
+    student_id=fields.Many2one('student.library',string="Student" ,ondelete='restrict')
     joining_time=fields.Datetime(string="Joining Time",default=fields.Datetime.now)
     joining_date=fields.Date(string="Joining Date",default=fields.Date.context_today)
     gender=fields.Selection(related="student_id.gender",readonly=False)
@@ -68,8 +68,10 @@ class EnrollStud(models.Model):
             x.state='draft'
     
     def action_cancel(self):
-        action=self.env.ref('rg_library.action_cancel_is').read()[0]
-        return action
+        # action=self.env.ref('rg_library.action_cancel_is').read()[0]
+        for x in self:
+            x.state='cancel'
+        
         
     def action_done(self):
         for x in self:
@@ -80,6 +82,7 @@ class EnrollStud(models.Model):
         for x in self:
             x.display_name = f'{x.pro_ref}'
     
+       
        
 class BooksST(models.Model):
     _name="books"

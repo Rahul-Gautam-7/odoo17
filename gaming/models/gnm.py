@@ -10,7 +10,7 @@ class GNM(models.Model):
     _inherit=['mail.thread','mail.activity.mixin']
     _rec_name="game_id"
     
-    game_id=fields.Many2one('game.industry',String="Games")
+    game_id=fields.Many2one('game.industry',String="Games",ondelete="cascade")
     game_time=fields.Datetime(string="Game Time",default=fields.Datetime.now)
     game_date=fields.Date(string="Game Date",default=fields.Date.context_today)
     ref=fields.Char(related='game_id.ref')
@@ -69,9 +69,11 @@ class GNM(models.Model):
             x.state='done'
     
     def action_cancel(self):
-         action=self.env.ref('gaming.action_cancel_gm').read()[0]
-         return action
-    
+         #action=self.env.ref('gaming.action_cancel_gm').read()[0]
+         for x in self:
+            x.state='cancel' 
+  
+            
      
     def _compute_display_name(self):
         for x in self:

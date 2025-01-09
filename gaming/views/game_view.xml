@@ -30,6 +30,15 @@
                         <field name="gm_count" />
                     </group>
                     </group>
+                    <group string="Other Information">
+                        <group invisible="year&lt;=2020"> 
+                                <field name="parent"  />
+                                <field name="martial_status" />
+                                <field name="parent_name" readonly="martial_status=='single'" 
+                                required="martial_status=='married'"
+                                 />
+                        </group>
+                    </group>
                     <notebook>
                         <page string='Versionss' name="versions">
                             <field name="desc" placeholder="Write your version of game here for more info" options="{'collaborative':true,'resizable':true}" />

@@ -16,6 +16,11 @@
     />
      </menuitem>  
 
+     <menuitem id='config'
+     name='Configuration'
+     parent='menu_library_root'
+     sequence="12" />
+
      <menuitem id='cancel_book'
      name='CancelBook'
      parent='menu_student'

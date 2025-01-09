@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.gaming</field>
+        <field name="model" >res.config.settings</field>
+        <field name="priority" eval="90"></field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"></field>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Gaming" id="gaming"  string="Gaming" name="gaming" >
+                    <block title="Gaming" id="gamezone">
+                        <setting string="End time of sale" >
+                            <div class="text-muted content-group mt16" >
+                                <span>Send Time</span>
+                                    <field name="cancel_time" class="text-center" style="width:10%; min-width:4rem;" />
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="game_cofig_setting" model="ir.actions.act_window">
+        <field name="name">Setting</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model" >res.config.settings</field>
+        <field name="target" >inline</field>
+        <field name="context">{'module':'gaming','bin_size':False}</field>
+    </record>
+
+    <menuitem
+        id="Setting"
+        name="Settings"
+        parent="game_level_0"
+        action="game_cofig_setting"
+        sequence="10"/>
+</odoo>

@@ -14,13 +14,19 @@
                         <field name="game_time" />
                         <field name="ref" />
                         <field name="gamers_id" widget="many2one_avatar_user" />
+                        <field name="activity_ids" widget="list_activity" />
                         <field name="state" widget="badge" 
                             decoration-danger="state == 'cancel'"
                             decoration-info="state == 'new'"
                             decoration-warning="state == 'draft'"
                             decoration-success="state == 'done'"
                          />
-                         <field name="activity_ids" widget="list_activity" />
+                         <button name="action_done"  type="object" class="fa fa-check btn-success" invisible="state != 'draft' "  />
+                        <button name="action_cancel" class="fa fa-times btn-danger"  invisible="state != 'draft'"  type="object"  />
+                        <groupby name="game_id">
+                            <button name="action_click" type="object" string="ClickIT" />
+
+                        </groupby>
         </tree>
       </field>
     </record>

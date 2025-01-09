@@ -21,6 +21,12 @@
                         decoration-info="state == 'new'"
                         decoration-warning="state == 'draft'"
                       />   
+                        <button name="action_done"  type="object" class="fa fa-check btn-success" invisible="state != 'draft' "  />
+                        <button name="action_cancel" class="fa fa-times btn-danger"  invisible="state != 'draft'"  type="object"  />
+
+                        <groupby name="student_id">
+                                <button name="action_t" string="Test" type="object" />
+                        </groupby>
                 </tree>
          </field>
         </record>
@@ -60,6 +66,7 @@
                                         <button name="action_done" string="Done" type="object" class="oe_highlight" invisible="state == 'done' " data-hotkey='0' />
                                         <!-- <button name="action_cancel" string="Cancel" invisible="state == 'cancel' or state == 'done'"  type="object" data-hotkey='9' /> -->
                                         <button name="%(rg_library.action_cancel_is)d" string="Cancel" invisible="state == 'cancel' or state == 'done'"  type="action" data-hotkey='9' context="{'default_enroll_id':active_id , 'hide_enrollment':1} " />
+                                        <!-- <button name="%(rg_library.action_cancel_is)d" string="Cancel" invisible="state == 'cancel' or state == 'done'"  type="action" data-hotkey='9' context="{'default_enroll_id':id , 'hide_enrollment':1} " /> -->
                                          <!-- <button name="%(rg_library.action_cancel_is)d" string="Cancel" invisible="state == 'cancel' or state == 'done'"  type="action" data-hotkey='9'  /> -->
                                 </header>      
                         <sheet>
@@ -69,12 +76,11 @@
                                                 
                                                 <field name='priority' widget='priority' />
                                         </h1>
-                                </div>
-                                
-                                
+                                       
+                                </div>   
                                 <field name="image" widget="image" class="oe_avatar" />
                                 <group>
-                               <field name="student_id" />
+                                <field name="student_id" readonly="state=='done' or state=='cancel'"/>
                                <field name="hide_price" invisible="1"  />
                                <field name="hide_price" groups="base.group_no_one"  />
                                <field name="joining_time"   /> 

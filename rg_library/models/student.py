@@ -22,10 +22,27 @@ class StudentLibrary(models.Model):
     
     student_ids=fields.One2many('enroll.stud','student_id',string="Student")
     
+    parent=fields.Char(string="parent")
+    branch=fields.Selection([('bca','BCA'),('mca','MCA')], string="Branch", tracking=True)
+    branch_name=fields.Char(string="BranchName")
+    
+    
+    def action_t(self):
+        _logger.info("Click success")
+        return
+    
     @api.depends('student_ids')
     def _compute_enrollment_count(self):
         for rec in self:
             rec.enrollment_count=self.env['enroll.stud'].search_count([('student_id','=',rec.id)])
+    
+    
+    @api.ondelete(at_uninstall=False)
+    def _check_enrollment_count(self):
+            for rec in self:
+                if rec.student_ids:
+                    raise ValidationError("You cannot delete the student with enrollment")
+    
     
     # @api.model
     # def create(self,vals):
