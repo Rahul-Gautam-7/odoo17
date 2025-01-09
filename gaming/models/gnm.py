@@ -32,6 +32,7 @@ class GNM(models.Model):
     hide_price=fields.Boolean(string="Hide Price")
     img=fields.Image(string="image")
     tags_ids=fields.Many2many('tags',string="Tags")
+    g_id=fields.Many2one('operationss',string="NewGamer")
    
     @api.model 
     def create(self,vals):

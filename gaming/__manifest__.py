@@ -16,6 +16,7 @@
         'views/chk_view.xml',
         'views/res_config_settings_view.xml',
         'views/tags.xml',
+        'views/oper_view.xml',
     ],
     'installable':True,
     'application' : True

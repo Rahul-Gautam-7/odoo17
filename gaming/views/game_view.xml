@@ -33,8 +33,8 @@
                     <group string="Other Information">
                         <group invisible="year&lt;=2020"> 
                                 <field name="parent"  />
-                                <field name="martial_status" />
-                                <field name="parent_name" readonly="martial_status=='single'" 
+                                <field name="martial_status" widget="radio" />
+                                <field name="parent_name" readonly="martial_status == 'single'" 
                                 required="martial_status=='married'"
                                  />
                         </group>

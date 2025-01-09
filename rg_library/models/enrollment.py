@@ -34,6 +34,7 @@ class EnrollStud(models.Model):
     hide_price=fields.Boolean(string="Hide Price")
     image=fields.Image(string="Image")
     tag_ids=fields.Many2many("student.tag",string="Tags")
+    operation_name=fields.Many2one("lib.operation",string="Operation")
     
     
     

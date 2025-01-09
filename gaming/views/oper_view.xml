@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="oper_game_tree" model="ir.ui.view">
+        <field name="name" >oper</field>
+        <field name="model">operationss</field>
+        <field name="arch" type="xml" >
+            <tree>
+                <field name="gname" />
+                <field name="g_id" />
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="oper_game_form" model="ir.ui.view">
+        <field name="name" >operForm</field>
+        <field name="model">operationss</field>
+        <field name="arch" type="xml" >
+            <form>
+                <sheet>
+                <group>
+                    <field name="gname" />
+                    <field name="g_id" />
+                </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="oper_game" model="ir.actions.act_window">
+        <field name="name">Game operaton</field>
+        <field name="res_model" >operationss</field>
+        <field name="view_mode" >tree,form</field>
+        <field name="type" >ir.actions.act_window</field>
+        <field name="context" >{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Generate operation here
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="game_oper"
+     parent="game_level_0"
+     name="OPERATION"
+     action="oper_game"
+     />
+</odoo>

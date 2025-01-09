@@ -1,7 +1,8 @@
 from odoo import models,api,fields 
 import logging 
-import datetime 
+from datetime import date
 from odoo.exceptions import ValidationError
+from dateutil import relativedelta
 
 _logger=logging.getLogger(__name__)
 
@@ -29,8 +30,14 @@ class CancelsIssue(models.TransientModel):
     
     
     def action_cancel(self):
-        if self.enroll_id.joining_date == fields.Date.today():
-            raise ValidationError(("Same date cancelation not allowed"))
-        return
+        cancel_days=self.env['ir.config_parameter'].get_param('rg_library.cancel_days')
+        allowed_date=date.today() - relativedelta.relativedelta(days=int(cancel_days))
+        if self.cancel_date > allowed_date: 
+            raise ValidationError(("Same  cancelation not allowed"))
+            
+        
+        # if self.enroll_id.joining_date == fields.Date.today():
+        # return
+    
     
     

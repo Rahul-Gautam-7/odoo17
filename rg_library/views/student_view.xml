@@ -31,7 +31,7 @@
                                         <group>
                                                 <group>
                                                         
-                                                        <field name="gender" default_focus="1" invisible="context.get('hide_gender')" />
+                                                        <field name="gender" default_focus="1" invisible="context.get('hide_gender')" widget="radio" />
                                                         <field name='dob'/>
                                                         <field name='ref'/>
                                                         <field name="active" invisible="1"/>
@@ -48,7 +48,6 @@
                                                         <field  name="branch_name" 
                                                         readonly="branch=='mca'" 
                                                         required="branch=='bca'"
-                                                        
                                                          />
                                                 </group>
                                         </group>

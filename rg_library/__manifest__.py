@@ -24,6 +24,7 @@
             'views/female_student_view.xml',
             'views/res_config_settings_views.xml',
             'views/student_tag.xml',
+            'views/operations.xml'
         ],
     'demo': [],
     'installable': True,

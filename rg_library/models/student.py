@@ -2,6 +2,7 @@ from odoo import api, fields, models
 from datetime import date
 import logging 
 from odoo.exceptions import ValidationError
+from dateutil import relativedelta
 
 _logger=logging.getLogger(__name__)
 
@@ -12,7 +13,7 @@ class StudentLibrary(models.Model):
     
     name=fields.Char(string="Name",tracking=True)
     dob=fields.Date(string='DOB')
-    age=fields.Integer(string="Age",compute='_compute_age',tracking=True)
+    age=fields.Integer(string="Age",compute='_compute_age',search="_search_age",inverse="_inverse_compute_age",tracking=True)
     ref=fields.Char(string='reference',help="reference of student")
     gender=fields.Selection([('male','Male'),('female','Female')],string='Gender',tracking=True)
     active=fields.Boolean(string="Active")
@@ -35,6 +36,8 @@ class StudentLibrary(models.Model):
     def _compute_enrollment_count(self):
         for rec in self:
             rec.enrollment_count=self.env['enroll.stud'].search_count([('student_id','=',rec.id)])
+    
+
     
     
     @api.ondelete(at_uninstall=False)
@@ -75,6 +78,12 @@ class StudentLibrary(models.Model):
         _logger.info("Written success")
         return super(StudentLibrary,self).write(values)
     
+    @api.depends('age')
+    def _inverse_compute_age(self):
+       today = date.today()
+       for rec in self:
+           rec.dob= today - relativedelta.relativedelta(years=rec.age)
+    
     
     @api.depends('dob')
     def _compute_age(self):
@@ -86,4 +95,10 @@ class StudentLibrary(models.Model):
                 rec.age=0  
    
     
-   
+    def _search_age(self,operator,value):
+        dob=date.today() - relativedelta.relativedelta(years=value)
+        start=dob.replace(day=1,month=1)
+        endsy=dob.replace(day=31,month=12)
+        return [('dob','>=',start),('dob','<=',endsy)]
+        
+           

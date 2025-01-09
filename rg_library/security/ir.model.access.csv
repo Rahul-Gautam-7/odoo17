@@ -5,5 +5,6 @@ rg_library.access_books,access_books,rg_library.model_books,base.group_user,1,1,
 rg_library.access_student_tag,access_student_tag,rg_library.model_student_tag,base.group_user,1,1,1,1,
 rg_library.access_cancel_issue,access_cancel_issue,rg_library.model_cancel_issue,base.group_user,1,1,1,1,
 rg_library.access_in_si,access_in_si,rg_library.model_in_si,base.group_user,1,1,1,1,
+rg_library.access_lib_operation,access_lib_operation,rg_library.model_lib_operation,base.group_user,1,1,1,1,
 
 

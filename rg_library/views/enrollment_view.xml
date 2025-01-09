@@ -13,7 +13,7 @@
                     <field name="joining_time" optional="show" /> 
                     <field name="joining_date" optional="show" />
                     <field name="librarian_id" widget="many2one_avatar_user" />
-                    <field name='ref' optional="show" />
+                    <field name='ref' optional="show"  />
                     <field name="pro_ref" />
                      <field name="gender" />
                      <field name="state" widget="badge" decoration-success="state == 'done'"
@@ -80,15 +80,16 @@
                                 </div>   
                                 <field name="image" widget="image" class="oe_avatar" />
                                 <group>
-                                <field name="student_id" readonly="state=='done' or state=='cancel'"/>
+                                <field name="student_id" widget="selection" readonly="state=='done' or state=='cancel'"/>
                                <field name="hide_price" invisible="1"  />
                                <field name="hide_price" groups="base.group_no_one"  />
                                <field name="joining_time"   /> 
                                 <field name="joining_date" />
-                                <field name='ref'/> 
-                                 <field name="gender" />
+                                <field name='ref' readonly="1" force_save="1" /> 
+                                 <field name="gender" widget="radio" />
                                   <field name="tag_ids" widget="many2many_tags" options="{'color_field':'color'}" />
                                   <field name="librarian_id" widget="many2one_avatar_user" /> 
+                                  <field name="operation_name" />
                                 <button name='action_test' type='object' string='Object' class='oe_highlight' help="btn will print in log" confirm="Are you sure you want to run these?" groups="base.group_no_one" />
                                 <button name='%(rg_library.action_rg_lib)d' type='action' string='Action' class='oe_highlight' help="btn will redirect to home page" confirm="Are you sure you want to redirect?"  groups="base.group_no_one" />
                                </group>

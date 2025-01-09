@@ -52,13 +52,14 @@
                     </div>
                     <field name="img" class="oe_avatar" widget="image" />
                     <group>
-                        <field name="game_id" />
+                        <field name="game_id" widget="selection" />
                         <field name="game_date" />
                         <field name="hide_price" invisible="1" />
                          <field name="hide_price" groups="base.group_no_one" />
                         <field name="game_time" />
                         <field name="ref" />
-                        <field name="tags_ids" widget="many2many_tags" options="{'color_field':'color'}" />
+                        <field name="tags_ids" widget="many2many_checkboxes" options="{'color_field':'color'}" />
+                        <field name="g_id"/>
                         <field name="gamers_id" widget="many2one_avatar_user" />
                         <button name="objects_act" string='ObjectBtn' help="Rainbow" type='object' class='oe_highlight' confirm="Wanna see a rainbow ?" />
                         <button name="gaming.games" string='ActionBtn' type='action' help="redirect to home" class='oe_highlight' confirm="redirect?" />
