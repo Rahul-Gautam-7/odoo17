@@ -8,6 +8,9 @@ class Operation(models.Model):
     
     operation_name=fields.Char(string="Operation")
     lib_id=fields.Many2one('res.users',string="Librarian")
+    record_reference=fields.Reference(selection=[('student.library','student'),('enroll.stud','Enrollment')],string="Record")
+
+    
     
     
     @api.model

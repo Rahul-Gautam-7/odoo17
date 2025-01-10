@@ -8,9 +8,10 @@
                 <tree multi_edit="1" export_xlsx="0">
                         <field name='name'/>
                         <field name='dob'/>
-                        <field name='age'/>
+                        <field name='age' avg="Average" />
                         <field name='ref'/>
                         <field name='gender'/>
+                        <field name='enrollment_count' sum="Total Enrollment"/>
                 </tree>
          </field>
         </record>
@@ -21,6 +22,11 @@
                 <field name="arch" type="xml">
                         <form>
                                 <sheet>
+                                <!-- Birthday -->
+                                <div class="alert alert-info text-center  o_form_header" role="alert" invisible="is_birthday == False">
+                                        <a class="close" data-dismiss="alert" href="#"> x </a>
+                                        <field name="name" readonly="1" />
+                                </div>
                                  <field name="image" widget="image" class="oe_avatar" />
                                  <div class="oe_title">
                                         <label for="name" string="Name"  />
@@ -35,6 +41,7 @@
                                                         <field name='dob'/>
                                                         <field name='ref'/>
                                                         <field name="active" invisible="1"/>
+                                                        <field name="is_birthday" />
                                                 </group>
                                                 <group>
                                                         <field name="age"/>
@@ -49,6 +56,11 @@
                                                         readonly="branch=='mca'" 
                                                         required="branch=='bca'"
                                                          />
+                                                </group>
+                                                <group>
+                                                         <field name="phone" widget="phone" />
+                                                         <field name="email" widget="email" />
+                                                         <field name="website" widget="url" />
                                                 </group>
                                         </group>
                                         <notebook>

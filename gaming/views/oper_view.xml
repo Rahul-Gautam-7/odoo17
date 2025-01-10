@@ -8,6 +8,7 @@
             <tree>
                 <field name="gname" />
                 <field name="g_id" />
+                <field name="references" />
             </tree>
         </field>
     </record>
@@ -22,6 +23,7 @@
                 <group>
                     <field name="gname" />
                     <field name="g_id" />
+                    <field name="references" />
                 </group>
                 </sheet>
             </form>

@@ -30,7 +30,11 @@ class Cancels(models.TransientModel):
         allowed_day=date.today()-relativedelta.relativedelta(days=int(cancel_day))
         if self.delay_date > allowed_day:
             raise ValidationError(("Delay must be before or on",allowed_day))
-        return
+        self.gnm_id.state='cancel'
+        return{
+            'type':'ir.actions.client',
+            'tag':'reload'
+        }
     
   
         

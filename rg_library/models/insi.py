@@ -5,3 +5,5 @@ class INSI(models.Model):
     _description="check views"
     
     name=fields.Char(string="Names")
+    code=fields.Text(string="Code")
+    

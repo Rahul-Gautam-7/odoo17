@@ -9,6 +9,7 @@ class GNM(models.Model):
     _description="Game extra"
     _inherit=['mail.thread','mail.activity.mixin']
     _rec_name="game_id"
+    _order="id desc"
     
     game_id=fields.Many2one('game.industry',String="Games",ondelete="cascade")
     game_time=fields.Datetime(string="Game Time",default=fields.Datetime.now)

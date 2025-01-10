@@ -9,6 +9,7 @@ class OPR(models.Model):
     
     gname=fields.Char(string="GNAMe")
     g_id=fields.Many2one('res.users',string="Gamers")
+    references=fields.Reference(selection=[('game.industry','Gamers'),('gm.game','PCVR')],string="Refer")
     
     
     

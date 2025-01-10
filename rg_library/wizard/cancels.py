@@ -34,6 +34,11 @@ class CancelsIssue(models.TransientModel):
         allowed_date=date.today() - relativedelta.relativedelta(days=int(cancel_days))
         if self.cancel_date > allowed_date: 
             raise ValidationError(("Same  cancelation not allowed"))
+        self.enroll_id.state='cancel'
+        return {
+            'type':'ir.actions.client',
+            'tag':'reload',
+        }
             
         
         # if self.enroll_id.joining_date == fields.Date.today():

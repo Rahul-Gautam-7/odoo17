@@ -9,6 +9,7 @@ class EnrollStud(models.Model):
     _description = 'Student Enrollment'
     _inherit=['mail.thread','mail.activity.mixin']
     _rec_name='student_id'
+    _order='id desc'
     
     student_id=fields.Many2one('student.library',string="Student" ,ondelete='restrict')
     joining_time=fields.Datetime(string="Joining Time",default=fields.Datetime.now)
@@ -35,7 +36,7 @@ class EnrollStud(models.Model):
     image=fields.Image(string="Image")
     tag_ids=fields.Many2many("student.tag",string="Tags")
     operation_name=fields.Many2one("lib.operation",string="Operation")
-    
+ 
     
     
     @api.model 

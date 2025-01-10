@@ -20,6 +20,9 @@ class GameDev(models.Model):
     parent=fields.Char(string='parent')
     martial_status=fields.Selection([('single','Single'),('married','Married'),('unmarried','Unmarried')])
     parent_name=fields.Char(string="ParentName")
+    phone=fields.Char(string="Phone")
+    website=fields.Char(string="Website")
+    email=fields.Char(string="Email")
     
     @api.depends('game_ids')
     def _compute_gm_count(self):

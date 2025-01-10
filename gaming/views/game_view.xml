@@ -38,6 +38,11 @@
                                 required="martial_status=='married'"
                                  />
                         </group>
+                        <group>
+                                <field name="phone" widget="phone" />
+                                <field name="email" widget="email" />
+                                <field name="website" widget="url" />
+                        </group>
                     </group>
                     <notebook>
                         <page string='Versionss' name="versions">

@@ -26,6 +26,10 @@ class StudentLibrary(models.Model):
     parent=fields.Char(string="parent")
     branch=fields.Selection([('bca','BCA'),('mca','MCA')], string="Branch", tracking=True)
     branch_name=fields.Char(string="BranchName")
+    is_birthday=fields.Boolean(string="Birthday",compute="_chekc_bir")
+    phone=fields.Char(string="Phone")
+    email=fields.Char(string="Email")
+    website=fields.Char(string="Website")
     
     
     def action_t(self):
@@ -84,6 +88,16 @@ class StudentLibrary(models.Model):
        for rec in self:
            rec.dob= today - relativedelta.relativedelta(years=rec.age)
     
+    @api.depends('dob')
+    def _chekc_bir(self):
+        for rec in self:
+            is_birthday=False 
+            if rec.dob: 
+                today=date.today()
+                _logger.info(today)
+                if today.day == rec.dob.day and today.month == rec.dob.month:
+                    is_birthday=True 
+            rec.is_birthday=is_birthday
     
     @api.depends('dob')
     def _compute_age(self):
@@ -101,4 +115,4 @@ class StudentLibrary(models.Model):
         endsy=dob.replace(day=31,month=12)
         return [('dob','>=',start),('dob','<=',endsy)]
         
-           
+    

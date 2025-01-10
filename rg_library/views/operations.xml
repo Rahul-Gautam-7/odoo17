@@ -9,6 +9,7 @@
             <tree>
                     <field name="operation_name" />
                     <field name="lib_id" />
+                    <field name="record_reference" />
             </tree>
         </field>
     </record>
@@ -25,6 +26,7 @@
                 <group>
                     <field name="operation_name" />
                     <field name="lib_id" />
+                    <field name="record_reference" />
                 </group>
                 </sheet>
             </form>
