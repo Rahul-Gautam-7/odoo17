@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import api, fields, models,_
 from datetime import date
 import logging 
 from odoo.exceptions import ValidationError
@@ -38,8 +38,16 @@ class StudentLibrary(models.Model):
     
     @api.depends('student_ids')
     def _compute_enrollment_count(self):
-        for rec in self:
-            rec.enrollment_count=self.env['enroll.stud'].search_count([('student_id','=',rec.id)])
+        # for rec in self:
+        #     rec.enrollment_count=self.env['enroll.stud'].search_count([('student_id','=',rec.id)])
+            enrollment_group=self.env['enroll.stud'].read_group(domain=[('state','=','done')],fields=['student_id'],groupby=['student_id'])
+            _logger.info(enrollment_group)
+            print(enrollment_group)
+            for x in enrollment_group:
+                student_id=x.get('student_id')[0]
+                student_rec=self.browse(student_id)
+                student_rec.enrollment_count = x['student_id_count']
+            self.enrollment_count=0
     
 
     
@@ -108,6 +116,16 @@ class StudentLibrary(models.Model):
             else:
                 rec.age=0  
    
+    def action_view_studentss(self):
+        return{
+            'name':_('Enrollments'),
+            'res_model':'enroll.stud',
+            'view_mode':'list,form,calendar,activity',
+            'context':{'default_student_id':self.id},
+            'domain':[('student_id','=',self.id)],
+            'target':'current',
+            'type':'ir.actions.act_window',
+        }
     
     def _search_age(self,operator,value):
         dob=date.today() - relativedelta.relativedelta(years=value)

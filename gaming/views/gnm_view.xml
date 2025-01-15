@@ -27,6 +27,7 @@
                             <button name="action_click" type="object" string="ClickIT" />
 
                         </groupby>
+                        <field name="progress" widget="percentpie" />
         </tree>
       </field>
     </record>
@@ -68,6 +69,10 @@
                         <page string='Versionss' name="versions">
                             <field name="des" placeholder="Write your version of game here for more info" options="{'collaborative':true,'resizable':true , 'codeview':true}" />
                         </page>
+                        <page string='Progress' name="prog">
+                                     <field name="progress" widget="gauge" />
+                        </page>
+               
                         <page string="Awards" name='awards'>
                             <field name="gms_game_ids" >
                                 <tree editable="1">
@@ -93,12 +98,22 @@
       </field>
     </record>
 
+    <record id="gm_game_view_calendar" model="ir.ui.view">
+        <field name="name">gm_game_view_calendar</field>
+        <field name="model">gm.game</field>
+        <field name="arch" type="xml">
+             <calendar string="GameCalender" mode="month" date_start="game_date" color="state" >
+            <field name="game_id" />
+        </calendar>
+        </field>
+    </record>
+
     <record id="gnm" model="ir.actions.act_window">
         <field name="name">GMGame</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">gm.game</field>
         <field name="context">{}</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">tree,form,calendar</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create new games

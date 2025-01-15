@@ -9,6 +9,7 @@
             <field name="name" />
             <field name="year" />
              <field name="active" optional="show"/>
+             <field name="gm_count" sum="Total Games" />
             <field name="ref" />
         </tree>
       </field>

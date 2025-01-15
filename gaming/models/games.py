@@ -26,8 +26,17 @@ class GameDev(models.Model):
     
     @api.depends('game_ids')
     def _compute_gm_count(self):
-        for rec in self:
-            rec.gm_count=self.env['gm.game'].search_count([('game_id','=',rec.id)])
+        # for rec in self:
+        #     rec.gm_count=self.env['gm.game'].search_count([('game_id','=',rec.id)])
+        gm_group=self.env['gm.game'].read_group(domain=[('state','=','cancel')],fields=['game_id'],groupby=['game_id'])
+        _logger.info(gm_group)
+        for x in gm_group:
+            game_id=x.get('game_id')[0]
+            game_rec=self.browse(game_id)
+            game_rec.gm_count=x['game_id_count']
+            self -=game_rec
+        self.gm_count=0
+            
     
     @api.constrains('year')
     def _check_year(self):

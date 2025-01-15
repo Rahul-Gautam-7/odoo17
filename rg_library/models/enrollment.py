@@ -1,6 +1,7 @@
 from odoo import models, fields,api,_ 
 import logging 
 from odoo.exceptions import ValidationError
+import random
 
 _logger=logging.getLogger(__name__)
 
@@ -36,6 +37,21 @@ class EnrollStud(models.Model):
     image=fields.Image(string="Image")
     tag_ids=fields.Many2many("student.tag",string="Tags")
     operation_name=fields.Many2one("lib.operation",string="Operation")
+    progress=fields.Integer(string="Progress",compute="_progress_make")
+    
+    
+    @api.depends('state')
+    def _progress_make(self):
+        for rec in self:
+            if rec.state=='new':
+                progress=random.randrange(0,25)
+            elif rec.state=='draft':
+                progress=random.randrange(26,85)
+            elif rec.state == 'done':
+                progress=100
+            else:
+                progress=0
+            rec.progress=progress 
  
     
     
@@ -45,10 +61,10 @@ class EnrollStud(models.Model):
         record=super(EnrollStud,self).create(vals)
         return record
     
-    def unlink(self):
-        if self.state == 'done':
-            raise ValidationError(_("You cannot delete the done record state"))
-        return super(EnrollStud,self).unlink()
+    # def unlink(self):
+    #     if self.state == 'done':
+    #         raise ValidationError(_("You cannot delete the done record state"))
+    #     return super(EnrollStud,self).unlink()
     
     
     @api.onchange('student_id')

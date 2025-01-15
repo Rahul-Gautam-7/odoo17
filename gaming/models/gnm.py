@@ -1,6 +1,7 @@
 from odoo import fields,models ,api , _ 
 import logging
 from odoo.exceptions import ValidationError
+import random 
 
 _logger = logging.getLogger(__name__)
 
@@ -34,6 +35,21 @@ class GNM(models.Model):
     img=fields.Image(string="image")
     tags_ids=fields.Many2many('tags',string="Tags")
     g_id=fields.Many2one('operationss',string="NewGamer")
+    progress=fields.Integer(string="ProgressBar" , compute="_prog_compute")
+    
+    
+    @api.depends('state')
+    def _prog_compute(self):
+        for rec in self:
+            if rec.state=='new':
+                progress=random.randrange(0,40)
+            elif rec.state=='draft':
+                progress=random.randrange(41,80)
+            elif rec.state=='done':
+                progress=100
+            else:
+                progress=0
+            rec.progress=progress
    
     @api.model 
     def create(self,vals):
@@ -41,10 +57,10 @@ class GNM(models.Model):
         record=super(GNM,self).create(vals)
         return record
     
-    def unlink(self):
-        if self.state == 'done':
-            raise ValidationError(_("Done state cannot be deleted"))
-        return super(GNM,self).unlink()
+    # def unlink(self):
+    #     if self.state == 'done':
+    #         raise ValidationError(_("Done state cannot be deleted"))
+    #     return super(GNM,self).unlink()
             
         
         

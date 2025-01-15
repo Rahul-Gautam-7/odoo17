@@ -1,5 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>    
+
+        <record id="rec_mark_done" model="ir.actions.server">
+                <field name="name">MarkAsDone</field>
+                <field name="type">ir.actions.server</field>
+                <field name="model_id" ref="model_enroll_stud"></field>
+                <field name="binding_model_id" ref="model_enroll_stud"></field>
+                <field name="binding_view_types">list</field>
+                <field name="state">code</field>
+                <field name="code">
+                        for record in records:
+                                if record.state=='draft':
+                                        record.action_done()
+                </field>
+        </record>
+
+      
+
+        <record id="enroll_stud_calender" model="ir.ui.view">
+                <field name="name">enroll_view_calendar</field>
+                <field name="model">enroll.stud</field>
+                <field name="arch" type="xml">
+                         <calendar string="Leads Generation"  mode="month" date_start="joining_date"  color="state" >
+                                <field name="student_id"/>
+                                <field name="state" filters="1" invisible="1"  />
+                         </calendar>
+                </field>
+        </record>
+
+
+
+
         <record id="enroll_tree" model="ir.ui.view">
          <field name="name">EnrollTree</field>
          <field name="model">enroll.stud</field>
@@ -27,6 +58,7 @@
                         <groupby name="student_id">
                                 <button name="action_t" string="Test" type="object" />
                         </groupby>
+                        <field name="progress" widget="progressbar" />
                 </tree>
          </field>
         </record>
@@ -97,6 +129,10 @@
                                         <page string="Describe" name="desc">
                                                 <field name='detail' placeholder="Enter your book name here ..." options="{'collaborative':true,'resizable':true ,'codeview':true }"/>
                                         </page>
+                                         <page string="Progress" name="prog">
+                                                <field name="progress" widget="gauge" />
+                                                 <field name="progress" widget="percentpie" />
+                                        </page>
                                         <page string="Book" name='book'>
                                                 <field name="book_line_ids" >
                                                         <tree editable="bottom" >
@@ -131,7 +167,7 @@
     <field name="name">Student</field>
     <field name="type">ir.actions.act_window</field>
     <field name="res_model">enroll.stud</field>
-    <field name="view_mode">tree,form,activity</field>
+    <field name="view_mode">tree,form,calendar,activity</field>
     <field name="context">{}</field>
     <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Create Your first Student</p>

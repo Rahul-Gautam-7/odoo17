@@ -11,7 +11,7 @@ class CancelsIssue(models.TransientModel):
     _description="cancel the issued book"
     
     enroll_id=fields.Many2one('enroll.stud',string='Enrollment' ,domain=['|',('state','=','draft'),('state','=','new')])
-    student_id=fields.Many2one('student.library',string='Enrollment')
+    student_id=fields.Many2one('student.library',string='NOtEnroll')
     reasons=fields.Text(string="Reasons")
     cancel_date=fields.Date(string="Cancel date")
     
