@@ -9,6 +9,7 @@
                 <field name="gname" />
                 <field name="g_id" />
                 <field name="references" />
+                <field name="sequence" widget="handle" />
             </tree>
         </field>
     </record>

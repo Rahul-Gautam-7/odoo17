@@ -1,4 +1,9 @@
 from odoo import api, fields,models 
+from odoo.exceptions import UserError 
+import logging 
+
+
+_logger=logging.getLogger(__name__)
 
 class INSI(models.Model):
     _name="in.si"
@@ -6,4 +11,26 @@ class INSI(models.Model):
     
     name=fields.Char(string="Names")
     code=fields.Text(string="Code")
+    result = fields.Text("Execution Result : ", readonly=True)  
+    
+    @api.depends('code')
+    def action_execute_code(self):
+        for record in self:
+            try:
+                local_vars = {
+                    'record':record,
+                    'self':record,
+                    'env':self.env,  
+                }
+                exec(record.code, {}, local_vars) 
+
+                result = local_vars.get('result',None)
+            
+                _logger.info("Execution Result: %s", local_vars)
+                record.write({
+                    'result': result
+                })
+            except Exception as e:
+                raise UserError(f"Error while executing code: {e}")
+        return True
     

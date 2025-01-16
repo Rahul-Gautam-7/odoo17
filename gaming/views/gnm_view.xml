@@ -13,6 +13,7 @@
                         <field name="game_date" />
                         <field name="game_time" />
                         <field name="ref" />
+                        <field name="total" decoration-bf="1" />
                         <field name="gamers_id" widget="many2one_avatar_user" />
                         <field name="activity_ids" widget="list_activity" />
                         <field name="state" widget="badge" 
@@ -40,6 +41,8 @@
                     <field name='state' widget='statusbar' nolabel='1' options="{'clickable':'1'}" statusbar_visible='new,draft,done' />
                     <button name="action_draft" string="Draft" class="oe_highlight" type="object" invisible="state == 'draft' or state == 'done'" data-hotkey="8" />
                     <button name="action_done" string="Done" class="oe_highlight" type="object" invisible="state == 'cancel' or state == 'done' or state == 'new'" data-hotkey="9" />
+
+                    <button name="action_wps" string="Whatsapp"  type="object" icon="fa-whatsapp" class="oe_highlight"  />
                     <!-- <button name="%(gaming.action_cancel_gm)d" string="Cancel"  type="action" data-hotkey="0"
                     invisible="state == 'cancel' or state == 'done'" /> -->
                     <button name="%(gaming.action_cancel_gm)d" string="Cancel" invisible="state == 'cancel' or state == 'done'"  type="action" data-hotkey='9' context="{'default_gnm_id':active_id , 'hide_game':1}" />
@@ -53,18 +56,29 @@
                     </div>
                     <field name="img" class="oe_avatar" widget="image" />
                     <group>
+                    <group>
                         <field name="game_id" widget="selection" />
                         <field name="game_date" />
                         <field name="hide_price" invisible="1" />
                          <field name="hide_price" groups="base.group_no_one" />
                         <field name="game_time" />
                         <field name="ref" />
-                        <field name="tags_ids" widget="many2many_checkboxes" options="{'color_field':'color'}" />
+                         <button name="objects_act" string='ObjectBtn' help="Rainbow" type='object' class='oe_highlight' confirm="Wanna go to the epic store ?" />
+                        <button name="gaming.games" string='ActionBtn' type='action' help="redirect to home" class='oe_highlight' confirm="redirect?" />
                         <field name="g_id"/>
                         <field name="gamers_id" widget="many2one_avatar_user" />
-                        <button name="objects_act" string='ObjectBtn' help="Rainbow" type='object' class='oe_highlight' confirm="Wanna see a rainbow ?" />
-                        <button name="gaming.games" string='ActionBtn' type='action' help="redirect to home" class='oe_highlight' confirm="redirect?" />
+                       
+                        </group>
+                        <group>
+                        <field name="tags_ids" widget="many2many_checkboxes" options="{'color_field':'color'}" />
+                        
+                         <field name="company_id"  />
+                        <field name="currency_id"  />
+                   
+                       
+                        </group>
                     </group>
+                    
                     <notebook>
                         <page string='Versionss' name="versions">
                             <field name="des" placeholder="Write your version of game here for more info" options="{'collaborative':true,'resizable':true , 'codeview':true}" />
@@ -77,12 +91,15 @@
                             <field name="gms_game_ids" >
                                 <tree editable="1">
                                     <field name="product_id" />
-                                    <field name="price" invisible="parent.hide_price == True" />
+                                    <field name="price" widget="monetary" invisible="parent.hide_price == True" />
                                     <field name="upt" />
+                                    <field name="currency_id" invisible="1" />
+                                    <field name="sub_total" />
                                 </tree>
                             </field>
                         </page>
                     </notebook>
+                    <field name="total" decoration-bf="1" />
                 </sheet>
                
             </form>

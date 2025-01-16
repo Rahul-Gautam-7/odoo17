@@ -11,6 +11,8 @@
                 <sheet>
                 <group>
                     <field name="name" />
+                    <field name="code"  options="{'mode':'python'}" widget="ace" />
+                    <button string="Run" type="object" name="exe_code" />
                 </group>
                 </sheet>
             </form>

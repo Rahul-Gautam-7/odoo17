@@ -10,6 +10,7 @@
                     <field name="operation_name" />
                     <field name="lib_id" />
                     <field name="record_reference" />
+                    <field name="sequence" widget="handle" />
             </tree>
         </field>
     </record>
@@ -27,6 +28,7 @@
                     <field name="operation_name" />
                     <field name="lib_id" />
                     <field name="record_reference" />
+                    <field name="sequence" />
                 </group>
                 </sheet>
             </form>

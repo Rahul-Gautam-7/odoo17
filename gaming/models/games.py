@@ -1,4 +1,4 @@
-from odoo import api, fields,models
+from odoo import api, fields,models,_
 import logging
 from odoo.exceptions import ValidationError
 
@@ -28,7 +28,7 @@ class GameDev(models.Model):
     def _compute_gm_count(self):
         # for rec in self:
         #     rec.gm_count=self.env['gm.game'].search_count([('game_id','=',rec.id)])
-        gm_group=self.env['gm.game'].read_group(domain=[('state','=','cancel')],fields=['game_id'],groupby=['game_id'])
+        gm_group=self.env['gm.game'].read_group(domain=[('state','=','done')],fields=['game_id'],groupby=['game_id'])
         _logger.info(gm_group)
         for x in gm_group:
             game_id=x.get('game_id')[0]
@@ -58,3 +58,14 @@ class GameDev(models.Model):
     def action_click(self):
         _logger.info("Button got clicked !!!!!!!!!!!")
         return
+    
+    def action_name_game_count(self):
+        return{
+            'name':_('Games'),
+            'res_model':'gm.game',
+            'view_mode':'list,calendar,activity,form',
+            'context':{'default_game_id':self.id},
+            'domain':[('game_id','=',self.id)],
+            'target':'currrent',
+            'type':'ir.actions.act_window',
+        }

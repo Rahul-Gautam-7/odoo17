@@ -47,6 +47,7 @@
                     <field name='ref' optional="show"  />
                     <field name="pro_ref" />
                      <field name="gender" />
+                      <field name="total" widget="monetary"  decoration-bf="1" decoration-it="1" />
                      <field name="state" widget="badge" decoration-success="state == 'done'"
                         decoration-danger="state == 'cancel'"
                         decoration-info="state == 'new'"
@@ -96,6 +97,7 @@
                                         statusbar_visible="new,draft,done" />
                                          <button name="action_draft" string="Draft" type="object" class="oe_highlight"  invisible="state == 'draft' or state == 'done' " data-hotkey='8' />
                                         <button name="action_done" string="Done" type="object" class="oe_highlight" invisible="state == 'done' " data-hotkey='0' />
+                                        <button name="action_wp" string="Whatsapp" icon="fa-whatsapp" type="object" class="oe_highlight"  />
                                         <!-- <button name="action_cancel" string="Cancel" invisible="state == 'cancel' or state == 'done'"  type="object" data-hotkey='9' /> -->
                                         <button name="%(rg_library.action_cancel_is)d" string="Cancel" invisible="state == 'cancel' or state == 'done'"  type="action" data-hotkey='9' context="{'default_enroll_id':active_id , 'hide_enrollment':1} " />
                                         <!-- <button name="%(rg_library.action_cancel_is)d" string="Cancel" invisible="state == 'cancel' or state == 'done'"  type="action" data-hotkey='9' context="{'default_enroll_id':id , 'hide_enrollment':1} " /> -->
@@ -112,6 +114,7 @@
                                 </div>   
                                 <field name="image" widget="image" class="oe_avatar" />
                                 <group>
+                                <group>
                                 <field name="student_id" widget="selection" readonly="state=='done' or state=='cancel'"/>
                                <field name="hide_price" invisible="1"  />
                                <field name="hide_price" groups="base.group_no_one"  />
@@ -119,11 +122,16 @@
                                 <field name="joining_date" />
                                 <field name='ref' readonly="1" force_save="1" /> 
                                  <field name="gender" widget="radio" />
+                                 </group>
+                                 <group>
                                   <field name="tag_ids" widget="many2many_tags" options="{'color_field':'color'}" />
                                   <field name="librarian_id" widget="many2one_avatar_user" /> 
                                   <field name="operation_name" />
-                                <button name='action_test' type='object' string='Object' class='oe_highlight' help="btn will print in log" confirm="Are you sure you want to run these?" groups="base.group_no_one" />
+                                  <field name="company_id" />
+                                  <field name="currency_id" />
+                                <button name='action_test' type='object' string='Redirect' class='oe_highlight' help="btn will print in log" confirm="Are you sure you want to run go to youtube?" groups="base.group_no_one" />
                                 <button name='%(rg_library.action_rg_lib)d' type='action' string='Action' class='oe_highlight' help="btn will redirect to home page" confirm="Are you sure you want to redirect?"  groups="base.group_no_one" />
+                               </group>
                                </group>
                                <notebook>
                                         <page string="Describe" name="desc">
@@ -137,8 +145,13 @@
                                                 <field name="book_line_ids" >
                                                         <tree editable="bottom" >
                                                                 <field name="product_id" />
-                                                                <field name="price" invisible="parent.hide_price == True" />
+                                                                <field name="price" widget="monetary" invisible="parent.hide_price == True" />
                                                                 <field name="qty" />
+                                                                <field name="currency_id" invisible="1" />
+                                                                <field name="price_subtotal" />
+                                                                
+                                                                
+                                
                                                         </tree>
                                                         <form  >
                                                                 <field name="product_id" />
@@ -149,8 +162,19 @@
                                                 </field>       
                                         </page>
                                 </notebook>
+                                <group >
+                               <field name="total" widget="monetary"  decoration-bf="1" />
+                               </group>
                                </sheet>
+                             
+                                 <div class="oe_chatter">
+                                   <field name="message_follower_ids" group="base.group_user" />
+                                   <field name="activity_ids" />
+                                   <field name="message_ids" />
+                                </div>
+                                  
                         </form>
+                              
                 </field>
         </record>
 

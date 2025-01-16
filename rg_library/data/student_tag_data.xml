@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<odoo>
-    <record id="pid" model="student.tag">
+<odoo noupdate="1">
+    <record id="pid" model="student.tag" forcecreate="0">
         <field name="name" >wish</field>
     </record>
 
-    <record id="pid1" model="student.tag">
+    <record id="pid1" model="student.tag" forcecreate="0" >
         <field name="name" >wi</field>
     </record>
 
-    <record id="pid2" model="student.tag">
+    <record id="pid2" model="student.tag" forcecreate="0">
         <field name="name" >win</field>
     </record>
 
-    <record id="pid3" model="student.tag">
+    <record id="pid3" model="student.tag" forcecreate="0">
         <field name="name" >loss</field>
     </record>
 </odoo>

@@ -12,10 +12,10 @@ class EnrollStud(models.Model):
     _rec_name='student_id'
     _order='id desc'
     
-    student_id=fields.Many2one('student.library',string="Student" ,ondelete='restrict')
+    student_id=fields.Many2one('student.library',string="Student" ,ondelete='restrict',tracking=1)
     joining_time=fields.Datetime(string="Joining Time",default=fields.Datetime.now)
-    joining_date=fields.Date(string="Joining Date",default=fields.Date.context_today)
-    gender=fields.Selection(related="student_id.gender",readonly=False)
+    joining_date=fields.Date(string="Joining Date",default=fields.Date.context_today,tracking=2)
+    gender=fields.Selection(related="student_id.gender",readonly=False,tracking=5)
     #ref=fields.Integer(related="student_id.ref")  
     pro_ref=fields.Char(string="productref" ,readonly=True)
     ref=fields.Char(string="reference")
@@ -32,12 +32,33 @@ class EnrollStud(models.Model):
     ],string='status',default='new')
     librarian_id=fields.Many2one('res.users',string="Librarian")
     book_line_ids=fields.One2many('books','book_id',string="Books Lines")
-    detail=fields.Html(string="detail")
+    detail=fields.Html(string="detail",tracking=4)
     hide_price=fields.Boolean(string="Hide Price")
     image=fields.Image(string="Image")
     tag_ids=fields.Many2many("student.tag",string="Tags")
     operation_name=fields.Many2one("lib.operation",string="Operation")
     progress=fields.Integer(string="Progress",compute="_progress_make")
+    
+    company_id=fields.Many2one('res.company',string="Company",default=lambda self:self.env.company)
+    currency_id=fields.Many2one('res.currency',related='company_id.currency_id')
+    
+    total=fields.Float(string="Totals",compute="_total_c",store=True)
+    
+    @api.depends('book_line_ids.price_subtotal')
+    def _total_c(self):
+        for x in self:
+            x.total=sum(rec.price_subtotal for rec in x.book_line_ids)
+    
+    
+    def action_wp(self):
+        message='hi %s ,your enrollment number is %s,Thank you'%(self.student_id.name,self.ref)
+        whatsapp_url='https://api.whatsapp.com/send?phone=%s&text=%s'%(self.student_id.phone,message)
+        return{
+            'type':'ir.actions.act_url',
+            'target':'new',
+            'url':whatsapp_url
+        }
+    
     
     
     @api.depends('state')
@@ -53,6 +74,8 @@ class EnrollStud(models.Model):
                 progress=0
             rec.progress=progress 
  
+    
+        
     
     
     @api.model 
@@ -73,13 +96,12 @@ class EnrollStud(models.Model):
         
     def action_test(self):
         _logger.info("object button clicked")
-        return {
-            'effect':{
-                'fadeout':'slow',
-                'message':'Click Success',
-                'type':'rainbow_man'
-            }
+        return{
+            'type':'ir.actions.act_url',
+            'target':'new',
+            'url':'https://www.youtube.com'
         }
+        
     
     def action_draft(self):
         for x in self:
@@ -94,6 +116,13 @@ class EnrollStud(models.Model):
     def action_done(self):
         for x in self:
             x.state='done'
+        return {
+            'effect':{
+                'fadeout':'slow',
+                'message':'Click Success',
+                'type':'rainbow_man'
+            }
+        }
             
     
     def _compute_display_name(self):
@@ -112,3 +141,11 @@ class BooksST(models.Model):
     price=fields.Float(related='product_id.lst_price',readonly=False)
     qty=fields.Integer(string="Quantity",default="1")
     book_id=fields.Many2one('enroll.stud',string="Books")
+    
+    currency_id=fields.Many2one('res.currency',related='book_id.currency_id')
+    price_subtotal=fields.Monetary(string="SubTotal",compute="_compute_price_subtotal",currency_field='currency_id')
+    
+    @api.depends('price','qty')
+    def _compute_price_subtotal(self):
+        for rec in self:
+            rec.price_subtotal=rec.price *rec.qty

@@ -37,6 +37,33 @@ class GNM(models.Model):
     g_id=fields.Many2one('operationss',string="NewGamer")
     progress=fields.Integer(string="ProgressBar" , compute="_prog_compute")
     
+    company_id=fields.Many2one('res.company',string="Company",default=lambda self:self.env.company)
+    currency_id=fields.Many2one('res.currency',related="company_id.currency_id")
+    
+    
+    total=fields.Float(string="total",compute="_compute_total")
+    
+    
+    
+    def action_wps(self):
+        message="hi %s your reference is %s.ThankYOu"%(self.game_id.name,self.ref)
+        whatspp_url="https://api.whatsapp.com/send?phone=%s&text=%s"%(self.game_id.phone,message)
+        return{
+            'type':'ir.actions.act_url',
+            'target':'new',
+            'url':whatspp_url
+        }
+    
+    
+    
+    @api.depends('gms_game_ids.sub_total')
+    def _compute_total(self):
+        for x in self:
+            x.total=sum(rec.sub_total for rec in x.gms_game_ids )
+        
+    
+    
+    
     
     @api.depends('state')
     def _prog_compute(self):
@@ -66,13 +93,12 @@ class GNM(models.Model):
         
     def objects_act(self):
         _logger.info("Object Clicked!!!!!!!!!!!!")
-        return {
-            'effect':{
-                'fadeout':'slow',
-                'message':'Its a rainbow',
-                'type':'rainbow_man'
-            }
+        return{
+            'type':'ir.actions.act_url',
+            'target':'new',
+            'url':'https://store.epicgames.com'
         }
+        
   
     
     
@@ -85,6 +111,13 @@ class GNM(models.Model):
     def action_done(self):
         for x in self:
             x.state='done'
+        return {
+            'effect':{
+                'fadeout':'slow',
+                'message':'Its a rainbow',
+                'type':'rainbow_man'
+            }
+        }
     
     def action_cancel(self):
          #action=self.env.ref('gaming.action_cancel_gm').read()[0]
@@ -106,3 +139,11 @@ class GMS(models.Model):
     price=fields.Float(related='product_id.lst_price')
     upt=fields.Integer(string="updates")
     gms_id=fields.Many2one('gm.game',string="gms")
+    currency_id=fields.Many2one('res.currency',related="gms_id.currency_id")
+    sub_total=fields.Monetary(string="subtotal",compute="_compute_total")
+    
+    @api.depends('upt','price')
+    def _compute_total(self):
+        for rec in self:
+            rec.sub_total=rec.upt * rec.price 
+            
