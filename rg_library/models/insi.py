@@ -34,3 +34,10 @@ class INSI(models.Model):
                 raise UserError(f"Error while executing code: {e}")
         return True
     
+    def action_python_code(self):
+        for rec in self:
+            # vals=self.env['student.library'].search_count(['|',('gender','=','male'),('gender','=','female')])
+            # vals=self.env['student.library'].browse(2).get_metadata()
+            vals=self.env['student.library'].browse(2).fields_get(['name','gender'])
+            _logger.info(vals)
+    

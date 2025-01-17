@@ -17,6 +17,7 @@
                             </group>
                             <group>
                                 <button name="action_execute_code" string="Execute" type="object" class="btn-primary"/>
+                                 <button name="action_python_code" string="python" type="object" class="btn-primary"/>
                             </group>
                             
                                 
