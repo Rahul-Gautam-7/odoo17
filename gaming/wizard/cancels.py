@@ -31,9 +31,16 @@ class Cancels(models.TransientModel):
         if self.delay_date > allowed_day:
             raise ValidationError(("Delay must be before or on",allowed_day))
         self.gnm_id.state='cancel'
+        # return{
+        #     'type':'ir.actions.client',
+        #     'tag':'reload'
+        # }
         return{
-            'type':'ir.actions.client',
-            'tag':'reload'
+            'type':'ir.actions.act_window',
+            'view_mode':'form',
+            'res_model':'cancel.game',
+            'target':'new',
+            'res_id':self.id
         }
     
   

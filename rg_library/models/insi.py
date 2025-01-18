@@ -38,6 +38,8 @@ class INSI(models.Model):
         for rec in self:
             # vals=self.env['student.library'].search_count(['|',('gender','=','male'),('gender','=','female')])
             # vals=self.env['student.library'].browse(2).get_metadata()
-            vals=self.env['student.library'].browse(2).fields_get(['name','gender'])
+            # vals=self.env['student.library'].browse(2).fields_get(['name','gender'])
+            # vals=self.env['student.library'].with_context(active_test=False).search_count([])
+            vals=self.env['student.library'].search_count([])
             _logger.info(vals)
     

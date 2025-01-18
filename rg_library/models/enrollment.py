@@ -103,6 +103,25 @@ class EnrollStud(models.Model):
         }
         
     
+    def action_notification(self):
+        action=self.env.ref('rg_library.student_form')
+        return{
+            'type':'ir.actions.client',
+            'tag':'display_notification',
+            'params':{
+                'title':_('Click to continue'),
+                'message':'%s',
+                'links':[{
+                    'label':self.student_id.name,
+                    'url':f'#action={action.id}&id={self.student_id.id}&model=student.library',
+                }],
+                'sticky':False,
+            }
+        }
+    
+    
+    
+    
     def action_draft(self):
         for x in self:
             x.state='draft'
@@ -138,7 +157,7 @@ class BooksST(models.Model):
     
     
     product_id=fields.Many2one('product.product',required=True)
-    price=fields.Float(related='product_id.lst_price',readonly=False)
+    price=fields.Float(related='product_id.lst_price',readonly=False,digits='Product Price')
     qty=fields.Integer(string="Quantity",default="1")
     book_id=fields.Many2one('enroll.stud',string="Books")
     

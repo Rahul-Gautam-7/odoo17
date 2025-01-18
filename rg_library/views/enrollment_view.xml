@@ -130,6 +130,7 @@
                                   <field name="company_id" />
                                   <field name="currency_id" />
                                 <button name='action_test' type='object' string='Redirect' class='oe_highlight' help="btn will print in log" confirm="Are you sure you want to run go to youtube?" groups="base.group_no_one" />
+                                 <button name='action_notification' type='object' string='Notify...' class='oe_highlight' help="btn will print in log" confirm="Are you sure you want to get notify" groups="base.group_no_one" />
                                 <button name='%(rg_library.action_rg_lib)d' type='action' string='Action' class='oe_highlight' help="btn will redirect to home page" confirm="Are you sure you want to redirect?"  groups="base.group_no_one" />
                                </group>
                                </group>

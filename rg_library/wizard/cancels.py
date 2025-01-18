@@ -35,11 +35,17 @@ class CancelsIssue(models.TransientModel):
         if self.cancel_date > allowed_date: 
             raise ValidationError(("Same  cancelation not allowed"))
         self.enroll_id.state='cancel'
+        # return {
+        #     'type':'ir.actions.client',
+        #     'tag':'reload',
+        # }
         return {
-            'type':'ir.actions.client',
-            'tag':'reload',
-        }
-            
+               'type':'ir.actions.act_window',
+               'view_mode':'form',
+               'res_model':'cancel.issue',
+               'target':'new',
+               'res_id':self.id
+           } 
         
         # if self.enroll_id.joining_date == fields.Date.today():
         # return

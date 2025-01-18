@@ -41,8 +41,7 @@
                                         </h1>
                                  </div>
                                         <group>
-                                                <group>
-                                                        
+                                                <group>    
                                                         <field name="gender" default_focus="1" invisible="context.get('hide_gender')" widget="radio" />
                                                         <field name='dob'/>
                                                         <field name='ref'/>

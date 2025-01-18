@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
+    <record id="inline_tree" model="ir.ui.view">
+        <field name="name">inlinetree</field>
+        <field name="model">in.si</field>
+        <field name="arch" type="xml">
+                    <tree string="Views" >
+                                <field name="name" />
+                                <field name="code" widget="ace" options="{'mode':'python'}" />
+                                <field name="result" readonly="1" /> 
+                    </tree>
+        </field>
+    </record>
 
     <record id="inline_view" model="ir.ui.view">
         <field name="name">inlineview</field>
@@ -18,11 +29,8 @@
                             <group>
                                 <button name="action_execute_code" string="Execute" type="object" class="btn-primary"/>
                                  <button name="action_python_code" string="python" type="object" class="btn-primary"/>
-                            </group>
-                            
-                                
+                            </group>      
                         </sheet>
-                        
                     </form>
         </field>
     </record>
