@@ -53,6 +53,7 @@ class EnrollStud(models.Model):
     def action_wp(self):
         message='hi %s ,your enrollment number is %s,Thank you'%(self.student_id.name,self.ref)
         whatsapp_url='https://api.whatsapp.com/send?phone=%s&text=%s'%(self.student_id.phone,message)
+        self.message_post(body=message,subject="Whatsapp Message")
         return{
             'type':'ir.actions.act_url',
             'target':'new',
@@ -115,7 +116,13 @@ class EnrollStud(models.Model):
                     'label':self.student_id.name,
                     'url':f'#action={action.id}&id={self.student_id.id}&model=student.library',
                 }],
-                'sticky':False,
+                'sticky':True,
+                'next':{
+                    'type':'ir.actions.act_window',
+                    'res_model':'student.library',
+                    'res_id':self.student_id.id,
+                    'views':[(False,'form')]
+                }
             }
         }
     

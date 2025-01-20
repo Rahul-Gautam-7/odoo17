@@ -48,6 +48,7 @@ class GNM(models.Model):
     def action_wps(self):
         message="hi %s your reference is %s.ThankYOu"%(self.game_id.name,self.ref)
         whatspp_url="https://api.whatsapp.com/send?phone=%s&text=%s"%(self.game_id.phone,message)
+        self.message_post(body=message,subject="Whatsapp message")
         return{
             'type':'ir.actions.act_url',
             'target':'new',
@@ -129,6 +130,30 @@ class GNM(models.Model):
     def _compute_display_name(self):
         for x in self:
             x.display_name=f'{x.order_ref}'
+            
+            
+    def notify_here(self):
+        action=self.env.ref('gaming.game_view_form')
+        return{
+            'type':'ir.actions.client',
+            'tag':'display_notification',
+            'params':{
+                'title':_('Here To Notify'),
+                'message':'%s',
+                'links':[{
+                    'label':self.game_id.name,
+                    'url':f'#action={action.id}&id={self.game_id.id}&model=game.industry',
+                }],
+                'sticky':True,
+                'next':{
+                    'type':'ir.actions.act_window',
+                    'res_model':'game.industry',
+                    'res_id':self.game_id.id,
+                    'views':[(False,'form')]
+                    
+                }
+            }
+        }
     
     
 class GMS(models.Model):

@@ -65,6 +65,11 @@
                         <field name="ref" />
                          <button name="objects_act" string='ObjectBtn' help="Rainbow" type='object' class='oe_highlight' confirm="Wanna go to the epic store ?" />
                         <button name="gaming.games" string='ActionBtn' type='action' help="redirect to home" class='oe_highlight' confirm="redirect?" />
+                        
+                        
+                        <!-- notification -->
+                        <button name="notify_here" string='Notify' type='object' help="redirect to and notify" class='oe_highlight' confirm="redirect?" />
+
                         <field name="g_id"/>
                         <field name="gamers_id" widget="many2one_avatar_user" />
                        
@@ -101,6 +106,11 @@
                     </notebook>
                     <field name="total" decoration-bf="1" />
                 </sheet>
+                  <div class="oe_chatter">
+                                   <field name="message_follower_ids" group="base.group_user" />
+                                   <field name="activity_ids" />
+                                   <field name="message_ids" />
+                                </div>   
                
             </form>
         </field>

@@ -150,9 +150,6 @@
                                                                 <field name="qty" />
                                                                 <field name="currency_id" invisible="1" />
                                                                 <field name="price_subtotal" />
-                                                                
-                                                                
-                                
                                                         </tree>
                                                         <form  >
                                                                 <field name="product_id" />
@@ -172,10 +169,8 @@
                                    <field name="message_follower_ids" group="base.group_user" />
                                    <field name="activity_ids" />
                                    <field name="message_ids" />
-                                </div>
-                                  
-                        </form>
-                              
+                                </div>   
+                        </form>       
                 </field>
         </record>
 

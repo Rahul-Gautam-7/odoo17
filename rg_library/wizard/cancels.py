@@ -30,15 +30,20 @@ class CancelsIssue(models.TransientModel):
     
     
     def action_cancel(self):
-        cancel_days=self.env['ir.config_parameter'].get_param('rg_library.cancel_days')
-        allowed_date=date.today() - relativedelta.relativedelta(days=int(cancel_days))
-        if self.cancel_date > allowed_date: 
-            raise ValidationError(("Same  cancelation not allowed"))
-        self.enroll_id.state='cancel'
-        # return {
+        #cancel_days=self.env['ir.config_parameter'].get_param('rg_library.cancel_days')
+        # allowed_date=date.today() - relativedelta.relativedelta(days=int(cancel_days))
+        # if self.cancel_date > allowed_date: 
+        #     raise ValidationError(("Same  cancelation not allowed"))
+        # self.enroll_id.state='cancel'
+        # # return {
         #     'type':'ir.actions.client',
         #     'tag':'reload',
         # }
+        # query="""select id,student_id from enroll_stud"""
+        # self.env.cr.execute(query)
+        # students=self.env.cr.dictfetchall()
+        # _logger.info(students)
+        
         return {
                'type':'ir.actions.act_window',
                'view_mode':'form',
