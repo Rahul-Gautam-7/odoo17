@@ -83,6 +83,20 @@ class EnrollStud(models.Model):
     def create(self,vals): 
         vals['pro_ref']=self.env['ir.sequence'].next_by_code('proseq')
         record=super(EnrollStud,self).create(vals)
+        sr_no=0
+        for x in record.book_line_ids:
+            sr_no+=1
+            x.sr_no=sr_no
+        return record
+    
+    
+    def write(self, values):
+        _logger.info("Written success")
+        record=super(EnrollStud,self).write(values)
+        sr_no=0
+        for x in self.book_line_ids:
+            sr_no+=1
+            x.sr_no=sr_no
         return record
     
     # def unlink(self):
@@ -162,7 +176,7 @@ class BooksST(models.Model):
     _description="book models"
     
     
-    
+    sr_no=fields.Integer(string="SerialNumber")
     product_id=fields.Many2one('product.product',required=True)
     price=fields.Float(related='product_id.lst_price',readonly=False,digits='Product Price')
     qty=fields.Integer(string="Quantity",default="1")
