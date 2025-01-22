@@ -147,5 +147,5 @@
             </p>
         </field>
     </record>
-   
+   <menuitem id="game_level_3" action="gnm" name="gamess" parent="game_level_0" sequence='2'/>
 </odoo>

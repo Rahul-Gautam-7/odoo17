@@ -23,6 +23,8 @@
             'views/male_student_view.xml',
             'views/female_student_view.xml',
             'views/res_config_settings_views.xml',
+            'data/mail_template_data.xml',
+            'data/mail_view_data.xml',
             'views/student_tag.xml',
             'views/operations.xml'
         ],

@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data noupdate="1">
+    <record id="action_gm_game_pdf" model="ir.actions.report">
+        <field name="name">GamePDF</field>
+        <field name="model">gm.game</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">gaming.gm_game_pdf</field>
+        <field name="report_file">gaming.gm_game_pdf</field>
+        <field name="binding_model_id" ref="model_gm_game"></field>
+        <field name="binding_type">report</field>
+    </record>
+    </data>
+</odoo>

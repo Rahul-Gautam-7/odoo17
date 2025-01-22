@@ -33,6 +33,9 @@
                                         <a class="close" data-dismiss="alert" href="#"> x </a>
                                         <field name="name" readonly="1" />
                                 </div>
+
+
+                                
                                  <field name="image" widget="image" class="oe_avatar" />
                                  <div class="oe_title">
                                         <label for="name" string="Name"  />

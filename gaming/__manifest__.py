@@ -16,6 +16,8 @@
         'views/chk_view.xml',
         'views/res_config_settings_view.xml',
         'views/tags.xml',
+        'data/pdf_act.xml',
+        'data/pdf_view.xml',
         'views/oper_view.xml',
     ],
     'installable':True,
