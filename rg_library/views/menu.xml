@@ -9,11 +9,7 @@
      name='student'
      parent='menu_library_root'
      sequence="0">
-        <menuitem id="male_stud"
-        name="male student"
-        action="male_view"
-        sequence="45"
-    />
+       
      </menuitem>  
 
      <menuitem id='config'

@@ -14,7 +14,12 @@
         </p>
       </field>
     </record>
-
+   <menuitem id="male_stud"
+        name="male student"
+        action="male_view"
+        parent="menu_student"
+        sequence="45"
+    />
 
     
     

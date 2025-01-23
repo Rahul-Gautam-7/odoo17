@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
-    <data noupdate="1">
+    <data noupdate="0">
     
         <template id="enroll_stud_pdf" >
             <t t-call="web.html_container">
@@ -8,8 +8,70 @@
                     <t t-foreach="docs" t-as="doc">
                         <div class="page">
                             <br />
-                            <h2>Enrollment Student Report</h2>
-                            <span t-field="doc.student_id.name" />
+                            <!-- heading and order ref -->
+                            <h1 style="text-align:center;">Enrollment Student Book Report</h1><br/><br/>
+                                <div >
+                                    <h2 style="display:inline;">ID : <span t-field="doc.pro_ref" /></h2>
+                                    <h2 style="float:right;">Date : <span t-field="doc.curr_date" /></h2>
+                                    <br />
+                                    <br />
+                                    <br />
+                                    
+                                </div>
+
+
+
+                            <!-- General Detail -->
+                            <div>
+                                <h1 style="text-align:center; justify-content:center; margin-left:45px;" > General Details</h1>
+                                <div>
+                                    <h4 style="display:inline;" >Student Name : <span t-field="doc.student_id.name" /></h4>
+                                   <h4 style="float:right;"> Tags : <span  t-field="doc.tag_ids.name" /></h4>
+                                   <h4  > Joining Time : <span t-field="doc.joining_time" /></h4>
+                                    <h4 style="float:right;">Company : <span  t-field="doc.company_id.name" /></h4>
+                                    <h4>Gender : <span t-field="doc.gender" /></h4>
+                                </div>
+                            </div>
+
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <br />
+
+                            <div>
+                                
+            <table class="table table-sm o_main_table  mt-4">
+                <thead style="display: table-row-group">
+                    <tr>
+                        <th name="th_sr_no" class="text-start">Sr_no</th>
+                        <th name="th_book_name" class="text-end">Book Name</th>
+                        <th name="th_saleprice" class="text-end">Sales Price</th>
+                        <th name="th_quantity" class="text-end">Quantity</th>
+                        <th name="th_subtotal" class="text-end">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <t t-foreach="doc.book_line_ids" t-as="rec">
+                    <tr>
+                        <td class="text-start"><span  t-field="rec.sr_no" /></td>
+                        <td class="text-end"><span  t-field="rec.product_id.name" /></td>
+                        <td class="text-end"><span  t-field="rec.price" /></td>
+                        <td class="text-end"><span  t-field="rec.qty" /></td>
+                        <td class="text-end"><span  t-field="rec.price_subtotal" /></td>
+                    </tr>  
+                    </t>
+                    
+                </tbody>
+            </table>
+            <h4 style="float:right;">Total Amount To Pay : $ 
+                        <span t-field="doc.total"   />
+                        </h4>
+                            </div>
+
+
                             
                         </div>
                         

@@ -16,7 +16,7 @@
             'data/sequence_data.xml',
             'data/pro_sequence.xml',
             'wizard/cancels.xml',
-            'views/determin_view.xml',
+            # 'views/determin_view.xml',
             'views/menu.xml',
             'views/student_view.xml',
             'views/enrollment_view.xml',

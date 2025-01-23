@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    
+    <menuitem
+        id="leave_0"
+        name="Leaves"
+        sequence="0"/>
+
+     <menuitem
+        id="leave_1"
+        name="Leavess"
+        parent="leave_0"
+        sequence="0"/>
+
+ 
+
+</odoo>

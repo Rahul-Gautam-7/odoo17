@@ -18,6 +18,7 @@ class EnrollStud(models.Model):
     gender=fields.Selection(related="student_id.gender",readonly=False,tracking=5)
     #ref=fields.Integer(related="student_id.ref")  
     pro_ref=fields.Char(string="productref" ,readonly=True)
+    curr_date=fields.Date(string="CurrentDate",default=fields.Date.context_today)
     ref=fields.Char(string="reference")
     priority=fields.Selection([
         ('0','normal'),
