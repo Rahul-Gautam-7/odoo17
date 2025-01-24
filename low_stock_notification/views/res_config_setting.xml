@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+
+    <record id="res_config_setting_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.notify</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="90"></field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"></field>
+        <field name="arch" type="xml">
+             <xpath expr="//form" position="inside">
+              <app data-string="Notify"  string="Notify" name="notify" data-key="low_stock_notification" >
+                        <block title="Low Stock Notification" id="notify_stock_setting">
+                            <setting string="Low Stock Alert">
+                                <div class="text-muted content-group mt16">
+                                    <span>Minimum Stock </span>
+                                    <field name="min_stock" class="text-center" style="width: 10%; min-width: 4rem;" />
+                                </div>
+                            </setting>
+                        </block>
+                    </app>
+                
+            </xpath>
+            
+
+        </field>
+    </record>
+
+    <record id="notify_config_setting" model="ir.actions.act_window">
+        <field name="name">Setting</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module':'low_stock_notification','bin_size':False}</field>
+    </record>
+
+     <menuitem
+        id="menu_notification_configuration"
+        name="Configuration"
+        parent="stock_roots"
+        sequence="2"/>  
+
+    <menuitem
+        id="menu_notification_setting"
+        name="Setting"
+        action="notify_config_setting"
+        parent="menu_notification_configuration"
+        sequence="2"/>  
+
+</odoo>

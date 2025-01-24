@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+low_stock_notification.access_low_stock_notification,access_low_stock_notification,low_stock_notification.model_low_stock_notification,base.group_user,1,1,1,1,
+low_stock_notification.access_low_stock_product,access_low_stock_product,low_stock_notification.model_low_stock_product,base.group_user,1,1,1,1, 

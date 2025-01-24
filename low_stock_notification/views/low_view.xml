@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="low_stock_view_tree" model="ir.ui.view">
+      <field name="name">low_stock.view.tree</field>
+      <field name="model">low.stock.product</field>
+      <field name="arch" type="xml">
+        <tree >
+          <field name="product_name"></field>
+          <field name="stock"></field>
+        </tree>
+      </field>
+    </record>
+
+    <record id="low_views_stock" model="ir.actions.act_window">
+      <field name="name" >Notify Stock</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">low.stock.product</field>
+      <field name="view_mode">tree,form</field>
+      <field name="context">{}</field>
+      <field name="domain">[]</field>
+      <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+            Generate Stock value
+        </p>
+      </field>
+    </record>
+
+   <menuitem id="newview"
+        name="Stocks"
+        parent="stock_viewss"
+        action="low_views_stock"
+        sequence="1"
+    />
+
+    
+    
+
+</odoo>
