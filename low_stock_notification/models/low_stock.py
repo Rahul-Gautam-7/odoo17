@@ -23,6 +23,8 @@ class LowStockNotification(models.Model):
         low_pro_list=[]
         products_to_remove = []
         
+        # Checking the existing product in the list
+        
         for product in low_stock_product:
             existing_product = self.env['low.stock.product'].search([
                 ('product_name', '=', product.name),
@@ -42,6 +44,7 @@ class LowStockNotification(models.Model):
 
         
         
+        # if the stock qty increases from the minimum stock so we remove from list
         
         for product in self.env['low.stock.product'].search([('notification_id', '=', self.id)]):
             product_record = self.env['product.product'].search([('name', '=', product.product_name)], limit=1)
@@ -49,11 +52,13 @@ class LowStockNotification(models.Model):
             if product_record and product_record.qty_available >= min_stock:
            
                 products_to_remove.append(product)
-    
+
         for product in products_to_remove:
             product.unlink()
 
-    
+
+        # appending the value of the low stock products in the list
+        
         if low_pro_list:
             self.env['low.stock.product'].create([{
                 'product_name': rec['product_name'],
