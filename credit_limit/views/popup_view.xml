@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <record id="sale_popup" model="ir.ui.view">
+        <field name="name">Sale Pop up</field>
+        <field name="model">wizard.popup</field>
+        <field name="arch" type="xml">
+            <form>
+                    <field name="msg" />
+                    <sheet>
+                        <group>
+                            <group>
+                                    <field name="partner_id" string="customer" readonly="1"/>
+                                    <field name="check_limit" string="Check Limit"  />
+                                    <field name="credit_limit" string="Credit Limit"  />
+                                    <field name="hold" string="Hold"  />
+                            </group>
+                            <group>
+                                <field name="total_receivable" />
+                                <field name="sales_order" />
+                                <field name="invoices" />
+                                <field name="current_quotation" />
+                                <field name="exceeding_amount" />
+                            </group>
+                        </group>
+                        <footer>
+                            <button name="set_partner_hold" type="object" string="Set Hold to True" class="btn-primary"/>
+                        </footer>
+                    </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

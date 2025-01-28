@@ -1,0 +1,40 @@
+<odoo>
+    <!-- Inherit Sale Order Tree View and add the custom partner_hold field -->
+    <record id="view_sale_order_tree_inherit" model="ir.ui.view">
+        <field name="name">sale.order.tree.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree_with_onboarding"/>
+        <field name="arch" type="xml">
+            <!-- <tree string="Quotations" editable="bottom">
+            
+                <field name="credit_limit" string="Credit limit" />
+                <field name="partner_hold" string="Hold Limit"/>
+            </tree> -->
+            <xpath expr="//tree" position="attributes">
+                <attribute name="editable">bottom</attribute> <!-- Add editable attribute here -->
+            </xpath>
+            <xpath expr="//tree//field[@name='partner_id']" position="before">
+                <field name="partner_hold" string="Hold Limit"/>
+                <field name="credit_limit" string="Credit limit" /> <!-- Add your custom field before partner_id field -->
+            </xpath>
+        </field>
+    </record>
+
+    <!-- <record id="view_sale_order_form_inherit" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <form string="Sales Order">
+                <sheet>
+                    <group>
+         
+                        <field name="credit_limit" string="Credit limit" />
+                        <field name="partner_hold" string="Hold Limit" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record> -->
+
+</odoo>

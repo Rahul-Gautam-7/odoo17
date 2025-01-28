@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <record id="credit_view" model="ir.ui.view">
+        <field name="name">CreditView</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"></field>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='sales_purchases']" position="inside">
+                <group name="Credit" string="Credit">
+                    <field name="check_limit" />
+                    <field name="credit_limit" 
+                    invisible="check_limit==False"/>
+                    <field name="hold" invisible="check_limit==False" /> 
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

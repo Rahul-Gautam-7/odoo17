@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+lsp.access_l_s_p,access_l_s_p,lsp.model_l_s_p,base.group_user,1,1,1,1,
+lsp.access_bind_mod,access_bind_mod,lsp.model_bind_mod,base.group_user,1,1,1,1,  

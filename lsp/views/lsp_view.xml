@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="bind_mod_view_tree" model="ir.ui.view">
+        <field name="name">bind_mod.view.tree</field>
+        <field name="model">bind.mod</field>
+        <field name="arch" type="xml">
+            <tree string="">
+                <field name="product_name" />
+                <field name="stk" />
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="lsp_view" model="ir.actions.act_window">
+        <field name="name">lspview</field>
+        <field name="res_model">bind.mod</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form</field>
+       
+    </record>
+
+    <menuitem
+        id="lspvi"
+        name="LowSp"
+        action="lsp_view"
+        sequence="1"/>
+
+</odoo>
