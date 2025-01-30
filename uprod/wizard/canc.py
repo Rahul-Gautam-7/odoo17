@@ -18,3 +18,6 @@ class CNC(models.TransientModel):
         res['ors_id'] = self.env.context.get('active_id')
         return res
     
+    
+    
+    

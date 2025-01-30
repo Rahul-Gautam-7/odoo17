@@ -5,13 +5,13 @@
         <field name="model">wizard.popup</field>
         <field name="arch" type="xml">
             <form>
-                    <field name="msg" />
+                    <field name="msg" style="color:red;font-weight: bold;" />
                     <sheet>
                         <group>
                             <group>
                                     <field name="partner_id" string="customer" readonly="1"/>
                                     <field name="check_limit" string="Check Limit"  />
-                                    <field name="credit_limit" string="Credit Limit"  />
+                                    <field name="credit_limit" string="Credit Limit" style="color:green;"  />
                                     <field name="hold" string="Hold"  />
                             </group>
                             <group>
@@ -19,7 +19,8 @@
                                 <field name="sales_order" />
                                 <field name="invoices" />
                                 <field name="current_quotation" />
-                                <field name="exceeding_amount" />
+
+                                <field name="exceeding_amount"  style="color:red; font-weight: bold;" />
                             </group>
                         </group>
                         <footer>
