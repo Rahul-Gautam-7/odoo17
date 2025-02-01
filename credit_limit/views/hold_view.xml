@@ -1,25 +1,27 @@
 <odoo>
-    <!-- Inherit Sale Order Tree View and add the custom partner_hold field -->
-    <record id="view_sale_order_tree_inherit" model="ir.ui.view">
+    
+    <record id="view_sale_order_tree_inheritq" model="ir.ui.view">
         <field name="name">sale.order.tree.inherit</field>
         <field name="model">sale.order</field>
-        <field name="inherit_id" ref="sale.view_quotation_tree_with_onboarding"/>
+        <field name="inherit_id" ref="sale.view_order_tree"/>
         <field name="arch" type="xml">
-            <tree string="Quotations" >
-            
-                <field name="credit_limit" string="Credit limit" />
-                <field name="partner_hold" string="Hold Limit"/>
-            </tree>
-            <!-- <xpath expr="//tree" position="attributes">
-                <attribute name="editable">bottom</attribute> 
+             <xpath expr="//tree" position="inside">
+                <field name="credit_limit" string="Credit Limit" />
+                <field name="partner_hold" string="Hold Limit" />
             </xpath>
-            <xpath expr="//tree//field[@name='partner_id']" position="before">
-                <field name="partner_hold" string="Hold Limit"/>
-                <field name="credit_limit" string="Credit limit" /> 
-            </xpath> -->
+           
         </field>
     </record>
+    <record id="credit_limit.action_sale_orders" model="ir.actions.act_window">
+        <field name="name">Sales Orders</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">tree,form</field>
+        <field name="target">current</field>
+    </record>
 
-  
+  <menuitem id="new_view" 
+              name="Custom_view" 
+              parent="sale.sale_order_menu" 
+              action="credit_limit.action_sale_orders" />
 
 </odoo>

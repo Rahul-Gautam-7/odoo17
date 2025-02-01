@@ -6,13 +6,14 @@
     'author': 'rahul gautam',
     'license': 'LGPL-3',
     'depends': [
-        'base','sale'
+        'base','sale','report_xlsx',
     ],
     'data': [
         'security/ir.model.access.csv',
         'views/credit_view.xml',
         'views/popup_view.xml',
         'views/hold_view.xml',
+        'data/cust_repor_aciton.xml'
     
     ],
     'demo': [

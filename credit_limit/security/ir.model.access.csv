@@ -1,5 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 credit_limit.access_wizard_popup,access_wizard_popup,credit_limit.model_wizard_popup,base.group_user,1,1,1,1,
-
-
-
+credit_limit.access_report_cust_reporte,access_report_cust_reporte,credit_limit.model_report_cust_reporte,base.group_user,1,1,1,1,

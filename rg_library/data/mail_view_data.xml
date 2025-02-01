@@ -11,6 +11,17 @@
             <field name="binding_model_id" ref="model_enroll_stud"></field>
             <field name="binding_type">report</field>
         </record>
+
+
+        <record id="report_rg_library_enroll_stud_xlsx" model="ir.actions.report">
+            <field name="name">EnrollmentBasedReportxls</field>
+            <field name="model">enroll.stud</field>
+            <field name="report_type">xlsx</field>
+            <field name="report_name">rg_library.enroll_stud_xlsx</field>
+            <field name="report_file">rg_library.enroll_stud_xlsx</field>
+            <field name="binding_model_id" ref="model_enroll_stud"></field>
+            <field name="binding_type">report</field>
+        </record>
     
     </data>
     

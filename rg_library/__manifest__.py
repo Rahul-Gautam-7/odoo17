@@ -26,7 +26,7 @@
             'data/mail_template_data.xml',
             'data/mail_view_data.xml',
             'views/student_tag.xml',
-            'views/operations.xml'
+            'views/operations.xml',
         ],
     'demo': [],
     'installable': True,
