@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+
+
+    <record id="signal_view_tree" model="ir.ui.view">
+        <field name="name">signal.view.tree</field>
+        <field name="model">signal.connect</field>
+        <field name="arch" type="xml">
+            <tree >
+                <field name="name" />
+                <field name="app_id" />
+                <field name="status" decoration-success="status == 'connected'" decoration-danger="status == 'disconnected'" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="signal_view_form" model="ir.ui.view">
+        <field name="name">signal.view.form</field>
+        <field name="model">signal.connect</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <group>
+                        <field name="name" />
+                        <field name="app_id" />
+                        <field name="api_key" invisible="status == 'connected'" />
+                        <field name="status" />
+                         <field name="player_ids"/>
+                        <field name="notification_title"/>
+                        <field name="notification_message"/>
+                        <button name="action_connect" class="btn-success" string="Connect" type="object"  />
+                        <button name="send_push_notification" class="btn-success" string="Notify" type="object"  />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+
+    <record id="action_signal" model="ir.actions.act_window">
+        <field name="name">SignalConnector</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model" >signal.connect</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="xml" >
+            <p class="o_view_nocontent_smiling_face">
+                generate the api here
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+        id="signal_connect_menu"
+        name="Signal Connector"
+        sequence="1"/>
+
+    <menuitem
+        id="connect_menu"
+        name="Connect"
+        action="action_signal"
+        parent="signal_connect_menu"
+        sequence="1"/>
+
+
+
+</odoo>
