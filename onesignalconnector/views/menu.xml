@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <menuitem
+        id="signal_connect_menu"
+        name="Signal Connector"
+        sequence="1"/>
+</odoo>

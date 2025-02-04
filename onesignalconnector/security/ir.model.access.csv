@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 onesignalconnector.access_signal_connect,access_signal_connect,onesignalconnector.model_signal_connect,base.group_user,1,1,1,1,
+onesignalconnector.access_user_fetch,access_user_fetch,onesignalconnector.model_user_fetch,base.group_user,1,1,1,1,

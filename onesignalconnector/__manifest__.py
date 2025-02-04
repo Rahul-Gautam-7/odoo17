@@ -11,7 +11,10 @@
     ],
     'data': [
         'security/ir.model.access.csv',
+        'views/menu.xml',
         'views/signal_view.xml',
+        'views/cron.xml',
+        'views/users.xml',
     ],
     'demo': [
         

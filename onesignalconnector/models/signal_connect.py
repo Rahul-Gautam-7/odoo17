@@ -17,23 +17,16 @@ class SignalConnect(models.Model):
         ('disconnected','Disconnected'),
     ],readonly=True,default="disconnected")
     
-    player_ids=fields.Text(string="Players IDs")
-    notification_title=fields.Char(string="notification title",required=True)
-    notification_message=fields.Text(string="notification message",required=True)
-    
-    
+    total_players=fields.Integer(string="Total Players",compute="_compute_total")
     
     
     def action_connect(self):
-        
         url="https://onesignal.com/api/v1/apps"
         headers={
             "Authorization" : f"Basic {self.api_key}",
             "Content-Type":"application/json"
         }
-        
-        try:
-            
+        try:  
             response = requests.get(url,headers=headers)
         
             if response.status_code == 200:
@@ -45,39 +38,25 @@ class SignalConnect(models.Model):
                 
         except requests.exceptions.RequestException as e:
             self.status = 'disconnected'
-            _logger.error("Connection Failed: %s", str(e))
-            
-        
+            _logger.error("Connection Failed: %s", str(e))  
         return True
     
-    
-    def send_push_notification(self):
-        if not self.status=='connected':
-            _logger.error("Connection Failure")
-            return
+    def action_sync_user(self):
+        user_fetch=self.env['user.fetch']
+        user_fetch.check_users()
+        _logger.info("Fetch Success")
+        self._compute_total()
+        return True
         
-        url= "https://onesignal.com/api/v1/notifications"
-        headers={
-            "Authorization":f"Basic {self.api_key}",
-            "Content-Type":"application/json",
-        }
+    def _compute_total(self):
+        for record in self:
+            player_count = self.env['user.fetch'].search_count([('connector_ids','=',record.id)])
+            _logger.info("Record Success")
+            record.total_players = player_count
+            _logger.info(record.total_players)
         
-        player_ids=self.player_ids.split(',')
-        
-        payload={
-            "app_id":self.app_id,
-            "include_player_ids":player_ids,
-            "headings":{"en":self.notification_title},
-            "contents":{"en":self.notification_message}
-        }
-        
-        try:
-            response=requests.post(url, json=payload, headers=headers)
-            if response.status_code == 200:
-                _logger.info("Push Notification Successs")
-            else:
-                _logger.error("Failed to push notify",response.text)
-        except requests.exceptions.RequestException as e:
-            _logger.info("Error in sending notifiy",str(e))
+ 
         
     
+    
+            

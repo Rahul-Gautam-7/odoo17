@@ -1,8 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
 
-
-
     <record id="signal_view_tree" model="ir.ui.view">
         <field name="name">signal.view.tree</field>
         <field name="model">signal.connect</field>
@@ -10,7 +8,10 @@
             <tree >
                 <field name="name" />
                 <field name="app_id" />
+                <field name="total_players" />
                 <field name="status" decoration-success="status == 'connected'" decoration-danger="status == 'disconnected'" />
+                <button name="action_connect" class="btn-info" string="Test Connection" type="object"  />
+                <button name="action_sync_user" class="btn-info" string="Sync Users" type="object"  />
             </tree>
         </field>
     </record>
@@ -26,11 +27,8 @@
                         <field name="app_id" />
                         <field name="api_key" invisible="status == 'connected'" />
                         <field name="status" />
-                         <field name="player_ids"/>
-                        <field name="notification_title"/>
-                        <field name="notification_message"/>
                         <button name="action_connect" class="btn-success" string="Connect" type="object"  />
-                        <button name="send_push_notification" class="btn-success" string="Notify" type="object"  />
+                        
                     </group>
                 </sheet>
             </form>
@@ -52,10 +50,7 @@
         </field>
     </record>
 
-    <menuitem
-        id="signal_connect_menu"
-        name="Signal Connector"
-        sequence="1"/>
+    
 
     <menuitem
         id="connect_menu"
