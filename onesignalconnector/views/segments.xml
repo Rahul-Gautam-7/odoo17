@@ -1,0 +1,36 @@
+<odoo>
+  
+    <record id="users_view_tree" model="ir.ui.view">
+        <field name="name">users.view.tree</field>
+        <field name="model">onesignal.segment</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="seg_id" />
+                <field name="name" />
+                <field name="connector_ids" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="segment_view_action" model="ir.actions.act_window">
+        <field name="name">Segments</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">onesignal.segment</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Get the users here
+            </p>
+        </field>
+    </record>
+
+    
+    <menuitem
+        id="segment_menu"
+        name="Segments"
+        action="segment_view_action"
+        parent="signal_connect_menu"
+        sequence="11"/>
+</odoo>

@@ -12,6 +12,8 @@
                 <field name="status" decoration-success="status == 'connected'" decoration-danger="status == 'disconnected'" />
                 <button name="action_connect" class="btn-info" string="Test Connection" type="object"  />
                 <button name="action_sync_user" class="btn-info" string="Sync Users" type="object"  />
+                <button name="action_sync_segments" class="btn-info" string="Sync Segments" type="object"  />
+                <button name="action_sync_templates" class="btn-info" string="Sync Templates" type="object"  />
             </tree>
         </field>
     </record>

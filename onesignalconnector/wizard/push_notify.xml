@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <record id="push_notify" model="ir.ui.view">
+        <field name="name">Push Notification</field>
+        <field name="model">push.notify</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="connector_ids" />
+                    <field name="notification_type" />
+                    <field name="template" />
+                    <field name="abc"  />
+                    <field name="template_id" invisible="template == False" domain="['|', ('channel', '=', abc), ('channel', '=', 'default')]" />
+                    <field name="heading"  invisible="template == True"/>
+                    <field name="content" invisible="template == True" />
+                    <field name="cover_url" invisible="template == True" />
+                    <field name="redirect_url" invisible="template == True" />
+                    <field name="action_btn" invisible="template == True" />
+                    <field name="send_to" />
+                </group>
+                <footer>
+                <button name="action_send_notify" type="object" string="Fire Notification" class="btn-warning"  />
+                <button name="action_cancel" type="object" string="Discard"  class="btn-danger" /></footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_push_notify" model="ir.actions.act_window">
+        <field name="name">Push Notification</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">push.notify</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+
+    <menuitem
+        id="notify_menu"
+        name="Push Notification"
+        action="action_push_notify"
+        parent="signal_connect_menu"
+        sequence="14"/>
+
+</odoo>

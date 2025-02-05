@@ -21,7 +21,8 @@ class SignalConnect(models.Model):
     
     
     def action_connect(self):
-        url="https://onesignal.com/api/v1/apps"
+        self.ensure_one()
+        url=f"https://api.onesignal.com/apps/{self.app_id}"
         headers={
             "Authorization" : f"Basic {self.api_key}",
             "Content-Type":"application/json"
@@ -42,12 +43,27 @@ class SignalConnect(models.Model):
         return True
     
     def action_sync_user(self):
+        self.ensure_one()
         user_fetch=self.env['user.fetch']
         user_fetch.check_users()
         _logger.info("Fetch Success")
         self._compute_total()
         return True
-        
+    
+    def action_sync_segments(self):
+        self.ensure_one()
+        seg_fetch=self.env['onesignal.segment']
+        seg_fetch.check_segments()
+        _logger.info("Segment Sync Success")
+        return True
+    
+    def action_sync_templates(self):
+        self.ensure_one()
+        temp_fetch=self.env['onesignal.template']
+        temp_fetch.check_templates()
+        _logger.info("Template Sync Success")
+        return True
+    
     def _compute_total(self):
         for record in self:
             player_count = self.env['user.fetch'].search_count([('connector_ids','=',record.id)])
