@@ -13,6 +13,65 @@
         </field>
     </record>
 
+    <record id="template_view_form" model="ir.ui.view">
+        <field name="name">template.view.form</field>
+        <field name="model">onesignal.template</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" />
+                             <field name="temps_id" />
+                            <field name="channel" />
+                         <field name="connector_ids" />
+                         </group>
+                         <group>
+                         <field name="headings" />
+                         <field name="contents" />
+                         <field name="subtitle" />
+                         <field name="global_image" />
+                         <field name="url_link" />
+                         </group>
+                        <group string="Email Settings">
+                        <field name="is_email" string="Email Available"/>
+                        <field name="email_body" string="Email Body"/>
+                        <field name="email_subject" string="Email Subject"/>
+                        <field name="email_preheader" string="Email Preheader"/>
+                        <field name="email_reply_to_address" string="Reply-to Email Address"/>
+                        <field name="disable_email_click_tracking" string="Disable Click Tracking"/>
+                        </group>
+
+                    <!-- SMS Fields -->
+                        <group string="SMS Settings">
+                        <field name="is_sms" string="SMS Available"/>
+                        <field name="sms_from" string="SMS From"/>
+                        <field name="sms_media_urls" string="SMS Media URLs"/>
+                        </group>
+                    </group>
+                    <group string="Platform Availability">
+                        <group >
+                            <field name="is_android" string="Android"/>
+                            <field name="is_ios" string="iOS"/>
+                            <field name="is_macosx" string="MacOSX"/>
+                            <field name="is_adm" string="ADM"/>
+                            <field name="is_alexa" string="Alexa"/>
+                            <field name="is_wp" string="Windows Phone"/>
+                        </group>
+                        <group>
+                            <field name="is_wp_wns" string="Windows Phone WNS"/>
+                            <field name="is_chrome" string="Chrome"/>
+                            <field name="is_chrome_web" string="Chrome Web"/>
+                            <field name="is_safari" string="Safari"/>
+                            <field name="is_firefox" string="Firefox"/>
+                            <field name="is_edge" string="Edge"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
     <record id="template_view_action" model="ir.actions.act_window">
         <field name="name">Template</field>
         <field name="type">ir.actions.act_window</field>

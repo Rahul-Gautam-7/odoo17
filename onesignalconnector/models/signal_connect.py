@@ -1,4 +1,5 @@
 from odoo import api,fields,models
+from odoo.exceptions import UserError
 import requests
 import logging
 
@@ -19,12 +20,11 @@ class SignalConnect(models.Model):
     
     total_players=fields.Integer(string="Total Players",compute="_compute_total")
     
-    
+   
     def action_connect(self):
-        self.ensure_one()
         url=f"https://api.onesignal.com/apps/{self.app_id}"
         headers={
-            "Authorization" : f"Basic {self.api_key}",
+            "Authorization" : f"{self.api_key}",
             "Content-Type":"application/json"
         }
         try:  
@@ -42,28 +42,30 @@ class SignalConnect(models.Model):
             _logger.error("Connection Failed: %s", str(e))  
         return True
     
+
     def action_sync_user(self):
         self.ensure_one()
-        user_fetch=self.env['user.fetch']
-        user_fetch.check_users()
+        self.env['user.fetch'].check_users(self.id)
         _logger.info("Fetch Success")
         self._compute_total()
         return True
     
-    def action_sync_segments(self):
+
+    def action_sync_segments(self): 
         self.ensure_one()
-        seg_fetch=self.env['onesignal.segment']
-        seg_fetch.check_segments()
-        _logger.info("Segment Sync Success")
+        self.env['onesignal.segment'].check_segments(self.id)
         return True
+        
     
+   
+
     def action_sync_templates(self):
         self.ensure_one()
-        temp_fetch=self.env['onesignal.template']
-        temp_fetch.check_templates()
+        self.env['onesignal.template'].check_templates(self.id)
         _logger.info("Template Sync Success")
         return True
     
+
     def _compute_total(self):
         for record in self:
             player_count = self.env['user.fetch'].search_count([('connector_ids','=',record.id)])

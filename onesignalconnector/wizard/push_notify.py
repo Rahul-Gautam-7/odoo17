@@ -25,35 +25,45 @@ class PushNotify(models.TransientModel):
         ('subscription_id','Subscription_ID')
     ],string="Send To")
     
-    abc=fields.Char(string="Channel",compute="_compute_template_domain",default='push')
+    abc=fields.Char(string="Channel",compute="_compute_abc",default="push")
     
     template_id=fields.Many2one('onesignal.template',string='Template')
    
-
+    name=fields.Char(string="Channel",compute="_onchange_connect",default='push')
     
-    # @api.depends('notification_type','connector_ids','template_id')
-    # def _compute_template_domain(self):
-    #     if self.notification_type == 'push' and self.connector_ids == self.template_id.connector_ids:
-    #         self.abc = 'push' 
-    #     elif self.notification_type == 'email':
-    #         self.abc = 'email' 
-    #     elif self.notification_type == 'sms':
-    #         self.abc = 'sms' 
+    template_domain = fields.Binary(compute="_compute_template_domain")
+     
+    @api.depends('connector_ids')
+    def _onchange_connect(self):
+        self.name=self.connector_ids
+        _logger.info(f"....................{self.name}")
        
-    @api.depends('notification_type', 'connector_ids', 'template_id')
-    def _compute_template_domain(self):
+    
+   
+    @api.depends('connector_ids', 'notification_type')
+    def _compute_abc(self):
         for record in self:
-            if record.notification_type == 'push' and record.connector_ids and record.template_id and record.connector_ids == record.template_id.connector_ids:
+            if record.notification_type == 'push' :
                 record.abc = 'push'
             elif record.notification_type == 'email':
                 record.abc = 'email'
             elif record.notification_type == 'sms':
                 record.abc = 'sms'
             else:
-                record.abc = 'push'  # Default to push or handle as needed
+                record.abc='push'
+      
+        
+
 
   
-
+    @api.depends('notification_type','connector_ids')
+    def _compute_template_domain(self):
+        for rec in self:
+            if rec.connector_ids and rec.notification_type:
+                domain = [('connector_ids', '=', rec.connector_ids.ids),('channel', '=', rec.notification_type)]
+            else:
+                domain = [('id', '=', False)]
+            rec.template_domain = domain 
             
             
         

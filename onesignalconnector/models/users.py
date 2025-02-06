@@ -18,8 +18,8 @@ class User(models.Model):
 
 
     @api.model
-    def check_users(self):
-        signal_records = self.env['signal.connect'].search([])  
+    def check_users(self,app_id):
+        signal_records = self.env['signal.connect'].search([('id','=',app_id)])  
         _logger.info(f"Found {len(signal_records)} signal.connect records")
         for record in signal_records:   
             app_id = record.app_id

@@ -16,8 +16,8 @@ class Segments(models.Model):
     
     
     @api.model
-    def check_segments(self):
-        signal_rec = self.env['signal.connect'].search([])
+    def check_segments(self,app_id):
+        signal_rec = self.env['signal.connect'].search([('id','=',app_id)])
         for record in signal_rec:
             app_id=record.app_id
             api_key=record.api_key

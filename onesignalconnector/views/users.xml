@@ -5,8 +5,8 @@
         <field name="model">user.fetch</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="connector_ids" />
                 <field name="player_id" />
+                <field name="connector_ids" />
             </tree>
         </field>
     </record>
