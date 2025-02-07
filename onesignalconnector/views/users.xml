@@ -16,11 +16,15 @@
         <field name="name">users.view.form</field>
         <field name="model">user.fetch</field>
         <field name="arch" type="xml">
+
             <form>
+                 <button name="create_user_in_onesignal" type="object" string="Create User" class="btn-primary"/>
                    <group>
+                        
+
                         <group>
-                            <field name="player_id" />
                             <field name="connector_ids" />
+                            <field name="player_id" />
                             <field name="device_type" />
                             <field name="language" />
                             <field name="timezone" />
@@ -45,6 +49,7 @@
                         <field name="test_type" />
                         <field name="ip" />
                         <field name="tags" widget="text" />
+                        <field name="external_id" />
                     </group>
             </form>
         </field>

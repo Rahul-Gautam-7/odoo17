@@ -12,29 +12,37 @@
                     <field name="template" />
                     <field name="template_domain" invisible="True"/>
                     <field name="template_id" invisible="template == False" domain="template_domain"/>
+
+                 
+
+                    <field name="send_to" />
+                </group>
+                
+                <group invisible="notification_type != 'push'">
                     <field name="heading"  invisible="template == True"/>
                     <field name="content" invisible="template == True" />
                     <field name="cover_url" invisible="template == True" />
                     <field name="redirect_url" invisible="template == True" />
                     <field name="action_btn"  />
-                    <field name="send_to" />
                 </group>
+                <group invisible="notification_type != 'email'">
+                    <field name="email_subject" />
+                    <field name="email_body" />
+                    <field name="recipient_email" />
+                </group>
+                <notebook>
+                    <page name="name" string="string">
+                        
+                    </page>
+                </notebook>
                 <group invisible="action_btn == False" >
                     <field name="action_btn_ids">
                         <tree string="Action Buttons" editable="bottom">
                             <field name="btn_id" />
                             <field name="btn_text" />
-                            <field name="btn_url" />
-                         
+                            <field name="btn_url" />                         
                         </tree>
-                        <form string="Action Button">
-                            <group>
-                                <field name="btn_id" />
-                                <field name="btn_text" />
-                                <field name="btn_url" />
-                              
-                            </group>
-                        </form>
+
                     </field>
                 </group>
                 <footer>
