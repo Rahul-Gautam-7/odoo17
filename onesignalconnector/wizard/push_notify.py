@@ -9,30 +9,35 @@ class PushNotify(models.TransientModel):
     _description="Wizard to notify"
     
     connector_ids=fields.Many2one('signal.connect',string="Onesignal AccountName")
+    template_id=fields.Many2one('onesignal.template',string='Template')
+  
+    template=fields.Boolean(string="Using Template")
+    action_btn=fields.Boolean(string="Action Button")
+    
+    heading=fields.Char(string="Heading")
+    content=fields.Text(string="Content")
+    cover_url=fields.Char(string="Cover URL")
+    redirect_url=fields.Char(string="Redirect URL")
+    abc=fields.Char(string="Channel",compute="_compute_abc",default="push")
+    name=fields.Char(string="Channel",compute="_onchange_connect",default='push')
+    
+    template_domain = fields.Binary(compute="_compute_template_domain")
+     
+     
+    action_btn_ids=fields.One2many('push.notify.button','notify_id',string="Action Button")
+     
+     
+    send_to=fields.Selection([
+        ('all',"All"),
+        ('subscription_id','Subscription_ID')
+    ],string="Send To")
     notification_type=fields.Selection([
         ('push','Push Notification'),
         ('email','Email Notification'),
         ('sms','SMS Notification')
     ],string="Notification Type")
-    template=fields.Boolean(string="Using Template")
-    heading=fields.Char(string="Heading")
-    content=fields.Text(string="Content")
-    cover_url=fields.Char(string="Cover URL")
-    redirect_url=fields.Char(string="Redirect URL")
-    action_btn=fields.Boolean(string="Action Button")
-    send_to=fields.Selection([
-        ('all',"All"),
-        ('subscription_id','Subscription_ID')
-    ],string="Send To")
     
-    abc=fields.Char(string="Channel",compute="_compute_abc",default="push")
     
-    template_id=fields.Many2one('onesignal.template',string='Template')
-   
-    name=fields.Char(string="Channel",compute="_onchange_connect",default='push')
-    
-    template_domain = fields.Binary(compute="_compute_template_domain")
-     
     @api.depends('connector_ids')
     def _onchange_connect(self):
         self.name=self.connector_ids
@@ -53,9 +58,6 @@ class PushNotify(models.TransientModel):
                 record.abc='push'
       
         
-
-
-  
     @api.depends('notification_type','connector_ids')
     def _compute_template_domain(self):
         for rec in self:
@@ -64,8 +66,7 @@ class PushNotify(models.TransientModel):
             else:
                 domain = [('id', '=', False)]
             rec.template_domain = domain 
-            
-            
+                     
         
     def action_send_notify(self):
         for record in self:
@@ -74,7 +75,7 @@ class PushNotify(models.TransientModel):
             api_key=record.connector_ids.api_key
             
             if app_id:
-                url="https://api.onesignal.com/notifications?c=push"
+                url="https://onesignal.com/api/v1/notifications"
                 
                 payload={
                     "app_id":app_id,
@@ -91,6 +92,20 @@ class PushNotify(models.TransientModel):
                 else:
                     _logger.info("Failed to send notification")
                     
+                
+                if record.action_btn and record.action_btn_ids :
+                    buttons=[]
+                    for button in record.action_btn_ids:
+                        buttons.append({
+                            "id":button.btn_id,
+                            "text":button.btn_text,
+                            "url":button.btn_url,
+                        })    
+                    payload["buttons"] = buttons
+                
+                
+                _logger.info(f"Payload being sent: {payload}")
+                
                 headers={
                     'Authorization':f"Basic {api_key}",
                     'Content-Type':'application/json',
@@ -109,3 +124,14 @@ class PushNotify(models.TransientModel):
     
     def action_cancel(self):
         return
+    
+
+
+class PushNotifyButton(models.TransientModel):
+    _name="push.notify.button"
+    _description="Push Notification Button "
+    
+    notify_id = fields.Many2one('push.notify',string="Push Notificaton")
+    btn_id=fields.Char(string="Button Id")
+    btn_text=fields.Char(string="Button Text")
+    btn_url=fields.Char(string="Button URL")

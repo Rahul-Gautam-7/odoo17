@@ -21,9 +21,9 @@ class User(models.Model):
     _description="Fetching users"
     _rec_name="player_id"
     
-    player_id=fields.Char(string="Player Id")
     connector_ids=fields.Many2one('signal.connect',string="Name",ondelete='cascade')
 
+    player_id=fields.Char(string="Player Id")
     app_id=fields.Char(related='connector_ids.app_id',store=True)
     api_key=fields.Char(related="connector_ids.api_key",store=True)
     
@@ -48,9 +48,6 @@ class User(models.Model):
     tags = fields.Text(string="Tags")
     
     
-    
-
-    
     @api.model
     def check_users(self,app_id):
         signal_records = self.env['signal.connect'].search([('id','=',app_id)])  
@@ -73,24 +70,6 @@ class User(models.Model):
                         data=response.json()
                         for player in data.get('players', []):
                             player_id = player.get('id')
-                            identifier = player.get('identifier')
-                            session_count = player.get('session_count', 0)
-                            language = player.get('language')
-                            timezone = player.get('timezone', 0)
-                            game_version = player.get('game_version', '')
-                            device_os = player.get('device_os', '')
-                            device_type = DEVICE_TYPE_MAPPING.get(player.get('device_type'))
-                            device_model = player.get('device_model', '')
-                            ad_id = player.get('ad_id', '')
-                            last_active = datetime.utcfromtimestamp(player.get('last_active'))
-                            playtime = player.get('playtime', 0.0)
-                            amount_spent = player.get('amount_spent', 0.0)
-                            created_at = datetime.utcfromtimestamp(player.get('created_at'))
-                            invalid_identifier = player.get('invalid_identifier', False)
-                            sdk = player.get('sdk', '')
-                            test_type = player.get('test_type', None)
-                            ip = player.get('ip', '')
-                            tags = player.get('tags', {})
 
                             existing_player = self.env['user.fetch'].search([
                                 ('connector_ids', '=', record.id),
@@ -101,24 +80,24 @@ class User(models.Model):
                                 self.env['user.fetch'].create({
                                     'connector_ids': record.id,
                                     'player_id': player_id,
-                                    'identifier': identifier,
-                                    'session_count': session_count,
-                                    'language': language,
-                                    'timezone': timezone,
-                                    'game_version': game_version,
-                                    'device_os': device_os,
-                                    'device_type': device_type,
-                                    'device_model': device_model,
-                                    'ad_id': ad_id,
-                                    'last_active': last_active,
-                                    'playtime': playtime,
-                                    'amount_spent': amount_spent,
-                                    'created_at': created_at,
-                                    'invalid_identifier': invalid_identifier,
-                                    'sdk': sdk,
-                                    'test_type': test_type,
-                                    'ip': ip,
-                                    'tags': str(tags)  # Storing tags as a string (JSON format)
+                                    'identifier': player.get('identifier'),
+                                    'session_count': player.get('session_count', 0),
+                                    'language': player.get('language'),
+                                    'timezone': player.get('timezone', 0),
+                                    'game_version': player.get('game_version', ''),
+                                    'device_os': player.get('device_os', ''),
+                                    'device_type': DEVICE_TYPE_MAPPING.get(player.get('device_type')),
+                                    'device_model': player.get('device_model', ''),
+                                    'ad_id': player.get('ad_id', ''),
+                                    'last_active': datetime.utcfromtimestamp(player.get('last_active')),
+                                    'playtime': player.get('playtime', 0.0),
+                                    'amount_spent': player.get('amount_spent', 0.0),
+                                    'created_at': datetime.utcfromtimestamp(player.get('created_at')),
+                                    'invalid_identifier': player.get('invalid_identifier', False),
+                                    'sdk': player.get('sdk', ''),
+                                    'test_type': player.get('test_type', None),
+                                    'ip': player.get('ip', ''),
+                                    'tags': str(player.get('tags', {}))  
                                 })
                             else:
                                 _logger.info(f"Player {player_id} already exists.")

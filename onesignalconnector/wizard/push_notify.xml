@@ -16,8 +16,26 @@
                     <field name="content" invisible="template == True" />
                     <field name="cover_url" invisible="template == True" />
                     <field name="redirect_url" invisible="template == True" />
-                    <field name="action_btn" invisible="template == True" />
+                    <field name="action_btn"  />
                     <field name="send_to" />
+                </group>
+                <group invisible="action_btn == False" >
+                    <field name="action_btn_ids">
+                        <tree string="Action Buttons" editable="bottom">
+                            <field name="btn_id" />
+                            <field name="btn_text" />
+                            <field name="btn_url" />
+                         
+                        </tree>
+                        <form string="Action Button">
+                            <group>
+                                <field name="btn_id" />
+                                <field name="btn_text" />
+                                <field name="btn_url" />
+                              
+                            </group>
+                        </form>
+                    </field>
                 </group>
                 <footer>
                 <button name="action_send_notify" type="object" string="Fire Notification" class="btn-warning"  />

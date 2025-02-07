@@ -13,6 +13,7 @@ class SignalConnect(models.Model):
     name=fields.Char(string="Connector Name",required=True)
     app_id=fields.Char(string="App ID",required=True)
     api_key=fields.Char(string="Api Key",required=True)
+    
     status=fields.Selection([
         ('connected','Connected'),
         ('disconnected','Disconnected'),

@@ -8,9 +8,10 @@ class Segments(models.Model):
     _name="onesignal.segment"
     _description="One signal segments"
     
+    connector_ids=fields.Many2one('signal.connect',string="Segment ID")
+    
     name=fields.Char(string="Segment Name")
     seg_id=fields.Char(string="Segment Id")
-    connector_ids=fields.Many2one('signal.connect',string="Segment ID")
     app_id=fields.Char(related="connector_ids.app_id",store=True)
     api_key=fields.Char(related="connector_ids.api_key",store=True)
     
@@ -22,7 +23,7 @@ class Segments(models.Model):
             app_id=record.app_id
             api_key=record.api_key
             if app_id:
-                url=f"https://api.onesignal.com/apps/{app_id}/segments?offset=0&limit=300"
+                url=f"https://api.onesignal.com/apps/{app_id}/segments"
                 
                 headers={
                     'Authorization':f"Basic {api_key}",

@@ -68,10 +68,6 @@ class Templates(models.Model):
     
     
     
-    
-   
-    
-    
     @api.model
     def check_templates(self,app_id):
         signal_rec = self.env['signal.connect'].search([('id','=',app_id)])
@@ -93,10 +89,7 @@ class Templates(models.Model):
                         _logger.info(data)
                         
                         templates_list = data.get('templates', [])
-                        
-                        
-                        
-                        
+    
                         for templatess in data.get('templates',[]):
                             _logger.info(f"Fetched template: {templatess}")
                             temps_id=templatess.get('id')
@@ -111,58 +104,35 @@ class Templates(models.Model):
                             
                             
                                 content_data = detail_data.get('content', {})
-                                headings = content_data.get('headings', {}).get('en', '')
-                                contents = content_data.get('contents', {}).get('en', '')
-                                url_link = content_data.get('url', '')
-                                subtitle = content_data.get('subtitle', '')
-                                global_image= content_data.get('global_image', '')
-                                
-                                
-                                is_android = content_data.get('isAndroid', False)
-                                is_ios = content_data.get('isIos', False)
-                                is_macosx = content_data.get('isMacOSX', False)
-                                is_adm = content_data.get('isAdm', False)
-                                is_alexa = content_data.get('isAlexa', False)
-                                is_wp = content_data.get('isWP', False)
-                                is_wp_wns = content_data.get('isWP_WNS', False)
-                                is_chrome = content_data.get('isChrome', False)
-                                is_chrome_web = content_data.get('isChromeWeb', False)
-                                is_safari = content_data.get('isSafari', False)
-                                is_firefox = content_data.get('isFirefox', False)
-                                is_edge = content_data.get('isEdge', False)
-                                
-                                
-                               
-                                # Search for existing template records
+                   
                                 existing_template = self.env['onesignal.template'].search([
                                 ('connector_ids', '=', record.id),
                                 ('temps_id', '=', temps_id),
                                 ], limit=1)
 
                                 if not existing_template:
-                                    # Create a new template record with detailed data
                                     self.env['onesignal.template'].create({
                                         'connector_ids': record.id,
                                         'temps_id': temps_id,
                                         'name': templatess.get('name'),
                                         'channel': templatess.get('channel'),
-                                        'headings': headings,
-                                        'contents':contents,
-                                        'url_link':url_link,
-                                        'subtitle':subtitle,
-                                        'global_image':global_image,
-                                        'is_android': is_android,
-                                        'is_ios': is_ios,
-                                        'is_macosx': is_macosx,
-                                        'is_adm': is_adm,
-                                        'is_alexa': is_alexa,
-                                        'is_wp': is_wp,
-                                        'is_wp_wns': is_wp_wns,
-                                        'is_chrome': is_chrome,
-                                        'is_chrome_web': is_chrome_web,
-                                        'is_safari': is_safari,
-                                        'is_firefox': is_firefox,
-                                        'is_edge': is_edge,
+                                        'headings': content_data.get('headings', {}).get('en', ''),
+                                        'contents':content_data.get('contents', {}).get('en', ''),
+                                        'url_link':content_data.get('url', ''),
+                                        'subtitle':content_data.get('subtitle', ''),
+                                        'global_image':content_data.get('global_image', ''),
+                                        'is_android': content_data.get('isAndroid', False),
+                                        'is_ios': content_data.get('isIos', False),
+                                        'is_macosx': content_data.get('isMacOSX', False),
+                                        'is_adm': content_data.get('isAdm', False),
+                                        'is_alexa': content_data.get('isAlexa', False),
+                                        'is_wp': content_data.get('isWP', False),
+                                        'is_wp_wns': content_data.get('isWP_WNS', False),
+                                        'is_chrome': content_data.get('isChrome', False),
+                                        'is_chrome_web': content_data.get('isChromeWeb', False),
+                                        'is_safari': content_data.get('isSafari', False),
+                                        'is_firefox': content_data.get('isFirefox', False),
+                                        'is_edge': content_data.get('isEdge', False),
                                         'is_email': content_data.get('is_email'),
                                         'email_body': content_data.get('email_body'),
                                         'email_subject': content_data.get('email_subject'),
