@@ -22,9 +22,9 @@ class PushNotify(models.TransientModel):
     name=fields.Char(string="Channel",compute="_onchange_connect",default='push')
     
     template_domain = fields.Binary(compute="_compute_template_domain")
-     
-     
     action_btn_ids=fields.One2many('push.notify.button','notify_id',string="Action Button")
+    subscription_id=fields.Many2many('user.fetch',string="Subscription_id")
+    subscription_domain = fields.Binary(compute="_compute_subscription_domain")
      
      
     send_to=fields.Selection([
@@ -70,169 +70,105 @@ class PushNotify(models.TransientModel):
                 domain = [('id', '=', False)]
             rec.template_domain = domain 
                      
+    
+    @api.depends('connector_ids')
+    def _compute_subscription_domain(self):
+        for rec in self:
+            if rec.connector_ids : 
+                domain = [('connector_ids','in',rec.connector_ids.ids)]
+                _logger.info(f"Subscription domain: {domain}")
+            else:
+                domain = [('id','=',False)]
+            rec.subscription_domain = domain
+            _logger.info(f"Computed domain: {domain}")  
         
-    # def action_send_notify(self):
-    #     for record in self:
-    #         app_id=record.connector_ids.app_id
-    #         _logger.info(app_id)
-    #         api_key=record.connector_ids.api_key
-            
-    #         if app_id:
-    #             url="https://onesignal.com/api/v1/notifications"
-                
-    #             payload={
-    #                 "app_id":app_id,
-    #                 "url":record.redirect_url,
-    #                 "include_player_ids":[],
-    #                 "template_id":record.template_id.temps_id 
-    #             }
-    #             if isinstance(self.content, str) and self.content.strip():
-    #                 payload["contents"] = {"en": self.content}
-    #             if isinstance(self.heading, str) and self.heading.strip():
-    #                 payload["headings"] = {"en": self.heading}
-    #             if record.send_to == 'all':
-    #                 payload["included_segments"]=["All"]
-    #             else:
-    #                 _logger.info("Failed to send notification")
-                    
-                
-    #             if record.action_btn and record.action_btn_ids :
-    #                 buttons=[]
-    #                 for button in record.action_btn_ids:
-    #                     buttons.append({
-    #                         "id":button.btn_id,
-    #                         "text":button.btn_text,
-    #                         "url":button.btn_url,
-    #                     })    
-    #                 payload["buttons"] = buttons
-                
-                
-    #             _logger.info(f"Payload being sent: {payload}")
-                
-    #             headers={
-    #                 'Authorization':f"Basic {api_key}",
-    #                 'Content-Type':'application/json',
-    #             }
-                
-    #             try:
-    #                 response=requests.post(url,json=payload,headers=headers)
-    #                 _logger.info(response.text)
-    #                 if response.status_code == 200:
-    #                     _logger.info(f"Notification Sent Success : {response.text} ")
-    #                 else:
-    #                     _logger.info(response.status_code)
-    #             except Exception as e:
-    #                 _logger.info(e)
+        
+        
+        
         
     def action_send_notify(self):
-        for record in self:
-            app_id = record.connector_ids.app_id
-            api_key = record.connector_ids.api_key
-            
-            if record.notification_type == 'push':
-                # Push notification logic (same as before)
-                if app_id:
-                    url = "https://onesignal.com/api/v1/notifications"
-                    
-                    payload = {
-                        "app_id": app_id,
-                        "url": record.redirect_url,
-                        "include_player_ids": [],
-                        "template_id": record.template_id.temps_id 
-                    }
-                    if isinstance(self.content, str) and self.content.strip():
-                        payload["contents"] = {"en": self.content}
-                    if isinstance(self.heading, str) and self.heading.strip():
-                        payload["headings"] = {"en": self.heading}
-                    if record.send_to == 'all':
-                        payload["included_segments"] = ["All"]
+      for record in self:
+        app_id = record.connector_ids.app_id
+        api_key = record.connector_ids.api_key
+        
+        if record.notification_type == 'push':
+            if app_id:
+                url = "https://onesignal.com/api/v1/notifications"
+                
+                player_ids = []
+                for rec in self: 
+                    if  rec.subscription_id:
+                        rec.ensure_one() 
+                        player_id = rec.subscription_id.player_id
+                        player_ids.append(player_id)
                     else:
-                        _logger.info("Failed to send notification")
+                        _logger.warning(f"No subscription found for record {rec.id}")
 
-                    if record.action_btn and record.action_btn_ids:
-                        buttons = []
-                        for button in record.action_btn_ids:
-                            buttons.append({
-                                "id": button.btn_id,
-                                "text": button.btn_text,
-                                "url": button.btn_url,
-                            })
-                        payload["buttons"] = buttons
-                    
-                    _logger.info(f"Payload being sent: {payload}")
-                    
-                    headers = {
-                        'Authorization': f"Basic {api_key}",
-                        'Content-Type': 'application/json',
-                    }
-                    
-                    try:
-                        response = requests.post(url, json=payload, headers=headers)
-                        _logger.info(response.text)
-                        if response.status_code == 200:
-                            _logger.info(f"Notification Sent Success: {response.text}")
-                        else:
-                            _logger.info(response.status_code)
-                    except Exception as e:
-                        _logger.info(e)
-            
-            elif record.notification_type == 'email':
-                # Email notification logic (using OneSignal)
-                if record.email_subject and record.email_body and record.recipient_email:
-                    try:
-                        # OneSignal email API endpoint (you will need the correct endpoint)
-                        url = "https://onesignal.com/api/v1/notifications?c=email"
-                        
-                        
-                        email_tokens = self._get_email_tokens() 
-                        
-                        payload = {
-                            "app_id": app_id,
-                            "email_subject": record.email_subject,
-                            "email_body": record.email_body,
-                            "include_email_tokens": email_tokens
-                        }
-                        
-                        if record.send_to == 'all':
-                            payload["included_segments"] = ["All"]  # Sending to all users
-                        elif record.send_to == 'subscription_id':
-                            payload["include_email_tokens"] = email_tokens 
-                        
-                        headers = {
-                            'Authorization': f"Basic {api_key}",
-                            'Content-Type': 'application/json',
-                        }
-                        
-                        _logger.info(f"Email Payload: {payload}")
-                        
-          
-                        response = requests.post(url, json=payload, headers=headers)
-                        _logger.info(f"Response: {response.text}")
-                        
-                        if response.status_code == 200:
-                            _logger.info(f"Email Notification Sent: {response.text}")
-                        else:
-                            _logger.error(f"Error: {response.status_code} - {response.text}")
-                        
-                    except Exception as e:
-                        _logger.error(f"Error sending email notification: {e}")
+                payload = {
+                    "app_id": app_id,
+                    "include_player_ids": player_ids,
+                    "template_id":record.template_id.temps_id,
+                }
+
+                if isinstance(record.content, str) and record.content.strip():
+                    payload["contents"] = {"en": record.content}
+                if isinstance(record.heading, str) and record.heading.strip():
+                    payload["headings"] = {"en": record.heading}
+
+
+                if record.send_to == 'all':
+                    payload["included_segments"] = ["All"]
+                elif record.send_to == 'subscription_id' and player_ids:
+                    payload["include_player_ids"] = player_ids
                 else:
-                    _logger.error("Missing email subject, body, or recipient email")
-    
-    def _get_email_tokens(self):
-        email_tokens = []
-        # Fetch the list of users who have email tokens (you need to query the correct model)
-        users = self.env['user.fetch'].search([('email', '!=', False)])  # Assuming user fetch model has email field
+                    _logger.info("Failed to send notification - No valid target.")
+                    continue  
+
+                if record.action_btn and record.action_btn_ids:
+                    buttons = []
+                    for button in record.action_btn_ids:
+                        buttons.append({
+                            "id": button.btn_id,
+                            "text": button.btn_text,
+                            "url": button.btn_url,
+                        })
+                    payload["buttons"] = buttons
+                _logger.info(f"Payload being sent: {payload}")
+
+                headers = {
+                    'Authorization': f"Basic {api_key}",
+                    'Content-Type': 'application/json',
+                }
+                try:  
+                    response = requests.post(url, json=payload, headers=headers)
+                    _logger.info(response.text)
+                    if response.status_code == 200:
+                        _logger.info(f"Notification Sent Success: {response.text}")
+                    else:
+                        _logger.error(f"Failed to send notification. Status code: {response.status_code}, Response: {response.text}")
+                except Exception as e:
+                    _logger.error(f"Error sending notification: {str(e)}")
         
-        for user in users:
-            email_tokens.append(user.email)  # Or user.email_token if it's available in the model
-        
-        return email_tokens
     
     def action_cancel(self):
         return
-    
+ 
+    def _get_subscription_player_ids(self):
+        player_ids = []
 
+        if self.send_to == 'subscription_id':
+            if self.subscription_id:  
+               
+                player_id = self.subscription_id.player_id
+                if player_id:
+                    player_ids.append(player_id)
+                else:
+                    _logger.warning(f"No player_id found for user: {self.subscription_id}")
+            else:
+                _logger.warning("No subscription_id selected.")
+    
+        return player_ids
+    
 
 class PushNotifyButton(models.TransientModel):
     _name="push.notify.button"

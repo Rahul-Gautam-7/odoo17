@@ -12,12 +12,13 @@
                     <field name="template" />
                     <field name="template_domain" invisible="True"/>
                     <field name="template_id" invisible="template == False" domain="template_domain"/>
-
-                 
-
                     <field name="send_to" />
+                    <field name="subscription_domain" invisible="True" />
+                    <field name="subscription_id"  invisible="send_to != 'subscription_id'" domain="subscription_domain"  />
                 </group>
-                
+        
+    
+               
                 <group invisible="notification_type != 'push'">
                     <field name="heading"  invisible="template == True"/>
                     <field name="content" invisible="template == True" />

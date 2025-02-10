@@ -111,7 +111,7 @@ class Templates(models.Model):
                                 ], limit=1)
 
                                 if not existing_template:
-                                    self.env['onesignal.template'].create({
+                                    self.create({
                                         'connector_ids': record.id,
                                         'temps_id': temps_id,
                                         'name': templatess.get('name'),
@@ -154,4 +154,5 @@ class Templates(models.Model):
                     _logger.error(f"Error while fetching templates: {str(e)}")
                             
                             
-    
+ 
+        
