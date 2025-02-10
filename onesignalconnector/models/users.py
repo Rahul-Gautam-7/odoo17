@@ -49,6 +49,22 @@ class User(models.Model):
     tags = fields.Text(string="Tags")
     external_id=fields.Char(string="External ID")
     
+    # signup_method = fields.Selection([
+    #     ('webpush', 'WebPush'),
+    #     ('email', 'Email'),
+    #     ('sms', 'SMS')
+    # ], string="Signup Method", required=True)
+    
+    # email = fields.Char("Email Address")
+    # phone_number = fields.Char("Phone Number")
+    # webpush_id = fields.Char("WebPush Identifier")
+    
+    
+    
+   
+    
+    
+    
     
     @api.model
     def check_users(self,app_id):
@@ -111,52 +127,105 @@ class User(models.Model):
                     _logger.info("Error in sending notifiy",str(e))
     
     
-    @api.model
-    def create_user_in_onesignal(self,app_id):
-                signal_records = self.env['signal.connect'].search([],limit=1)  # Modify this search as needed
-                url = f"https://api.onesignal.com/apps/{signal_records.app_id}/users"
-                _logger.info(f"================================================={signal_records.app_id}")
-                # You can set up additional fields you want to pass to the OneSignal API
-                _logger.info(f"=============================={self.ip}")
-                payload = {
-                    "properties": {
+    
+    
+    # def create_user_in_onesignal(self):
+    #     for record in self:
+    #         app_id = record.connector_ids.app_id
+    #         api_key = record.connector_ids.api_key
+
+    #         if not app_id or not api_key:
+    #             _logger.error("Missing OneSignal App ID or API Key.")
+    #             return False
+
+    #         url = f"https://api.onesignal.com/apps/{app_id}/users"
+
+    #         # Build the payload to create a user based on the notification type
+    #         payload = {
+    #             "app_id": app_id,
+    #             "identifier": record.user_email,  # The unique identifier (email in this case)
+    #             "language": "en",  # You can set a language if required
+    #             "tags": {
+    #                 "email": record.user_email  # You can customize tags as required
+    #             }
+    #         }
+
+    #         if record.notification_type == 'push':
+    #             # For Push Notifications
+    #             payload["device_type"] = 1 if record.device_type == 'android' else 0  # 1 for Android, 0 for iOS
+    #             if record.player_id:
+    #                 payload["player_id"] = record.player_id  # Set player ID for push
+    #             _logger.info(f"Creating push user with Player ID: {record.player_id}")
+
+    #         elif record.notification_type == 'email':
+    #             # For Email Notifications
+    #             payload["email"] = record.user_email  # Register the email for email notifications
+    #             _logger.info(f"Creating email user with Email: {record.user_email}")
+
+    #         elif record.notification_type == 'sms':
+    #             # For SMS Notifications
+    #             payload["sms"] = record.user_email  # You can register phone number or email for SMS notifications
+    #             _logger.info(f"Creating SMS user with Phone Number/Email: {record.user_email}")
+
+    #         headers = {
+    #             "Authorization": f"Basic {api_key}",
+    #             "Content-Type": "application/json",
+    #         }
+
+    #         try:
+    #             response = requests.post(url, json=payload, headers=headers)
+    #             if response.status_code == 200:
+    #                 _logger.info(f"Successfully created user in OneSignal: {response.json()}")
+    #                 return True
+    #             else:
+    #                 _logger.error(f"Failed to create user in OneSignal. Status Code: {response.status_code}, Response: {response.text}")
+    #                 return False
+    #         except Exception as e:
+    #             _logger.error(f"Error creating user in OneSignal: {str(e)}")
+    #             return False
+    
+    
+    def create_user_in_onesignal(self):
+        for rec in self:
+            app_id=rec.app_id
+            api_key=rec.api_key
+            
+            _logger.info(f"............................................................{app_id}")
+            _logger.info(f"............................................................{api_key}")
+            
+            url=f"https://api.onesignal.com/apps/{app_id}/users"
+            
+            payload = {
+                "device_type":int(self.device_type),
+                 "properties": {
                         "ip":self.ip,
                     },
-                "identity": { "external_id": "test_external_id" }
+                "identity": { "external_id": self.external_id },
+                "tags": {  
+                "subscription_status": "subscribed",  
                 }
-                headers = {
-                    "Authorization": f"Basic {signal_records.api_key}",
+            }
+            _logger.info(f"payload value........................{payload}")
+            
+            headers = {
+                    "Authorization": f"Basic {api_key}",
                     "Content-Type": "application/json",
                 }
             
-                try:
-                    # Make the API request to OneSignal
-                    response = requests.post(url, headers=headers, json=payload)
+            try:
+                response= requests.post(url,json=payload,headers=headers)
                 
-                    if response.status_code == 200:
-                        _logger.info("User creation successful in OneSignal.")
-                        data = response.json()
-                        player_id = data.get("id")
-                        device_type = data.get("device_type")
-                    
-                        # Handle device type logic for WebPush or SMS
-                        if device_type == 5:  # WebPush
-                            _logger.info("Creating user as WebPush.")
-                        elif device_type == 2:  # SMS
-                            _logger.info("Creating user as SMS.")
-                        else:
-                            _logger.info(f"Unknown device_type {device_type}.")
-                    
-                        # Create the user.fetch record in Odoo
-                        self.env['user.fetch'].create({
-                            'connector_ids': signal_record.id,
-                            'player_id': player_id,
-                            'created_at': datetime.utcnow(),
-                        })
-                    else:
-                        _logger.error(f"User creation failed: {response.status_code}, {response.text}")
-                except requests.exceptions.RequestException as e:
+                if response.status_code == 200:
+        
+                    _logger.info("success=================================================SUCCESS===========================")
+
+                else:
+                    _logger.error(f"User creation failed: {response.status_code}, {response.text}")
+            except requests.exceptions.RequestException as e:
                     _logger.error(f"Error creating user in OneSignal: {str(e)}")
        
-
-
+    
+    
+    
+    
+  

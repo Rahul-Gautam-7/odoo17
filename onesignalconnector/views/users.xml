@@ -26,26 +26,26 @@
                             <field name="connector_ids" />
                             <field name="player_id" />
                             <field name="device_type" />
-                            <!-- <field name="language" />
+                             <field name="language" />
                             <field name="timezone" />
                             <field name="game_version" />
-                            <field name="amount_spent" /> -->
+                            <field name="amount_spent" /> 
                         </group>
                         <group>
                             <field name="device_os" />
                             <field name="device_model" />
-                            <!-- <field name="ad_id" />
+                            <field name="ad_id" />
                             <field name="last_active" />
                             <field name="created_at" />
-                            <field name="invalid_identifier" /> -->
-                            <field name="sdk" />
+                            <field name="invalid_identifier" />
+                             <field name="sdk" />
                         </group>
                     </group>
 
                     <group>
                         <field name="identifier" />
                         <field name="session_count" />
-                        <!-- <field name="playtime" /> -->
+                        <field name="playtime" />
                         <field name="test_type" />
                         <field name="ip" />
                         <field name="tags" widget="text" />

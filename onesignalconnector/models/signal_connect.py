@@ -49,7 +49,7 @@ class SignalConnect(models.Model):
         self.env['user.fetch'].check_users(self.id)
         _logger.info("Fetch Success")
         self._compute_total()
-        return True
+        
     
 
     def action_sync_segments(self): 

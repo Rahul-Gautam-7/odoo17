@@ -10,9 +10,11 @@ class PushNotify(models.TransientModel):
     
     connector_ids=fields.Many2one('signal.connect',string="Onesignal AccountName")
     template_id=fields.Many2one('onesignal.template',string='Template')
+    segment_id=fields.Many2one('onesignal.segment',string="Segments")
   
     template=fields.Boolean(string="Using Template")
     action_btn=fields.Boolean(string="Action Button")
+
     
     heading=fields.Char(string="Heading")
     content=fields.Text(string="Content")
@@ -25,10 +27,12 @@ class PushNotify(models.TransientModel):
     action_btn_ids=fields.One2many('push.notify.button','notify_id',string="Action Button")
     subscription_id=fields.Many2many('user.fetch',string="Subscription_id")
     subscription_domain = fields.Binary(compute="_compute_subscription_domain")
+    segment_domain=fields.Binary(compute="_compute_segments_domain")
      
      
     send_to=fields.Selection([
         ('all',"All"),
+        ('segments',"Segments"),
         ('subscription_id','Subscription_ID')
     ],string="Send To")
     notification_type=fields.Selection([
@@ -72,6 +76,16 @@ class PushNotify(models.TransientModel):
                      
     
     @api.depends('connector_ids')
+    def _compute_segments_domain(self):
+        for rec in self:
+            if rec.connector_ids :
+                domain=[('connector_ids','=',rec.connector_ids.ids)]
+            else :
+                domain = [('id','=',False)]
+            rec.segment_domain = domain
+    
+    
+    @api.depends('connector_ids')
     def _compute_subscription_domain(self):
         for rec in self:
             if rec.connector_ids : 
@@ -84,8 +98,6 @@ class PushNotify(models.TransientModel):
         
         
         
-        
-        
     def action_send_notify(self):
       for record in self:
         app_id = record.connector_ids.app_id
@@ -95,20 +107,34 @@ class PushNotify(models.TransientModel):
             if app_id:
                 url = "https://onesignal.com/api/v1/notifications"
                 
-                player_ids = []
-                for rec in self: 
-                    if  rec.subscription_id:
-                        rec.ensure_one() 
-                        player_id = rec.subscription_id.player_id
-                        player_ids.append(player_id)
-                    else:
-                        _logger.warning(f"No subscription found for record {rec.id}")
-
                 payload = {
                     "app_id": app_id,
-                    "include_player_ids": player_ids,
                     "template_id":record.template_id.temps_id,
                 }
+                 
+                 
+                if record.segment_id and record.segment_id.mapped("name"):
+                    segment_value=record.segment_id.mapped("name")
+                    _logger.info(f"Sending to selected segment: {record.segment_id.name}")
+                else:
+                    
+                    player_ids = []
+                    for rec in self: 
+                        if  rec.subscription_id:
+                            rec.ensure_one() 
+                            player_id = rec.subscription_id.player_id
+                            player_ids.append(player_id)
+                        else:
+                            _logger.warning(f"No subscription found for record {rec.id}")
+                            
+                    if player_ids:
+                        payload["include_player_ids"] = player_ids
+                        _logger.info(f"Sending to player IDs: {player_ids}")
+                    else:
+                        _logger.warning("Failed to send notification - No valid subscription IDs.")
+                        continue
+
+               
 
                 if isinstance(record.content, str) and record.content.strip():
                     payload["contents"] = {"en": record.content}
@@ -118,9 +144,10 @@ class PushNotify(models.TransientModel):
 
                 if record.send_to == 'all':
                     payload["included_segments"] = ["All"]
+                elif record.send_to == 'segments':
+                    payload["included_segments"] = segment_value
                 elif record.send_to == 'subscription_id' and player_ids:
                     payload["include_player_ids"] = player_ids
-                else:
                     _logger.info("Failed to send notification - No valid target.")
                     continue  
 
@@ -153,21 +180,7 @@ class PushNotify(models.TransientModel):
     def action_cancel(self):
         return
  
-    def _get_subscription_player_ids(self):
-        player_ids = []
-
-        if self.send_to == 'subscription_id':
-            if self.subscription_id:  
-               
-                player_id = self.subscription_id.player_id
-                if player_id:
-                    player_ids.append(player_id)
-                else:
-                    _logger.warning(f"No player_id found for user: {self.subscription_id}")
-            else:
-                _logger.warning("No subscription_id selected.")
     
-        return player_ids
     
 
 class PushNotifyButton(models.TransientModel):
