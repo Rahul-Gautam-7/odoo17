@@ -18,7 +18,7 @@ class PushNotify(models.TransientModel):
     
     heading=fields.Char(string="Heading")
     content=fields.Text(string="Content")
-    cover_url=fields.Char(string="Cover URL")
+    chrome_web_image=fields.Char(string="Cover URL")
     redirect_url=fields.Char(string="Redirect URL")
     abc=fields.Char(string="Channel",compute="_compute_abc",default="push")
     name=fields.Char(string="Channel",compute="_onchange_connect",default='push')
@@ -112,6 +112,7 @@ class PushNotify(models.TransientModel):
                         "app_id": app_id,
                         "template_id": record.template_id.temps_id,
                         "language":"en",
+                        "chrome_web_image":record.chrome_web_image
                     }
                 elif record.notification_type == 'email':
                     url = "https://onesignal.com/api/v1/notifications?c=email"
@@ -162,6 +163,7 @@ class PushNotify(models.TransientModel):
                     payload["contents"] = {"en": record.content}
                 if isinstance(record.heading, str) and record.heading.strip():
                     payload["headings"] = {"en": record.heading}
+             
 
                 if record.action_btn and record.action_btn_ids:
                     buttons = []

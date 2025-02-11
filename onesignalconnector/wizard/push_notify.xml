@@ -22,7 +22,7 @@
                 <group invisible="notification_type == 'email'">
                     <field name="heading"  invisible="template == True"/>
                     <field name="content" invisible="template == True" />
-                    <field name="cover_url" invisible="template == True" />
+                    <field name="chrome_web_image" invisible="template == True" />
                     <field name="redirect_url" invisible="template == True" />
                     <field name="action_btn"  />
                 </group>
