@@ -112,7 +112,7 @@ class PushNotify(models.TransientModel):
                         "app_id": app_id,
                         "template_id": record.template_id.temps_id,
                         "language":"en",
-                        "chrome_web_image":record.chrome_web_image
+                        "chrome_web_image":record.chrome_web_image,
                     }
                 elif record.notification_type == 'email':
                     url = "https://onesignal.com/api/v1/notifications?c=email"

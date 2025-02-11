@@ -155,4 +155,55 @@ class Templates(models.Model):
                             
                             
  
-        
+    def create_template_in_onesignal(self):
+        for rec in self:
+            app_id=rec.app_id
+            api_key=rec.api_key
+            
+            url="https://api.onesignal.com/templates"
+            
+            payload = {
+                    "app_id":app_id,
+                    "name":rec.name,
+                    "channel":rec.channel,
+                    "is_chrome":True,
+                    "is_chrome_web":True,
+                    "headings": {"en":rec.headings},
+                    "contents": {"en":rec.contents}
+            }
+    
+            _logger.info(f"payload value........................{payload}")
+            
+            headers = {
+                    "Authorization": f"Basic {api_key}",
+                    "Content-Type": "application/json",
+                }
+            
+            try:
+                response= requests.post(url,json=payload,headers=headers)
+                
+                if response.status_code == 200:
+                    _logger.info("success=================================================SUCCESS===========================")
+                else:
+                    _logger.error(f"User creation failed: {response.status_code}, {response.text}")
+            except requests.exceptions.RequestException as e:
+                    _logger.error(f"Error creating user in OneSignal: {str(e)}")
+                    
+    
+    def delete_templates(self):
+        for rec in self:
+            app_id=rec.app_id
+            api_key=rec.api_key
+            _logger.info(f"player app_id....................................{app_id}")
+            _logger.info(f"player api_key....................................{api_key}")
+            
+            url = f"https://api.onesignal.com/templates/{rec.temps_id}?app_id={app_id}"
+
+            headers = {
+                "accept": "application/json",
+                "Authorization": f"Basic {api_key}"
+            }
+
+            response = requests.delete(url, headers=headers)
+            _logger.info(f"user deleted ..........................................{response}")
+        return

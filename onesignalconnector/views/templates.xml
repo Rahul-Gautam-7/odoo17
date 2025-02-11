@@ -9,6 +9,7 @@
                 <field name="name" />
                 <field name="channel" />
                 <field name="connector_ids" />
+                <button string="Delete Template" name="delete_templates" type="object" class="btn-danger" />
             </tree>
         </field>
     </record>
@@ -19,6 +20,7 @@
         <field name="arch" type="xml">
             <form string="">
                 <sheet>
+                    <button string="Create Template" name="create_template_in_onesignal" type="object" class="oe_highlight"/>
                     <group>
                         <group>
                             <field name="name" />

@@ -17,7 +17,7 @@ DEVICE_TYPE_MAPPING = {
 class User(models.Model):
     _name="user.fetch"
     _description="Fetching users"
-    _rec_name="connector_ids"
+    _rec_name="player_id"
     
     
     connector_ids=fields.Many2one('signal.connect',string="Name",ondelete='cascade')
