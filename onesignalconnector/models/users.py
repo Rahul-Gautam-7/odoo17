@@ -6,14 +6,7 @@ from datetime import datetime
 _logger=logging.getLogger(__name__)
 
 
-DEVICE_TYPE_MAPPING = {
-    0: 'ios',
-    1: 'android',
-    2: 'windows',
-    5: 'chrome',
-    6: 'safari',
-    8: 'firefox',
-    }
+
 
 
 class User(models.Model):
@@ -35,7 +28,7 @@ class User(models.Model):
     game_version = fields.Char(string="Game Version")
     device_os = fields.Char(string="Device OS")
     device_type = fields.Char(string="Device Type")
-    types = fields.Char(string="Device Type")
+    types = fields.Char(string="Type")
     device_model = fields.Char(string="Device Model")
     ad_id = fields.Char(string="Ad ID")
     last_active = fields.Datetime(string="Last Active")
@@ -48,23 +41,16 @@ class User(models.Model):
     ip = fields.Char(string="IP Address")
     tags = fields.Text(string="Tags")
     external_id=fields.Char(string="External ID")
+    email = fields.Char("Email")
+    phone_number = fields.Char("Phone Number")
+
     
-    # signup_method = fields.Selection([
-    #     ('webpush', 'WebPush'),
-    #     ('email', 'Email'),
-    #     ('sms', 'SMS')
-    # ], string="Signup Method", required=True)
-    
-    # email = fields.Char("Email Address")
-    # phone_number = fields.Char("Phone Number")
-    # webpush_id = fields.Char("WebPush Identifier")
-    
-    
-    
-   
-    
-    
-    
+    channel = fields.Selection([
+        ('webpush', 'Web Push'),
+        ('email', 'Email'),
+        ('sms', 'SMS'),
+    ], string="Notification Type", required=True, default='webpush')
+
     
     @api.model
     def check_users(self,app_id):
@@ -128,84 +114,47 @@ class User(models.Model):
     
     
     
-    
-    # def create_user_in_onesignal(self):
-    #     for record in self:
-    #         app_id = record.connector_ids.app_id
-    #         api_key = record.connector_ids.api_key
-
-    #         if not app_id or not api_key:
-    #             _logger.error("Missing OneSignal App ID or API Key.")
-    #             return False
-
-    #         url = f"https://api.onesignal.com/apps/{app_id}/users"
-
-    #         # Build the payload to create a user based on the notification type
-    #         payload = {
-    #             "app_id": app_id,
-    #             "identifier": record.user_email,  # The unique identifier (email in this case)
-    #             "language": "en",  # You can set a language if required
-    #             "tags": {
-    #                 "email": record.user_email  # You can customize tags as required
-    #             }
-    #         }
-
-    #         if record.notification_type == 'push':
-    #             # For Push Notifications
-    #             payload["device_type"] = 1 if record.device_type == 'android' else 0  # 1 for Android, 0 for iOS
-    #             if record.player_id:
-    #                 payload["player_id"] = record.player_id  # Set player ID for push
-    #             _logger.info(f"Creating push user with Player ID: {record.player_id}")
-
-    #         elif record.notification_type == 'email':
-    #             # For Email Notifications
-    #             payload["email"] = record.user_email  # Register the email for email notifications
-    #             _logger.info(f"Creating email user with Email: {record.user_email}")
-
-    #         elif record.notification_type == 'sms':
-    #             # For SMS Notifications
-    #             payload["sms"] = record.user_email  # You can register phone number or email for SMS notifications
-    #             _logger.info(f"Creating SMS user with Phone Number/Email: {record.user_email}")
-
-    #         headers = {
-    #             "Authorization": f"Basic {api_key}",
-    #             "Content-Type": "application/json",
-    #         }
-
-    #         try:
-    #             response = requests.post(url, json=payload, headers=headers)
-    #             if response.status_code == 200:
-    #                 _logger.info(f"Successfully created user in OneSignal: {response.json()}")
-    #                 return True
-    #             else:
-    #                 _logger.error(f"Failed to create user in OneSignal. Status Code: {response.status_code}, Response: {response.text}")
-    #                 return False
-    #         except Exception as e:
-    #             _logger.error(f"Error creating user in OneSignal: {str(e)}")
-    #             return False
-    
-    
     def create_user_in_onesignal(self):
         for rec in self:
             app_id=rec.app_id
             api_key=rec.api_key
             
-            _logger.info(f"............................................................{app_id}")
-            _logger.info(f"............................................................{api_key}")
-            
             url=f"https://api.onesignal.com/apps/{app_id}/users"
             
-            payload = {
-                "device_type":int(self.device_type),
-                 "properties": {
-                        "ip":self.ip,
-                    },
-                "identity": { "external_id": self.external_id },
-                "tags": {  
-                "subscription_status": "subscribed",  
-                }
-            }
-            _logger.info(f"payload value........................{payload}")
+        
+            if rec.channel == 'webpush':
+                tp = "ChromePush"
+                payload = {
+                    "properties": { "ip":self.ip  },
+                    "subscriptions":[   {"type": tp,"enabled":True}    ],
+                    "tags": {  "subscription_status": "subscribed",  }
+                    }
+               
+            elif rec.channel == 'email':
+                tp = "Email"
+                token = rec.email
+                payload = {
+                    "properties": { "ip":self.ip, },
+                    "subscriptions":[   {"type": tp,"token":token,"enabled":True}  ],
+                    "tags": {  "subscription_status": "subscribed",  }
+                    }
+    
+            elif rec.channel == 'sms':
+                tp = "SMS"
+                token= f"+{rec.phone_number}" if not rec.phone_number.startswith("+") else rec.phone_number
+                payload = {
+                    "properties": {"ip":self.ip},
+                    "subscriptions":[   {"type": tp,"token":token,"enabled":True}  ],
+                    "tags": {  "subscription_status": "subscribed",  }
+                    } 
+            else:
+                _logger.error("Invalid notification type specified")
+                return
+            
+            
+            if rec.external_id:
+                payload["identity"] = {"external_id": rec.external_id}
+                _logger.info(f"payload value........................{payload}")
             
             headers = {
                     "Authorization": f"Basic {api_key}",

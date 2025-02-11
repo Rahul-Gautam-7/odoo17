@@ -95,9 +95,9 @@ class PushNotify(models.TransientModel):
                 domain = [('id','=',False)]
             rec.subscription_domain = domain
             _logger.info(f"Computed domain: {domain}")  
-        
-        
-        
+            
+            
+            
     def action_send_notify(self):
       for record in self:
         app_id = record.connector_ids.app_id
@@ -109,47 +109,46 @@ class PushNotify(models.TransientModel):
                 
                 payload = {
                     "app_id": app_id,
-                    "template_id":record.template_id.temps_id,
+                    "template_id": record.template_id.temps_id,
+                    "language":"en",
                 }
-                 
-                 
-                if record.segment_id and record.segment_id.mapped("name"):
-                    segment_value=record.segment_id.mapped("name")
-                    _logger.info(f"Sending to selected segment: {record.segment_id.name}")
-                else:
+                
+                
+                if record.send_to == 'all':
+                    payload["included_segments"] = ["All"]
                     
+                elif record.segment_id and record.segment_id.mapped("name"):
+                    segment_value = record.segment_id.mapped("name")
+                    payload["included_segments"] = segment_value
+                    _logger.info(f"Sending to selected segment: {record.segment_id.name}")
+                        
+                elif record.send_to == 'subscription_id':
                     player_ids = []
-                    for rec in self: 
-                        if  rec.subscription_id:
-                            rec.ensure_one() 
-                            player_id = rec.subscription_id.player_id
-                            player_ids.append(player_id)
+                    for rec in self:
+                        if rec.subscription_id:
+                            rec.ensure_one()
+                            for sub in rec.subscription_id:                        
+                                player_id = sub.player_id
+                                player_ids.append(player_id)
+                                _logger.info(f"Found player_id for record {rec.id}: {player_id}")
                         else:
-                            _logger.warning(f"No subscription found for record {rec.id}")
-                            
+                           if not rec.subscription_id:
+                                _logger.warning(f"Subscription ID is missing for record {rec.id}. Skipping this record.")
+                                continue
+
                     if player_ids:
                         payload["include_player_ids"] = player_ids
                         _logger.info(f"Sending to player IDs: {player_ids}")
                     else:
                         _logger.warning("Failed to send notification - No valid subscription IDs.")
                         continue
-
+                    
                
 
                 if isinstance(record.content, str) and record.content.strip():
                     payload["contents"] = {"en": record.content}
                 if isinstance(record.heading, str) and record.heading.strip():
                     payload["headings"] = {"en": record.heading}
-
-
-                if record.send_to == 'all':
-                    payload["included_segments"] = ["All"]
-                elif record.send_to == 'segments':
-                    payload["included_segments"] = segment_value
-                elif record.send_to == 'subscription_id' and player_ids:
-                    payload["include_player_ids"] = player_ids
-                    _logger.info("Failed to send notification - No valid target.")
-                    continue  
 
                 if record.action_btn and record.action_btn_ids:
                     buttons = []
@@ -159,14 +158,15 @@ class PushNotify(models.TransientModel):
                             "text": button.btn_text,
                             "url": button.btn_url,
                         })
-                    payload["buttons"] = buttons
+                    payload["web_buttons"] = buttons
+
                 _logger.info(f"Payload being sent: {payload}")
 
                 headers = {
                     'Authorization': f"Basic {api_key}",
                     'Content-Type': 'application/json',
                 }
-                try:  
+                try:
                     response = requests.post(url, json=payload, headers=headers)
                     _logger.info(response.text)
                     if response.status_code == 200:
@@ -175,7 +175,11 @@ class PushNotify(models.TransientModel):
                         _logger.error(f"Failed to send notification. Status code: {response.status_code}, Response: {response.text}")
                 except Exception as e:
                     _logger.error(f"Error sending notification: {str(e)}")
+
         
+        
+        
+    
     
     def action_cancel(self):
         return

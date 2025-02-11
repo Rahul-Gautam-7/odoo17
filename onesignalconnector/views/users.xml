@@ -25,11 +25,15 @@
                         <group>
                             <field name="connector_ids" />
                             <field name="player_id" />
+                            <field name="types" />
                             <field name="device_type" />
                              <field name="language" />
                             <field name="timezone" />
                             <field name="game_version" />
                             <field name="amount_spent" /> 
+                            <field name="channel" />
+                            <field name="email" />
+                            <field name="phone_number" />
                         </group>
                         <group>
                             <field name="device_os" />
@@ -43,7 +47,7 @@
                     </group>
 
                     <group>
-                        <field name="identifier" />
+                        <!-- <field name="identifier" /> -->
                         <field name="session_count" />
                         <field name="playtime" />
                         <field name="test_type" />
