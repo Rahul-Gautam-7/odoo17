@@ -19,7 +19,7 @@
                     <field name="segment_id" domain="segment_domain" invisible="send_to != 'segments'"  />
                 </group>
         
-                <group invisible="notification_type != 'push'">
+                <group invisible="notification_type == 'email'">
                     <field name="heading"  invisible="template == True"/>
                     <field name="content" invisible="template == True" />
                     <field name="cover_url" invisible="template == True" />

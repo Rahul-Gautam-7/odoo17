@@ -5,14 +5,20 @@ from datetime import datetime
 
 _logger=logging.getLogger(__name__)
 
-
+DEVICE_TYPE_MAPPING = {
+    'android': 'Android',
+    'ios': 'iOS',
+    'web': 'Web',
+   
+}
 
 
 
 class User(models.Model):
     _name="user.fetch"
     _description="Fetching users"
-    _rec_name="player_id"
+    _rec_name="connector_ids"
+    
     
     connector_ids=fields.Many2one('signal.connect',string="Name",ondelete='cascade')
 
@@ -53,7 +59,7 @@ class User(models.Model):
 
     
     @api.model
-    def check_users(self,app_id):
+    def check_users(self,app_id=None):
         signal_records = self.env['signal.connect'].search([('id','=',app_id)])  
         _logger.info(f"Found {len(signal_records)} signal.connect records")
         for record in signal_records:   
@@ -100,6 +106,8 @@ class User(models.Model):
                                     'created_at': datetime.utcfromtimestamp(player.get('created_at')),
                                     'invalid_identifier': player.get('invalid_identifier', False),
                                     'sdk': player.get('sdk', ''),
+                                    'phone_number':player.get('phone_number', ''),
+                                    'email':player.get('email', ''),
                                     'test_type': player.get('test_type', None),
                                     'ip': player.get('ip', ''),
                                     'tags': str(player.get('tags', {})),
@@ -165,9 +173,7 @@ class User(models.Model):
                 response= requests.post(url,json=payload,headers=headers)
                 
                 if response.status_code == 200:
-        
                     _logger.info("success=================================================SUCCESS===========================")
-
                 else:
                     _logger.error(f"User creation failed: {response.status_code}, {response.text}")
             except requests.exceptions.RequestException as e:
@@ -177,4 +183,20 @@ class User(models.Model):
     
     
     
-  
+    def delete_user(self):
+        for rec in self:
+            app_id=rec.app_id
+            api_key=rec.api_key
+            _logger.info(f"player app_id....................................{app_id}")
+            _logger.info(f"player api_key....................................{api_key}")
+            
+            url = f"https://onesignal.com/api/v1/players/{rec.player_id}?app_id={app_id}"
+
+            headers = {
+                "accept": "application/json",
+                "Authorization": f"Basic {api_key}"
+            }
+
+            response = requests.delete(url, headers=headers)
+            _logger.info(f"user deleted ..........................................{response}")
+        return

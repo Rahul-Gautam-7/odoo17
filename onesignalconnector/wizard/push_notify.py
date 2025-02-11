@@ -103,15 +103,28 @@ class PushNotify(models.TransientModel):
         app_id = record.connector_ids.app_id
         api_key = record.connector_ids.api_key
         
-        if record.notification_type == 'push':
+        if record.notification_type:
             if app_id:
-                url = "https://onesignal.com/api/v1/notifications"
+                if record.notification_type == 'push':
+                    url = "https://onesignal.com/api/v1/notifications?c=push"
                 
-                payload = {
-                    "app_id": app_id,
-                    "template_id": record.template_id.temps_id,
-                    "language":"en",
-                }
+                    payload = {
+                        "app_id": app_id,
+                        "template_id": record.template_id.temps_id,
+                        "language":"en",
+                    }
+                elif record.notification_type == 'email':
+                    url = "https://onesignal.com/api/v1/notifications?c=email"
+                    payload = {
+                                "app_id": app_id,
+                                "email_subject": "This is your email subject.",
+                                "email_body": "<html>Your Email as HTML.</html>",
+                                "email_to":["gautamrahul123456789@gmail.com"]
+                        }   
+                    
+                
+                
+                
                 
                 
                 if record.send_to == 'all':

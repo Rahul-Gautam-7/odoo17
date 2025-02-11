@@ -1,16 +1,5 @@
 <odoo>
   
-    <record id="users_view_tree" model="ir.ui.view">
-        <field name="name">users.view.tree</field>
-        <field name="model">user.fetch</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="player_id" />
-                <field name="connector_ids" />
-            </tree>
-        </field>
-    </record>
-
 
     <record id="users_view_form" model="ir.ui.view">
         <field name="name">users.view.form</field>
@@ -18,18 +7,18 @@
         <field name="arch" type="xml">
 
             <form>
-                 <button name="create_user_in_onesignal" type="object" string="Create User" class="btn-primary"/>
+                  <header>
+                 <button name="create_user_in_onesignal" type="object" string="Create User" class="btn-info"/>
+                 </header>
+                 <sheet>
+               
                    <group>
-                        
-
                         <group>
                             <field name="connector_ids" />
                             <field name="player_id" />
                             <field name="types" />
                             <field name="device_type" />
                              <field name="language" />
-                            <field name="timezone" />
-                            <field name="game_version" />
                             <field name="amount_spent" /> 
                             <field name="channel" />
                             <field name="email" />
@@ -38,26 +27,33 @@
                         <group>
                             <field name="device_os" />
                             <field name="device_model" />
-                            <field name="ad_id" />
-                            <field name="last_active" />
                             <field name="created_at" />
-                            <field name="invalid_identifier" />
-                             <field name="sdk" />
+                             <field name="session_count" />
+                            <field name="ip" />
+                            <field name="tags" widget="text" />
+                            <field name="external_id" />
                         </group>
                     </group>
 
-                    <group>
-                        <!-- <field name="identifier" /> -->
-                        <field name="session_count" />
-                        <field name="playtime" />
-                        <field name="test_type" />
-                        <field name="ip" />
-                        <field name="tags" widget="text" />
-                        <field name="external_id" />
-                    </group>
+                    
+                    </sheet>
             </form>
         </field>
     </record>
+
+    <record id="fetch_tree" model="ir.ui.view">
+        <field name="name">fetch.tree</field>
+        <field name="model">user.fetch</field>
+        <field name="arch" type="xml">
+            <tree string="Tree view">
+                 <field name="connector_ids" />
+                 <field name="player_id"/>
+                  <button name="delete_user" type="object" string="Delete User" class="btn-danger"/>
+              
+            </tree>
+        </field>
+    </record>
+
 
     <record id="user_view_action" model="ir.actions.act_window">
         <field name="name">Users</field>

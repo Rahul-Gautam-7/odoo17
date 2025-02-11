@@ -14,7 +14,7 @@
         'views/menu.xml',
         'views/signal_view.xml',
         'wizard/push_notify.xml',
-        # 'views/cron.xml',
+        'views/cron.xml',
         'views/users.xml',
         'views/segments.xml',
         'views/templates.xml',
