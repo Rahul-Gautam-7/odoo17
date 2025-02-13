@@ -120,14 +120,9 @@ class PushNotify(models.TransientModel):
                                 "app_id": app_id,
                                 "email_subject": "This is your email subject.",
                                 "email_body": "<html>Your Email as HTML.</html>",
-                                "email_to":["gautamrahul123456789@gmail.com"]
+                                "email_to":["gautamrahul1234567890@gmail.com"]
                         }   
-                    
-                
-                
-                
-                
-                
+                 
                 if record.send_to == 'all':
                     payload["included_segments"] = ["All"]
                     

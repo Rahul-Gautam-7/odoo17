@@ -18,9 +18,14 @@
         <field name="name">template.view.form</field>
         <field name="model">onesignal.template</field>
         <field name="arch" type="xml">
-            <form string="">
+            <form string="Form Template">
+                <header>
+                    <button string="Create Template" name="create_template_in_onesignal" type="object" class="btn-info" 
+                    invisible="temps_id"
+                    />
+                    <button string="Update Template" name="update_template_in_onesignal" type="object" class="btn-success" invisible="not temps_id"/>
+                </header>
                 <sheet>
-                    <button string="Create Template" name="create_template_in_onesignal" type="object" class="oe_highlight"/>
                     <group>
                         <group>
                             <field name="name" />
@@ -31,7 +36,6 @@
                          <group>
                          <field name="headings" />
                          <field name="contents" />
-                         <field name="subtitle" />
                          <field name="global_image" />
                          <field name="url_link" />
                          </group>

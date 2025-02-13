@@ -53,4 +53,4 @@ class Segments(models.Model):
                     _logger.info("Error in sending notifiy",str(e))
                             
                             
-    
+   

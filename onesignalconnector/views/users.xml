@@ -8,7 +8,9 @@
 
             <form>
                   <header>
-                 <button name="create_user_in_onesignal" type="object" string="Create User" class="btn-info"/>
+                 <button name="create_user_in_onesignal" type="object" string="Create User" class="btn-info"  invisible="player_id"/>
+                 <button name="update_user_in_onesignal" type="object" string="Update User" class="btn-success" invisible="not player_id" />
+                 <button name="delete_user" type="object" string="Delete User" class="btn-danger" invisible="not player_id" />
                  </header>
                  <sheet>
                
@@ -19,8 +21,8 @@
                             <field name="types" />
                             <field name="device_type" />
                              <field name="language" />
-                            <field name="amount_spent" /> 
-                            <field name="channel" />
+                            <field name="amount_spent" />
+                            <field name="channel" /> 
                             <field name="email" />
                             <field name="phone_number" />
                         </group>
@@ -48,7 +50,7 @@
             <tree string="Tree view">
                  <field name="connector_ids" />
                  <field name="player_id"/>
-                  <button name="delete_user" type="object" string="Delete User" class="btn-danger"/>
+                  <button name="delete_user" type="object" string="Delete User"  class="btn-danger"/>
               
             </tree>
         </field>

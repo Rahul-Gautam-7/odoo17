@@ -26,16 +26,7 @@ class Templates(models.Model):
     global_image=fields.Text(string="GlobalImage")
     url_link=fields.Char(string="url_link")
     
-    is_email=fields.Char(string="Email")
-    email_body=fields.Char(string="Email Body")
-    email_subject=fields.Char(string="Email Subject")
-    email_preheader=fields.Char(string="Email Preheader")
-    isSMS=fields.Char(string="SMS")
-    sms_from=fields.Char(string="SMS From")
-    sms_media_urls=fields.Char(string="sms_media_urls")
-    email_reply_to_address=fields.Char(string="email_reply_to_address")
-    disable_email_click_tracking=fields.Char(string="disable_email_click_tracking")
-    
+   
     
     
     # Email-related fields
@@ -181,6 +172,40 @@ class Templates(models.Model):
             
             try:
                 response= requests.post(url,json=payload,headers=headers)
+                
+                if response.status_code == 200:
+                    _logger.info("success=================================================SUCCESS===========================")
+                else:
+                    _logger.error(f"User creation failed: {response.status_code}, {response.text}")
+            except requests.exceptions.RequestException as e:
+                    _logger.error(f"Error creating user in OneSignal: {str(e)}")
+                    
+                    
+    def update_template_in_onesignal(self):
+            app_id=self.app_id
+            api_key=self.api_key
+            
+            url=f"https://api.onesignal.com/templates/{self.temps_id}?app_id={app_id}"
+            
+            payload = {
+                    "app_id":app_id,
+                    "name":self.name,
+                    "channel":self.channel,
+                    "is_chrome":self.is_chrome,
+                    "is_chrome_web":self.is_chrome_web,
+                    "headings": {"en":self.headings},
+                    "contents": {"en":self.contents}
+            }
+    
+            _logger.info(f"payload value........................{payload}")
+            
+            headers = {
+                    "Authorization": f"Basic {api_key}",
+                    "Content-Type": "application/json",
+                }
+            
+            try:
+                response= requests.patch(url,json=payload,headers=headers)
                 
                 if response.status_code == 200:
                     _logger.info("success=================================================SUCCESS===========================")
