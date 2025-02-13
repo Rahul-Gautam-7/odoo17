@@ -75,7 +75,8 @@ class User(models.Model):
     external_id=fields.Char(string="External ID",store=True)
     email = fields.Char("Email")
     phone_number = fields.Char("Phone Number")
-    onesignal_id=fields.Char("OneSignal ID")
+
+ 
 
     
     channel = fields.Selection([
@@ -83,6 +84,18 @@ class User(models.Model):
         ('email', 'Email'),
         ('sms', 'SMS'),
     ], string="Notification Type", required=True, default='webpush')
+    
+    
+    
+    @api.model
+    def create(self, vals):
+        # Create the record
+        new_record = super(User, self).create(vals)
+        # If the player_id is missing, delete the record
+        if not new_record.player_id:
+            new_record.unlink()
+            _logger.info("Record with no player_id has been deleted.")
+        return new_record
 
     
     @api.model
@@ -102,6 +115,7 @@ class User(models.Model):
                 }
                 try:
                     response = requests.get(url,headers=headers)
+                    
                     if response.status_code == 200 :
                         _logger.info("Users Fetch Success")
                         data=response.json()
@@ -113,10 +127,38 @@ class User(models.Model):
                             existing_player = self.search([
                                 ('connector_ids', '=', record.id),
                                 ('player_id', '=', player_id),
-                                ('external_id','=',player.get('identity', {}).get('external_id', ''))
                             ], limit=1)
                         
-                            if not existing_player:
+                            if existing_player:
+                               
+                            # Update existing player if changes exist
+                                existing_player.write({
+                                    'identifier': player.get('identifier'),
+                                    'session_count': player.get('session_count', 0),
+                                    'language': player.get('language'),
+                                    'timezone': player.get('timezone', 0),
+                                    'game_version': player.get('game_version', ''),
+                                    'device_os': player.get('device_os', ''),
+                                    'device_type': DEVICE_TYPE_MAPPING.get(player.get('device_type')),
+                                    'types': TYPE_MAPPING.get(player.get('type'), 'Unknown'),
+                                    'device_model': player.get('device_model', ''),
+                                    'ad_id': player.get('ad_id', ''),
+                                    'last_active': datetime.utcfromtimestamp(player.get('last_active')),
+                                    'playtime': player.get('playtime', 0.0),
+                                    'amount_spent': player.get('amount_spent', 0.0),
+                                    'created_at': datetime.utcfromtimestamp(player.get('created_at')),
+                                    'invalid_identifier': player.get('invalid_identifier', False),
+                                    'sdk': player.get('sdk', ''),
+                                    'phone_number': player.get('phone_number', ''),
+                                    'email': player.get('email', ''),
+                                    'test_type': player.get('test_type', None),
+                                    'ip': player.get('ip', ''),
+                                    'tags': str(player.get('tags', {})),
+                                    'external_id': player.get('external_user_id', ''),
+                   
+                                })
+                                _logger.info(f"Player {player_id} updated.")
+                            else : 
                                 self.create({
                                     'connector_ids': record.id,
                                     'player_id': player_id,
@@ -142,14 +184,13 @@ class User(models.Model):
                                     'ip': player.get('ip', ''),
                                     'tags': str(player.get('tags', {})),
                                     'external_id':player.get('external_user_id', ''),
-                                    'onesignal_id':player.get('onesignal_id', {}),  
                                 })
-                            else:
-                                _logger.info(f"Player {player_id} already exists.")
+                         
                     else:
                         _logger.info("User Fetch Failure")
                 except requests.exceptions.RequestException as e:
                     _logger.info("Error in sending notifiy",str(e))
+                
     
     
     
@@ -157,6 +198,7 @@ class User(models.Model):
     
     def create_user_in_onesignal(self):
         for rec in self:
+            rec.ensure_one()
             app_id=rec.app_id
             api_key=rec.api_key
             
@@ -169,7 +211,6 @@ class User(models.Model):
                     "properties": { "ip":self.ip  },
                     "subscriptions":[   {"type": tp,"enabled":True}    ],
                     "tags": {  "subscription_status": "subscribed",  },
-                    "identity":{"external_id":rec.external_id}
                     }
                
             elif rec.channel == 'email':
@@ -195,7 +236,7 @@ class User(models.Model):
             
             
             if rec.external_id:
-                payload["identity"] = {"external_id": rec.external_id},
+                payload["external_user_id"] = rec.external_id,
     
                 _logger.info(f"payload value........................{payload}")
             
@@ -204,16 +245,17 @@ class User(models.Model):
                     "Content-Type": "application/json",
                 }
             
-            try:
-                response= requests.post(url,json=payload,headers=headers)
+        
+            response= requests.post(url,json=payload,headers=headers)
+            _logger.info(f"-------------------------------------------{response.status_code}")
                 
-                if response.status_code == 200:
-                    _logger.info("success=================================================SUCCESS===========================")
+            if response.status_code == 201:
+                self.connector_ids.action_sync_user()
+                _logger.info("success=================================================SUCCESS Creating Record===========================")
                     
-                else:
-                    _logger.error(f"User creation failed: {response.status_code}, {response.text}")
-            except requests.exceptions.RequestException as e:
-                    _logger.error(f"Error creating user in OneSignal: {str(e)}")
+            else:
+                 _logger.error(f"User creation failed: {response.status_code}, {response.text}")
+            
                     
                     
                     
@@ -296,5 +338,11 @@ class User(models.Model):
             }
 
             response = requests.delete(url, headers=headers)
+            if response.status_code == 200:
+                self.unlink()
+                _logger.info("success=================================================SUCCESS===========================")
+            else:
+                    _logger.error(f"User creation failed: {response.status_code}, {response.text}")
+            
             _logger.info(f"user deleted ..........................................{response}")
         return
