@@ -2,6 +2,8 @@ from odoo import api,fields,models
 import requests
 import logging
 from datetime import datetime
+from odoo.exceptions import ValidationError
+from datetime import datetime
 
 _logger=logging.getLogger(__name__)
 
@@ -73,9 +75,8 @@ class User(models.Model):
     ip = fields.Char(string="IP Address")
     tags = fields.Text(string="Tags")
     external_id=fields.Char(string="External ID",store=True)
-    email = fields.Char("Email")
-    phone_number = fields.Char("Phone Number")
-
+    token=fields.Char(string="Token")
+    current_timestamp = datetime.utcnow().strftime('%Y-%m-%d%H:%M:%S')
  
 
     
@@ -85,18 +86,12 @@ class User(models.Model):
         ('sms', 'SMS'),
     ], string="Notification Type", required=True, default='webpush')
     
-    
-    
-    @api.model
-    def create(self, vals):
-        # Create the record
-        new_record = super(User, self).create(vals)
-        # If the player_id is missing, delete the record
-        if not new_record.player_id:
-            new_record.unlink()
-            _logger.info("Record with no player_id has been deleted.")
-        return new_record
 
+    @api.model
+    def create(self, values):
+        user = super(User, self).create(values)
+        user.create_user_in_onesignal()
+        return 
     
     @api.model
     def check_users(self,app_id=None):
@@ -119,11 +114,20 @@ class User(models.Model):
                     if response.status_code == 200 :
                         _logger.info("Users Fetch Success")
                         data=response.json()
+                        
+                        onesignal_players = data.get('players', [])
+                        onesignal_player_ids = {player.get('id') for player in onesignal_players}
+                        odoo_players = self.search([('connector_ids', '=', record.id)])
+                        odoo_player_ids = {player.player_id for player in odoo_players}
+                        players_to_remove = odoo_players.filtered(lambda p: p.player_id not in onesignal_player_ids)       
+                        for player in players_to_remove:
+                            _logger.info(f"Removing player {player.player_id} from Odoo as they no longer exist in OneSignal.")
+                            player.unlink()
+                            
+                      
+                            
                         for player in data.get('players', []):
                             player_id = player.get('id')
-                            external_id=player.get('identity', {})
-                            _logger.info(f"============================================================{external_id}")
-
                             existing_player = self.search([
                                 ('connector_ids', '=', record.id),
                                 ('player_id', '=', player_id),
@@ -149,8 +153,7 @@ class User(models.Model):
                                     'created_at': datetime.utcfromtimestamp(player.get('created_at')),
                                     'invalid_identifier': player.get('invalid_identifier', False),
                                     'sdk': player.get('sdk', ''),
-                                    'phone_number': player.get('phone_number', ''),
-                                    'email': player.get('email', ''),
+                                    'token': player.get('token', ''),
                                     'test_type': player.get('test_type', None),
                                     'ip': player.get('ip', ''),
                                     'tags': str(player.get('tags', {})),
@@ -178,8 +181,7 @@ class User(models.Model):
                                     'created_at': datetime.utcfromtimestamp(player.get('created_at')),
                                     'invalid_identifier': player.get('invalid_identifier', False),
                                     'sdk': player.get('sdk', ''),
-                                    'phone_number':player.get('phone_number', ''),
-                                    'email':player.get('email', ''),
+                                    'token':player.get('token', ''),
                                     'test_type': player.get('test_type', None),
                                     'ip': player.get('ip', ''),
                                     'tags': str(player.get('tags', {})),
@@ -206,46 +208,52 @@ class User(models.Model):
             
         
             if rec.channel == 'webpush':
+                token=rec.token
+                # if not rec.token:
+                #     raise ValidationError("Token is required when the notification type is WebPush.")
                 tp = "ChromePush"
                 payload = {
-                    "properties": { "ip":self.ip  },
-                    "subscriptions":[   {"type": tp,"enabled":True}    ],
+                    "subscriptions":[   {"type": tp,"token":rec.token,"enabled":True}    ],
                     "tags": {  "subscription_status": "subscribed",  },
+                    "identity":{"external_id" : f"{rec.token}_{self.current_timestamp}" },
                     }
+                _logger.info(f"=========================================================={payload}")
                
             elif rec.channel == 'email':
+                if not rec.token:
+                    raise ValidationError("Token is required when the notification type is Email.")
+                if '@' not in rec.token:
+                    raise ValidationError("A valid email address must be provided when the notification type is Email.")    
                 tp = "Email"
-                token = rec.email
+                token = rec.token
                 payload = {
-                    "properties": { "ip":self.ip, },
                     "subscriptions":[   {"type": tp,"token":token,"enabled":True}  ],
-                    "tags": {  "subscription_status": "subscribed",  }
+                    "tags": {  "subscription_status": "subscribed",  },
+                    "identity":{"external_id" : f"{rec.token}_{self.current_timestamp}" },
                     }
     
             elif rec.channel == 'sms':
+                if not rec.token:
+                    raise ValidationError("Phone number is required when the notification type is SMS.")
+                if len(rec.token) != 10:
+                    raise ValidationError("Phone number must be 10 digits when the notification type is SMS.")
                 tp = "SMS"
-                token= f"+{rec.phone_number}" if not rec.phone_number.startswith("+") else rec.phone_number
+                token= f"+{rec.token}" if not rec.token.startswith("+") else rec.token
                 payload = {
-                    "properties": {"ip":self.ip},
                     "subscriptions":[   {"type": tp,"token":token,"enabled":True}  ],
-                    "tags": {  "subscription_status": "subscribed",  }
+                    "tags": {  "subscription_status": "subscribed",  },
+                    "identity":{"external_id" : f"{rec.token}_{self.current_timestamp}" },
                     } 
             else:
                 _logger.error("Invalid notification type specified")
                 return
-            
-            
-            if rec.external_id:
-                payload["external_user_id"] = rec.external_id,
-    
-                _logger.info(f"payload value........................{payload}")
+ 
             
             headers = {
                     "Authorization": f"Basic {api_key}",
                     "Content-Type": "application/json",
                 }
             
-        
             response= requests.post(url,json=payload,headers=headers)
             _logger.info(f"-------------------------------------------{response.status_code}")
                 
@@ -273,14 +281,13 @@ class User(models.Model):
             if self.channel == 'webpush':
                 tp = "ChromePush"
                 payload = {
-                    "properties": { "ip":self.ip  },
                     "subscriptions":[   {"type": tp,"enabled":True}    ],
                     "tags": {  "subscription_status": "subscribed",  }
                     }
                
             elif self.channel == 'email':
                 tp = "Email"
-                token = self.email
+                token = self.token
                 payload = {
                     "properties": { "ip":self.ip, },
                     "subscriptions":[   {"type": tp,"token":token,"enabled":True}  ],
@@ -289,7 +296,7 @@ class User(models.Model):
     
             elif self.channel == 'sms':
                 tp = "SMS"
-                token= f"+{self.phone_number}" if not self.phone_number.startswith("+") else self.phone_number
+                token= f"+{self.token}" if not self.token.startswith("+") else self.token
                 payload = {
                     "properties": {"ip":self.ip},
                     "subscriptions":[   {"type": tp,"token":token,"enabled":True}  ],

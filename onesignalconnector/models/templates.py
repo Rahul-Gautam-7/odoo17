@@ -19,30 +19,22 @@ class Templates(models.Model):
         ('sms','SMS')
     ],string="Channel")
     
-    
     headings=fields.Char(string="Headings")
     subtitle=fields.Char(string="Subtitle")
     contents=fields.Text(string="Contents")
     global_image=fields.Text(string="GlobalImage")
     url_link=fields.Char(string="url_link")
     
-   
-    
-    
-    # Email-related fields
-    is_email = fields.Boolean(string="Email Available")
+    is_Email = fields.Boolean(string="Email Available")
     email_body = fields.Text(string="Email Body")
     email_subject = fields.Char(string="Email Subject")
     email_preheader = fields.Char(string="Email Preheader")
     email_reply_to_address = fields.Char(string="Reply-to Email Address")
     disable_email_click_tracking = fields.Boolean(string="Disable Email Click Tracking")
 
-    # SMS-related fields
-    is_sms = fields.Boolean(string="SMS Available")
+    is_SMS = fields.Boolean(string="SMS Available")
     sms_from = fields.Char(string="SMS From")
     sms_media_urls = fields.Text(string="SMS Media URLs")
-    
-    
     
     is_android = fields.Boolean(string="Android")
     is_ios = fields.Boolean(string="iOS")
@@ -56,6 +48,8 @@ class Templates(models.Model):
     is_safari = fields.Boolean(string="Safari")
     is_firefox = fields.Boolean(string="Firefox")
     is_edge = fields.Boolean(string="Edge")
+    
+    
     
     
     
@@ -124,13 +118,13 @@ class Templates(models.Model):
                                         'is_safari': content_data.get('isSafari', False),
                                         'is_firefox': content_data.get('isFirefox', False),
                                         'is_edge': content_data.get('isEdge', False),
-                                        'is_email': content_data.get('is_email'),
+                                        'is_Email': content_data.get('is_Email',False),
                                         'email_body': content_data.get('email_body'),
                                         'email_subject': content_data.get('email_subject'),
                                         'email_preheader': content_data.get('email_preheader'),
                                         'email_reply_to_address': content_data.get('email_reply_to_address'),
                                         'disable_email_click_tracking': content_data.get('disable_email_click_tracking'),
-                                        'is_sms': content_data.get('is_sms'),
+                                        'is_SMS': content_data.get('is_SMS'),
                                         'sms_from': content_data.get('sms_from'),
                                         'sms_media_urls': content_data.get('sms_media_urls')
                                     })
@@ -162,8 +156,27 @@ class Templates(models.Model):
                     "headings": {"en":rec.headings},
                     "contents": {"en":rec.contents}
             }
-    
-            _logger.info(f"payload value........................{payload}")
+            
+            if rec.channel == 'sms':
+                payload.update({
+                    "sms_from": rec.sms_from,
+                    "sms_media_urls": [rec.sms_media_urls]
+                })
+                _logger.info(f"SMS template, added fields: {payload}")
+        
+           
+            elif rec.channel == 'email':
+                payload.update({
+                    "email_body": rec.email_body,
+                    "email_subject": rec.email_subject,
+                    "email_preheader": rec.email_preheader,
+                    "email_reply_to_address": rec.email_reply_to_address,
+                    "disable_email_click_tracking": rec.disable_email_click_tracking
+                })
+                _logger.info(f"Email template, added fields: {payload}")
+            
+            
+           
             
             headers = {
                     "Authorization": f"Basic {api_key}",
@@ -174,6 +187,7 @@ class Templates(models.Model):
                 response= requests.post(url,json=payload,headers=headers)
                 
                 if response.status_code == 200:
+                    self.connector_ids.action_sync_templates()
                     _logger.info("success=================================================SUCCESS===========================")
                 else:
                     _logger.error(f"User creation failed: {response.status_code}, {response.text}")
@@ -203,7 +217,6 @@ class Templates(models.Model):
                     "Authorization": f"Basic {api_key}",
                     "Content-Type": "application/json",
                 }
-            
             try:
                 response= requests.patch(url,json=payload,headers=headers)
                 
@@ -223,12 +236,10 @@ class Templates(models.Model):
             _logger.info(f"player api_key....................................{api_key}")
             
             url = f"https://api.onesignal.com/templates/{rec.temps_id}?app_id={app_id}"
-
             headers = {
                 "accept": "application/json",
                 "Authorization": f"Basic {api_key}"
             }
-
             response = requests.delete(url, headers=headers)
             _logger.info(f"user deleted ..........................................{response}")
         return

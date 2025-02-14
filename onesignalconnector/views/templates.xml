@@ -40,7 +40,7 @@
                          <field name="url_link" />
                          </group>
                         <group string="Email Settings">
-                        <field name="is_email" string="Email Available"/>
+                        <field name="is_Email" string="Email Available"/>
                         <field name="email_body" string="Email Body"/>
                         <field name="email_subject" string="Email Subject"/>
                         <field name="email_preheader" string="Email Preheader"/>
@@ -50,7 +50,7 @@
 
                     <!-- SMS Fields -->
                         <group string="SMS Settings">
-                        <field name="is_sms" string="SMS Available"/>
+                        <field name="is_SMS" string="SMS Available"/>
                         <field name="sms_from" string="SMS From"/>
                         <field name="sms_media_urls" string="SMS Media URLs"/>
                         </group>

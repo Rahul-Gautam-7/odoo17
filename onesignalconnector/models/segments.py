@@ -31,7 +31,6 @@ class Segments(models.Model):
                 }
                 try:
                     response = requests.get(url,headers=headers)
-                    _logger.info(response)
                     if response.status_code == 200:
                         data = response.json()
                         for segmentss in data.get('segments',[]):

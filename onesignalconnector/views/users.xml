@@ -23,8 +23,7 @@
                              <field name="language" />
                             <field name="amount_spent" />
                             <field name="channel" /> 
-                            <field name="email" />
-                            <field name="phone_number" />
+                            <field name="token" />
                         </group>
                         <group>
                             <field name="device_os" />

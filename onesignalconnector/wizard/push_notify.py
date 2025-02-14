@@ -10,12 +10,10 @@ class PushNotify(models.TransientModel):
     
     connector_ids=fields.Many2one('signal.connect',string="Onesignal AccountName")
     template_id=fields.Many2one('onesignal.template',string='Template')
-    segment_id=fields.Many2one('onesignal.segment',string="Segments")
+    segment_id=fields.Many2many('onesignal.segment',string="Segments")
   
     template=fields.Boolean(string="Using Template")
     action_btn=fields.Boolean(string="Action Button")
-
-    
     heading=fields.Char(string="Heading")
     content=fields.Text(string="Content")
     chrome_web_image=fields.Char(string="Cover URL")
@@ -29,17 +27,16 @@ class PushNotify(models.TransientModel):
     subscription_domain = fields.Binary(compute="_compute_subscription_domain")
     segment_domain=fields.Binary(compute="_compute_segments_domain")
      
-     
     send_to=fields.Selection([
         ('all',"All"),
         ('segments',"Segments"),
         ('subscription_id','Subscription_ID')
-    ],string="Send To")
+    ],string="Send To",default="all")
     notification_type=fields.Selection([
         ('push','Push Notification'),
         ('email','Email Notification'),
         ('sms','SMS Notification')
-    ],string="Notification Type")
+    ],string="Notification Type",default="push")
     
     email_subject = fields.Char(string="Email Subject")
     email_body = fields.Text(string="Email Body")
@@ -50,8 +47,6 @@ class PushNotify(models.TransientModel):
         self.name=self.connector_ids
         _logger.info(f"....................{self.name}")
        
-    
-   
     @api.depends('connector_ids', 'notification_type')
     def _compute_abc(self):
         for record in self:
@@ -63,8 +58,7 @@ class PushNotify(models.TransientModel):
                 record.abc = 'sms'
             else:
                 record.abc='push'
-      
-        
+       
     @api.depends('notification_type','connector_ids')
     def _compute_template_domain(self):
         for rec in self:
@@ -74,7 +68,6 @@ class PushNotify(models.TransientModel):
                 domain = [('id', '=', False)]
             rec.template_domain = domain 
                      
-    
     @api.depends('connector_ids')
     def _compute_segments_domain(self):
         for rec in self:
@@ -83,7 +76,6 @@ class PushNotify(models.TransientModel):
             else :
                 domain = [('id','=',False)]
             rec.segment_domain = domain
-    
     
     @api.depends('connector_ids')
     def _compute_subscription_domain(self):
@@ -94,14 +86,18 @@ class PushNotify(models.TransientModel):
             else:
                 domain = [('id','=',False)]
             rec.subscription_domain = domain
-            _logger.info(f"Computed domain: {domain}")  
+            _logger.info(f"Computed domain: {domain}")
             
-            
-            
+      
+                  
     def action_send_notify(self):
       for record in self:
         app_id = record.connector_ids.app_id
         api_key = record.connector_ids.api_key
+        
+        if not app_id or not api_key:
+            _logger.error("App ID or API Key is missing.")
+            continue
         
         if record.notification_type:
             if app_id:
@@ -125,11 +121,12 @@ class PushNotify(models.TransientModel):
                  
                 if record.send_to == 'all':
                     payload["included_segments"] = ["All"]
-                    
+                
                 elif record.segment_id and record.segment_id.mapped("name"):
                     segment_value = record.segment_id.mapped("name")
                     payload["included_segments"] = segment_value
-                    _logger.info(f"Sending to selected segment: {record.segment_id.name}")
+                    segment_names = ", ".join(segment_value)  
+                    _logger.info(f"Sending to selected segments: {segment_names}")
                         
                 elif record.send_to == 'subscription_id':
                     player_ids = []
@@ -152,14 +149,11 @@ class PushNotify(models.TransientModel):
                         _logger.warning("Failed to send notification - No valid subscription IDs.")
                         continue
                     
-               
-
                 if isinstance(record.content, str) and record.content.strip():
-                    payload["contents"] = {"en": record.content}
+                    payload["contents"] = {"en": record.content}  
                 if isinstance(record.heading, str) and record.heading.strip():
-                    payload["headings"] = {"en": record.heading}
-             
-
+                    payload["headings"] = {"en": record.heading }
+              
                 if record.action_btn and record.action_btn_ids:
                     buttons = []
                     for button in record.action_btn_ids:
@@ -186,17 +180,50 @@ class PushNotify(models.TransientModel):
                 except Exception as e:
                     _logger.error(f"Error sending notification: {str(e)}")
 
-        
-        
-        
-    
-    
     def action_cancel(self):
         return
+    
+    
+    
+    
+    def cron_notify(self):
+       
+        connectors = self.env['signal.connect'].search([])  
+
+        for connector in connectors:
+            app_id = connector.app_id
+            api_key = connector.api_key
+
+            if not app_id or not api_key:
+                _logger.error(f"App ID or API Key is missing for app: {connector.name}")
+                continue
+
+            url = "https://onesignal.com/api/v1/notifications"
+
+            payload = {
+                "app_id": app_id,
+                "included_segments": ["All"],  
+                "contents": {"en": "This is a notification from the cron job."},
+                "headings": {"en": "Cron Job Notification"},
+                "chrome_web_image":"https://cdn3.pixelcut.app/7/20/uncrop_hero_bdf08a8ca6.jpg",
+            }
+
+            headers = {
+                'Authorization': f"Basic {api_key}",
+                'Content-Type': 'application/json',
+            }
+
+            try:
+                response = requests.post(url, json=payload, headers=headers)
+                _logger.info(f"Response from OneSignal for app_id {app_id}: {response.text}")
+                if response.status_code == 200:
+                    _logger.info(f"Notification Sent Successfully for app_id: {app_id}")
+                else:
+                    _logger.error(f"Failed to send notification for app_id {app_id}. Status code: {response.status_code}, Response: {response.text}")
+            except Exception as e:
+                _logger.error(f"Error sending notification for app_id {app_id}: {str(e)}")
  
     
-    
-
 class PushNotifyButton(models.TransientModel):
     _name="push.notify.button"
     _description="Push Notification Button "
