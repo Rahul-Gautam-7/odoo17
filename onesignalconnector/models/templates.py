@@ -40,7 +40,7 @@ class Templates(models.Model):
     is_ios = fields.Boolean(string="iOS")
     is_macosx = fields.Boolean(string="MacOSX")
     is_adm = fields.Boolean(string="ADM")
-    is_alexa = fields.Boolean(string="Alexa")
+    is_alexa = fields.Boolean(string="Alexa",readonly=True)
     is_wp = fields.Boolean(string="Windows Phone")
     is_wp_wns = fields.Boolean(string="Windows Phone WNS")
     is_chrome = fields.Boolean(string="Chrome")
@@ -50,7 +50,15 @@ class Templates(models.Model):
     is_edge = fields.Boolean(string="Edge")
     
     
-    
+    @api.model
+    def create(self, values):
+        sync_user = self.env.context.get('sync_template', False)
+        if not sync_user:
+            user = super(Templates, self).create(values)
+            user.create_template_in_onesignal()
+            return user
+        else:
+            return super(Templates, self).create(values)
     
     
     @api.model
@@ -96,7 +104,7 @@ class Templates(models.Model):
                                 ], limit=1)
 
                                 if not existing_template:
-                                    self.create({
+                                    self.with_context(sync_template=True).create({
                                         'connector_ids': record.id,
                                         'temps_id': temps_id,
                                         'name': templatess.get('name'),
@@ -151,12 +159,10 @@ class Templates(models.Model):
                     "app_id":app_id,
                     "name":rec.name,
                     "channel":rec.channel,
-                    "is_chrome":True,
-                    "is_chrome_web":True,
                     "headings": {"en":rec.headings},
                     "contents": {"en":rec.contents}
             }
-            
+            _logger.info(f"--------------------------------------------{payload}")
             if rec.channel == 'sms':
                 payload.update({
                     "sms_from": rec.sms_from,
@@ -175,9 +181,22 @@ class Templates(models.Model):
                 })
                 _logger.info(f"Email template, added fields: {payload}")
             
-            
-           
-            
+            else :
+                payload.update({
+                                'isAndroid': rec.is_android,
+                                'isIos': rec.is_ios,
+                                'isMacOSX': rec.is_macosx,
+                                'isAdm': rec.is_adm,
+                                'isWP': rec.is_wp,
+                                'isWP_WNS': rec.is_wp_wns,
+                                'isChrome': rec.is_chrome,
+                                'isChromeWeb': rec.is_chrome_web,
+                                'isSafari': rec.is_safari,
+                                'isFirefox': rec.is_firefox,
+                                'isEdge': rec.is_edge,
+                })
+                _logger.info(f"Push template----------------{payload}")
+             
             headers = {
                     "Authorization": f"Basic {api_key}",
                     "Content-Type": "application/json",
@@ -241,5 +260,6 @@ class Templates(models.Model):
                 "Authorization": f"Basic {api_key}"
             }
             response = requests.delete(url, headers=headers)
+            self.unlink()
             _logger.info(f"user deleted ..........................................{response}")
         return

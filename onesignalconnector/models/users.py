@@ -95,7 +95,6 @@ class User(models.Model):
             user.create_user_in_onesignal()
             return user
         else:
-            
             return super(User, self).create(values)
         
     
@@ -159,9 +158,7 @@ class User(models.Model):
                             if existing_user:
                                 existing_user.write(values)
                             else:
-                                self.with_context(sync_user=True).create(values)
-                        
-                           
+                                self.with_context(sync_user=True).create(values)          
                 except requests.exceptions.RequestException as e:
                     _logger.info("Error in sending notifiy",str(e))
                 
@@ -219,9 +216,6 @@ class User(models.Model):
                  _logger.error(f"User creation failed: {response.status_code}, {response.text}")
             
                     
-                    
-                    
-                    
     def update_user_in_onesignal(self):            
             url=f"https://api.onesignal.com/apps/{self.app_id}/users/by/external_id/{self.external_id}"
             
@@ -261,10 +255,6 @@ class User(models.Model):
             if response.status_code == 200:
                 _logger.info("success=================================================SUCCESS===========================")
                
-       
-    
-    
-    
     
     def delete_user(self):
             url = f"https://onesignal.com/api/v1/players/{self.player_id}?app_id={self.app_id}"
@@ -279,4 +269,4 @@ class User(models.Model):
                 _logger.info("success=================================================SUCCESS===========================")
             else:
                     _logger.error(f"User creation failed: {response.status_code}, {response.text}")
-        return
+                    return
