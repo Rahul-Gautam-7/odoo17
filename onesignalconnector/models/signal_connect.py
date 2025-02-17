@@ -13,6 +13,7 @@ class SignalConnect(models.Model):
     name=fields.Char(string="Connector Name",required=True)
     app_id=fields.Char(string="App ID",required=True)
     api_key=fields.Char(string="Api Key",required=True)
+    partner_id = fields.Many2one('res.partner', string="Contact", ondelete='cascade')
     
     status=fields.Selection([
         ('connected','Connected'),

@@ -7,18 +7,18 @@
         <field name="arch" type="xml">
 
             <form>
-                  <!-- <header>
-                 <button name="create_user_in_onesignal" type="object" string="Create User" class="btn-info"  invisible="player_id"/>
-                 <button name="update_user_in_onesignal" type="object" string="Update User" class="btn-success" invisible="not player_id" />
+                  <header>
+                 <!-- <button name="create_user_in_onesignal" type="object" string="Create User" class="btn-info"  invisible="player_id"/>
+                 <button name="update_user_in_onesignal" type="object" string="Update User" class="btn-success" invisible="not player_id" /> -->
                  <button name="delete_user" type="object" string="Delete User" class="btn-danger" invisible="not player_id" />
-                 </header> -->
+                 </header>
                  <sheet>
                
                    <group>
                         <group>
                             <field name="connector_ids" />
                             <field name="player_id" />
-                            <field name="types" />
+                            <!-- <field name="types" /> -->
                             <field name="device_type" />
                              <field name="language" />
                             <field name="amount_spent" />

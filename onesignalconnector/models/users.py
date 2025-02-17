@@ -3,7 +3,7 @@ import requests
 import logging
 from datetime import datetime
 from odoo.exceptions import ValidationError
-from datetime import datetime
+
 
 _logger=logging.getLogger(__name__)
 
@@ -97,6 +97,16 @@ class User(models.Model):
         else:
             return super(User, self).create(values)
         
+    def write(self, vals):
+        _logger.info("Write method triggered for user(s): %s", self.ids)  # Log the record IDs
+        res = super(User, self).write(vals)
+    
+        for record in self:
+            _logger.info("Updating OneSignal for user: %s", record.id)  # Log each record being updated
+            record.update_user_in_onesignal()
+
+        return res
+        
     
     @api.model
     def check_users(self,app_id):
@@ -111,16 +121,7 @@ class User(models.Model):
                     response = requests.get(url,headers=headers)
                     if response.status_code == 200 :
                         data=response.json()
-                        
-                        # onesignal_players = data.get('players', [])
-                        # onesignal_player_ids = {player.get('id') for player in onesignal_players}
-                        # odoo_players = self.search([('connector_ids', '=', signal_records.id)])
-                        # odoo_player_ids = {player.player_id for player in odoo_players}
-                        # players_to_remove = odoo_players.filtered(lambda p: p.player_id not in onesignal_player_ids)       
-                        # for player in players_to_remove:
-                        #     _logger.info(f"Removing player {player.player_id} from Odoo as they no longer exist in OneSignal.")
-                        #     player.unlink()
-                            
+                
 
                         for player in data.get('players', []):
                             player_id = player.get('id')
@@ -149,10 +150,10 @@ class User(models.Model):
                                     'created_at': datetime.utcfromtimestamp(player.get('created_at')),
                                     'invalid_identifier': player.get('invalid_identifier', False),
                                     'sdk': player.get('sdk', ''),
-                                    'token':player.get('token', ''),
+                                    'token':player.get('identifier', ''),
                                     'test_type': player.get('test_type', None),
                                     'ip': player.get('ip', ''),
-                                    'tags': str(player.get('tags', {})),
+                                    'tags': ', '.join(player.get('tags', {}).values()),
                                     'external_id':player.get('external_user_id', ''),
                             }
                             if existing_user:
@@ -171,8 +172,12 @@ class User(models.Model):
                     raise ValidationError("Token is required when the notification type is WebPush.")
                 tp = "ChromePush"
                 payload = {
+                    "properties":{
+                         "tags": {
+                             "subscription_status":"subscribed"
+                             },
+                    },
                     "subscriptions":[   {"type": tp,"token":self.token,"enabled":True}    ],
-                    "tags": {  "subscription_status": "subscribed",  },
                     "identity":{"external_id" : f"{self.token}_{self.current_timestamp}" },
                     }
             elif self.channel == 'email':
@@ -184,7 +189,9 @@ class User(models.Model):
                 token = self.token
                 payload = {
                     "subscriptions":[   {"type": tp,"token":token,"enabled":True}  ],
-                    "tags": {  "subscription_status": "subscribed",  },
+                    "properties":{
+                         "tags": {  "subscription_status": "subscribed"  },
+                    },
                     "identity":{"external_id" : f"{self.token}_{self.current_timestamp}" },
                     }
             elif self.channel == 'sms':
@@ -196,7 +203,10 @@ class User(models.Model):
                 token= f"+{self.token}" if not self.token.startswith("+") else self.token
                 payload = {
                     "subscriptions":[   {"type": tp,"token":token,"enabled":True}  ],
-                    "tags": {  "subscription_status": "subscribed",  },
+                    "properties":{
+                         "tags": {  "subscription_status": "subscribed"  },
+                    },
+                   
                     "identity":{"external_id" : f"{self.token}_{self.current_timestamp}" },
                     } 
             else:
@@ -215,7 +225,7 @@ class User(models.Model):
             else:
                  _logger.error(f"User creation failed: {response.status_code}, {response.text}")
             
-                    
+                                     
     def update_user_in_onesignal(self):            
             url=f"https://api.onesignal.com/apps/{self.app_id}/users/by/external_id/{self.external_id}"
             
@@ -230,7 +240,6 @@ class User(models.Model):
                 tp = "Email"
                 token = self.token
                 payload = {
-                    "properties": { "ip":self.ip, },
                     "subscriptions":[   {"type": tp,"token":token,"enabled":True}  ],
                     "tags": {  "subscription_status": "subscribed",  }
                     }

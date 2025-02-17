@@ -5,3 +5,4 @@ onesignalconnector.access_onesignal_segment,access_onesignal_segment,onesignalco
 onesignalconnector.access_onesignal_template,access_onesignal_template,onesignalconnector.model_onesignal_template,base.group_user,1,1,1,1,
 onesignalconnector.access_push_notify,access_push_notify,onesignalconnector.model_push_notify,base.group_user,1,1,1,1, 
 onesignalconnector.access_push_notify_button,access_push_notify_button,onesignalconnector.model_push_notify_button,base.group_user,1,1,1,1, 
+onesignalconnector.access_contact_wizard,access_contact_wizard,onesignalconnector.model_contact_wizard,base.group_user,1,1,1,1,

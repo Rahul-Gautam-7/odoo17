@@ -7,7 +7,7 @@
     'author': 'Rahul Gautam',
     'license': 'LGPL-3',
     'depends': [
-        'base'
+        'base',
     ],
     'data': [
         'security/ir.model.access.csv',
@@ -18,6 +18,7 @@
         'views/users.xml',
         'views/segments.xml',
         'views/templates.xml',
+        'wizard/contact_wiz.xml',
     ],
     'demo': [
         

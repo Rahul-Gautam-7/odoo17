@@ -145,8 +145,7 @@ class Templates(models.Model):
             
                 except requests.exceptions.RequestException as e:
                     _logger.error(f"Error while fetching templates: {str(e)}")
-                            
-                            
+                                                  
  
     def create_template_in_onesignal(self):
         for rec in self:
@@ -224,13 +223,44 @@ class Templates(models.Model):
                     "app_id":app_id,
                     "name":self.name,
                     "channel":self.channel,
-                    "is_chrome":self.is_chrome,
-                    "is_chrome_web":self.is_chrome_web,
                     "headings": {"en":self.headings},
                     "contents": {"en":self.contents}
             }
-    
-            _logger.info(f"payload value........................{payload}")
+            _logger.info(f"--------------------------------------------{payload}")
+            if self.channel == 'sms':
+                payload.update({
+                    "sms_from": self.sms_from,
+                    "sms_media_urls": [self.sms_media_urls]
+                })
+                _logger.info(f"SMS template, added fields: {payload}")
+        
+           
+            elif self.channel == 'email':
+                payload.update({
+                    "email_body": self.email_body,
+                    "email_subject": self.email_subject,
+                    "email_preheader": self.email_preheader,
+                    "email_reply_to_address": self.email_reply_to_address,
+                    "disable_email_click_tracking": self.disable_email_click_tracking
+                })
+                _logger.info(f"Email template, added fields: {payload}")
+            
+            else :
+                payload.update({
+                                'isAndroid': self.is_android,
+                                'isIos': self.is_ios,
+                                'isMacOSX': self.is_macosx,
+                                'isAdm': self.is_adm,
+                                'isWP': self.is_wp,
+                                'isWP_WNS': self.is_wp_wns,
+                                'isChrome': self.is_chrome,
+                                'isChromeWeb': self.is_chrome_web,
+                                'isSafari': self.is_safari,
+                                'isFirefox': self.is_firefox,
+                                'isEdge': self.is_edge,
+                })
+                _logger.info(f"Push template----------------{payload}")
+            
             
             headers = {
                     "Authorization": f"Basic {api_key}",

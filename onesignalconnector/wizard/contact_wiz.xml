@@ -1,0 +1,52 @@
+<odoo>
+    <data>
+
+        <record id="view_contact_subscribe_wizard_form" model="ir.ui.view">
+            <field name="name">contact.subscribe.wizard.form</field>
+            <field name="model">contact.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Subscribe to OneSignal">
+                    <group>
+                        <field name="connector_ids" />
+                        <field name="contact_id" readonly="1"/>
+                        <field name="notification_type"  />
+                     
+                        <field name="email" readonly="1" invisible="notification_type != 'email'"/>
+                        <field name="phone" readonly="1" invisible="notification_type != 'sms'" />
+                    </group>
+                    <footer>
+                        <button name="subscribe_to_onesignal"
+                                string="Subscribe"
+                                type="object"
+                                class="btn-success"/>
+                        <button string="Cancel" class="btn-danger" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_contact_subscribe_wizard" model="ir.actions.act_window">
+            <field name="name">Subscribe to OneSignal</field>
+            <field name="res_model">contact.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="view_partner_form_inherit_subscribe" model="ir.ui.view">
+            <field name="name">res.partner.form.inherit.subscribe</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="before">
+                    <header>
+                    <button name="%(action_contact_subscribe_wizard)d"
+                            string="Subscribe to OneSignal"
+                            type="action"
+                            class="btn-info"
+                            context="{'default_contact_id': active_id}"/>
+                    </header>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

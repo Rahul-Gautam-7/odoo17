@@ -20,9 +20,9 @@
         <field name="arch" type="xml">
             <form string="Form Template">
                 <header>
-                    <button string="Create Template" name="create_template_in_onesignal" type="object" class="btn-info" 
+                    <!-- <button string="Create Template" name="create_template_in_onesignal" type="object" class="btn-info" 
                     invisible="temps_id"
-                    />
+                    /> -->
                     <button string="Update Template" name="update_template_in_onesignal" type="object" class="btn-success" invisible="not temps_id"/>
                 </header>
                 <sheet>
