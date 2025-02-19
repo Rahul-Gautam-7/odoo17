@@ -98,11 +98,11 @@ class User(models.Model):
             return super(User, self).create(values)
         
     def write(self, vals):
-        _logger.info("Write method triggered for user(s): %s", self.ids)  # Log the record IDs
+        _logger.info("Write method triggered for user(s): %s", self.ids)  
         res = super(User, self).write(vals)
     
         for record in self:
-            _logger.info("Updating OneSignal for user: %s", record.id)  # Log each record being updated
+            _logger.info("Updating OneSignal for user: %s", record.id)  
             record.update_user_in_onesignal()
 
         return res
@@ -155,6 +155,7 @@ class User(models.Model):
                                     'ip': player.get('ip', ''),
                                     'tags': ', '.join(player.get('tags', {}).values()),
                                     'external_id':player.get('external_user_id', ''),
+                            
                             }
                             if existing_user:
                                 existing_user.write(values)

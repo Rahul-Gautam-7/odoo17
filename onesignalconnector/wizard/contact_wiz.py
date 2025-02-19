@@ -18,17 +18,26 @@ class ContactWiz(models.TransientModel):
 
     current_timestamp = datetime.utcnow().strftime('%Y-%m-%d%H:%M:%S')
 
+    
+    
     def _default_contact(self):
-        return self.env.context.get('default_contact_id')
+        return self.env.context.get('active_id')
 
     def _default_email(self):
-        contact = self.env['res.partner'].browse(self.env.context.get('default_contact_id'))
+        contact = self.env['res.partner'].browse(self.env.context.get('active_id'))
         return contact.email
 
     def _default_phone(self):
-        contact = self.env['res.partner'].browse(self.env.context.get('default_contact_id'))
+        contact = self.env['res.partner'].browse(self.env.context.get('active_id'))
         return contact.phone
-
+    
+    
+    def _default_tags(self):
+            contact = self.env['res.partner'].browse(self.env.context.get('active_id'))
+            return ', '.join(contact.category_id.mapped('name'))
+    
+    
+ 
     contact_id = fields.Many2one('res.partner', string='Contact', default=_default_contact,readonly=True)
     notification_type=fields.Selection([
         ('email', 'Email'),
@@ -36,7 +45,11 @@ class ContactWiz(models.TransientModel):
         ],string="Notification Type")
     email = fields.Char(string='Email', default=_default_email)
     phone = fields.Char(string='Phone', default=_default_phone)
+    tags=fields.Char(string="Tags", default=_default_tags)
+    
    
+   
+    
     
     def subscribe_to_onesignal(self): 
         if self.email and self.notification_type == 'email':
@@ -100,7 +113,10 @@ class ContactWiz(models.TransientModel):
         payload = { 
                     "subscriptions":[   {"type":types,"token":identifier,"enabled":True}  ],
                     "properties":{
-                         "tags": {  "subscription_status": "subscribed"  },
+                         "tags":{  
+                             "subscription_status":self.tags  
+                             },
+                      
                     },
                     "identity":{"external_id" : f"{identifier}" },
                     } 

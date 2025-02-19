@@ -43,7 +43,7 @@
                             string="Subscribe to OneSignal"
                             type="action"
                             class="btn-info"
-                            context="{'default_contact_id': active_id}"/>
+                            />
                     </header>
                 </xpath>
             </field>
