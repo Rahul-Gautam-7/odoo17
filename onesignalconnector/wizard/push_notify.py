@@ -74,11 +74,20 @@ class PushNotify(models.TransientModel):
                 domain = [('id','=',False)]
             rec.segment_domain = domain
     
-    @api.depends('connector_ids')
+    @api.onchange('connector_ids','notification_type')
     def _compute_subscription_domain(self):
         for rec in self:
-            if rec.connector_ids : 
-                domain = [('connector_ids','in',rec.connector_ids.ids)]
+            if rec.connector_ids and rec.notification_type : 
+                vals=[]
+                if rec.notification_type == 'push' :
+                    vals = ['Chrome Web Push', 'iOS', 'Android', 'Huawei App Gallery Builds', 'Fire OS Push', 'Windows Push', 'macOS Push', 'Firefox Push', 'Safari Push']
+                elif rec.notification_type == 'email':
+                    vals=["Email"]
+                elif rec.notification_type == 'sms':
+                    vals=["SMS"]
+                domain = [('connector_ids','in',rec.connector_ids.ids),
+                          ('device_type','=',vals),
+                          ]
                 _logger.info(f"Subscription domain: {domain}")
             else:
                 domain = [('id','=',False)]
