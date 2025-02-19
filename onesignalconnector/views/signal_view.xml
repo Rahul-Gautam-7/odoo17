@@ -1,8 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
-
-
-
     <record id="signal_view_tree" model="ir.ui.view">
         <field name="name">signal.view.tree</field>
         <field name="model">signal.connect</field>
@@ -35,16 +32,12 @@
                          <button name="action_connect" class="btn-info" string="Test Connection" type="object"  />
                     <button name="action_sync_user" class="btn-info" string="Sync Users" type="object"  />
                     <button name="action_sync_segments" class="btn-info" string="Sync Segments" type="object"  />
-                    <button name="action_sync_templates" class="btn-info" string="Sync Templates" type="object"  />
-                        
+                    <button name="action_sync_templates" class="btn-info" string="Sync Templates" type="object"  />       
                     </group>
                 </sheet>
             </form>
         </field>
     </record>
-
-
-
     <record id="action_signal" model="ir.actions.act_window">
         <field name="name">SignalConnector</field>
         <field name="type">ir.actions.act_window</field>
@@ -58,15 +51,10 @@
         </field>
     </record>
 
-    
-
     <menuitem
         id="connect_menu"
         name="Connect"
         action="action_signal"
         parent="signal_connect_menu"
         sequence="1"/>
-
-
-
 </odoo>

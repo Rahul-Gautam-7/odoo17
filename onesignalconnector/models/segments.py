@@ -9,12 +9,10 @@ class Segments(models.Model):
     _description="One signal segments"
     
     connector_ids=fields.Many2one('signal.connect',string="Segment ID")
-    
     name=fields.Char(string="Segment Name")
     seg_id=fields.Char(string="Segment Id")
     app_id=fields.Char(related="connector_ids.app_id",store=True)
     api_key=fields.Char(related="connector_ids.api_key",store=True)
-    
     
     @api.model
     def check_segments(self,app_id):
@@ -38,8 +36,7 @@ class Segments(models.Model):
                             existing_segments=self.env['onesignal.segment'].search([
                                 ('connector_ids','=',record.id),
                                 ('seg_id','=',seg_id)
-                            ],limit=1)
-                            
+                            ],limit=1)  
                             if not existing_segments:
                                 self.env['onesignal.segment'].create({
                                     'connector_ids':record.id,

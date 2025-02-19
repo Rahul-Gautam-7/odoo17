@@ -20,9 +20,6 @@
         <field name="arch" type="xml">
             <form string="Form Template">
                 <header>
-                    <!-- <button string="Create Template" name="create_template_in_onesignal" type="object" class="btn-info" 
-                    invisible="temps_id"
-                    /> -->
                     <button string="Update Template" name="update_template_in_onesignal" type="object" class="btn-success" invisible="not temps_id"/>
                 </header>
                 <sheet>
@@ -47,8 +44,6 @@
                         <field name="email_reply_to_address" string="Reply-to Email Address"/>
                         <field name="disable_email_click_tracking" string="Disable Click Tracking"/>
                         </group>
-
-                    <!-- SMS Fields -->
                         <group string="SMS Settings">
                         <field name="is_SMS" string="SMS Available"/>
                         <field name="sms_from" string="SMS From"/>

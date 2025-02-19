@@ -20,13 +20,11 @@ class PushNotify(models.TransientModel):
     redirect_url=fields.Char(string="Redirect URL")
     abc=fields.Char(string="Channel",compute="_compute_abc",default="push")
     name=fields.Char(string="Channel",compute="_onchange_connect",default='push')
-    
     template_domain = fields.Binary(compute="_compute_template_domain")
     action_btn_ids=fields.One2many('push.notify.button','notify_id',string="Action Button")
     subscription_id=fields.Many2many('user.fetch',string="Subscription_id")
     subscription_domain = fields.Binary(compute="_compute_subscription_domain")
     segment_domain=fields.Binary(compute="_compute_segments_domain")
-     
     send_to=fields.Selection([
         ('all',"All"),
         ('segments',"Segments"),
@@ -37,7 +35,6 @@ class PushNotify(models.TransientModel):
         ('email','Email Notification'),
         ('sms','SMS Notification')
     ],string="Notification Type",default="push")
-    
     email_subject = fields.Char(string="Email Subject")
     email_body = fields.Text(string="Email Body")
     recipient_email = fields.Char(string="Recipient Email")
@@ -87,17 +84,11 @@ class PushNotify(models.TransientModel):
                 domain = [('id','=',False)]
             rec.subscription_domain = domain
             _logger.info(f"Computed domain: {domain}")
-            
-      
-                  
+                        
     def action_send_notify(self):
       for record in self:
         app_id = record.connector_ids.app_id
         api_key = record.connector_ids.api_key
-        
-        if not app_id or not api_key:
-            _logger.error("App ID or API Key is missing.")
-            continue
         
         if record.notification_type:
             if app_id:
@@ -183,13 +174,9 @@ class PushNotify(models.TransientModel):
     def action_cancel(self):
         return
     
-    
-    
-    
     def cron_notify(self):
        
         connectors = self.env['signal.connect'].search([])  
-
         for connector in connectors:
             app_id = connector.app_id
             api_key = connector.api_key
@@ -212,7 +199,6 @@ class PushNotify(models.TransientModel):
                 'Authorization': f"Basic {api_key}",
                 'Content-Type': 'application/json',
             }
-
             try:
                 response = requests.post(url, json=payload, headers=headers)
                 _logger.info(f"Response from OneSignal for app_id {app_id}: {response.text}")

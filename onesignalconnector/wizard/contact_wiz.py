@@ -15,7 +15,6 @@ class ContactWiz(models.TransientModel):
     _description = 'Subscribe Contact to OneSignal'
 
     connector_ids=fields.Many2one('signal.connect',string="Onesignal AccountName")
-
     current_timestamp = datetime.utcnow().strftime('%Y-%m-%d%H:%M:%S')
 
     
@@ -31,7 +30,6 @@ class ContactWiz(models.TransientModel):
         contact = self.env['res.partner'].browse(self.env.context.get('active_id'))
         return contact.phone
     
-    
     def _default_tags(self):
             contact = self.env['res.partner'].browse(self.env.context.get('active_id'))
             return ', '.join(contact.category_id.mapped('name'))
@@ -46,11 +44,7 @@ class ContactWiz(models.TransientModel):
     email = fields.Char(string='Email', default=_default_email)
     phone = fields.Char(string='Phone', default=_default_phone)
     tags=fields.Char(string="Tags", default=_default_tags)
-    
-   
-   
-    
-    
+     
     def subscribe_to_onesignal(self): 
         if self.email and self.notification_type == 'email':
             if self._is_already_subscribed(self.email):
@@ -69,7 +63,6 @@ class ContactWiz(models.TransientModel):
                     raise ValidationError("Invalid phone number format. The phone number must consist of 10 to 15 digits.")
                
                 self._subscribe_to_onesignal(self.phone)
-        
         else:
             raise ValidationError("You Dont have Email and Phone number")
         
@@ -93,11 +86,9 @@ class ContactWiz(models.TransientModel):
 
     def _subscribe_to_onesignal(self, identifier):
         _logger.info(f"----------------------------------------------------------------{identifier}")
-       
         onesignal_app_id = self.connector_ids.app_id
         onesignal_rest_api_key = self.connector_ids.api_key
         url=f"https://api.onesignal.com/apps/{onesignal_app_id}/users"
-
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Basic {onesignal_rest_api_key}",
@@ -108,8 +99,7 @@ class ContactWiz(models.TransientModel):
         else:
             identifier=f"+{identifier}" if not identifier.startswith("+") else self.identifier
             types='SMS'
-            
-
+        
         payload = { 
                     "subscriptions":[   {"type":types,"token":identifier,"enabled":True}  ],
                     "properties":{

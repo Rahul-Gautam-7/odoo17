@@ -49,7 +49,6 @@ class Templates(models.Model):
     is_firefox = fields.Boolean(string="Firefox")
     is_edge = fields.Boolean(string="Edge")
     
-    
     @api.model
     def create(self, values):
         sync_user = self.env.context.get('sync_template', False)
@@ -60,7 +59,6 @@ class Templates(models.Model):
         else:
             return super(Templates, self).create(values)
     
-    
     @api.model
     def check_templates(self,app_id):
         signal_rec = self.env['signal.connect'].search([('id','=',app_id)])
@@ -69,7 +67,6 @@ class Templates(models.Model):
             api_key=record.api_key
             if app_id:
                 url=f"https://api.onesignal.com/templates?app_id={app_id}"
-                
                 headers={
                     'Authorization':f"Basic {api_key}",
                     'Content-Type':'application/json',
@@ -80,29 +77,22 @@ class Templates(models.Model):
                     if response.status_code == 200:
                         data = response.json()
                         _logger.info(data)
-                        
                         templates_list = data.get('templates', [])
     
                         for templatess in data.get('templates',[]):
                             _logger.info(f"Fetched template: {templatess}")
-                            temps_id=templatess.get('id')
-                            
-                            
+                            temps_id=templatess.get('id') 
                             detail_url = f"https://api.onesignal.com/templates/{temps_id}?app_id={app_id}"
                             detail_response = requests.get(detail_url, headers=headers)
                             
                             if detail_response.status_code == 200:
                                 detail_data = detail_response.json()
-                                _logger.info(f"Detailed data for template {temps_id}: {detail_data}")
-                            
-                            
+                                _logger.info(f"Detailed data for template {temps_id}: {detail_data}")         
                                 content_data = detail_data.get('content', {})
-                   
                                 existing_template = self.env['onesignal.template'].search([
                                 ('connector_ids', '=', record.id),
                                 ('temps_id', '=', temps_id),
                                 ], limit=1)
-
                                 if not existing_template:
                                     self.with_context(sync_template=True).create({
                                         'connector_ids': record.id,
@@ -142,16 +132,13 @@ class Templates(models.Model):
                                 _logger.error(f"Failed to fetch details for template {temps_id}")
                     else:
                         _logger.error(f"Failed to fetch templates. Status code: {response.status_code}")
-            
                 except requests.exceptions.RequestException as e:
                     _logger.error(f"Error while fetching templates: {str(e)}")
                                                   
- 
     def create_template_in_onesignal(self):
         for rec in self:
             app_id=rec.app_id
             api_key=rec.api_key
-            
             url="https://api.onesignal.com/templates"
             
             payload = {
@@ -168,8 +155,6 @@ class Templates(models.Model):
                     "sms_media_urls": [rec.sms_media_urls]
                 })
                 _logger.info(f"SMS template, added fields: {payload}")
-        
-           
             elif rec.channel == 'email':
                 payload.update({
                     "email_body": rec.email_body,
@@ -179,7 +164,6 @@ class Templates(models.Model):
                     "disable_email_click_tracking": rec.disable_email_click_tracking
                 })
                 _logger.info(f"Email template, added fields: {payload}")
-            
             else :
                 payload.update({
                                 'isAndroid': rec.is_android,
@@ -194,29 +178,24 @@ class Templates(models.Model):
                                 'isFirefox': rec.is_firefox,
                                 'isEdge': rec.is_edge,
                 })
-                _logger.info(f"Push template----------------{payload}")
-             
+                _logger.info(f"Push template----------------{payload}") 
             headers = {
                     "Authorization": f"Basic {api_key}",
                     "Content-Type": "application/json",
                 }
-            
             try:
-                response= requests.post(url,json=payload,headers=headers)
-                
+                response= requests.post(url,json=payload,headers=headers)  
                 if response.status_code == 200:
                     self.connector_ids.action_sync_templates()
                     _logger.info("success=================================================SUCCESS===========================")
                 else:
                     _logger.error(f"User creation failed: {response.status_code}, {response.text}")
             except requests.exceptions.RequestException as e:
-                    _logger.error(f"Error creating user in OneSignal: {str(e)}")
-                    
+                    _logger.error(f"Error creating user in OneSignal: {str(e)}")       
                     
     def update_template_in_onesignal(self):
             app_id=self.app_id
             api_key=self.api_key
-            
             url=f"https://api.onesignal.com/templates/{self.temps_id}?app_id={app_id}"
             
             payload = {
@@ -234,7 +213,6 @@ class Templates(models.Model):
                 })
                 _logger.info(f"SMS template, added fields: {payload}")
         
-           
             elif self.channel == 'email':
                 payload.update({
                     "email_body": self.email_body,
@@ -260,7 +238,6 @@ class Templates(models.Model):
                                 'isEdge': self.is_edge,
                 })
                 _logger.info(f"Push template----------------{payload}")
-            
             
             headers = {
                     "Authorization": f"Basic {api_key}",

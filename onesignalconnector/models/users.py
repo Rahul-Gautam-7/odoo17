@@ -40,8 +40,6 @@ TYPE_MAPPING = {
     'SafariPush': 'Safari Push',
 }
 
-
-
 class User(models.Model):
     _name="user.fetch"
     _description="Fetching users"
@@ -54,7 +52,6 @@ class User(models.Model):
     app_id=fields.Char(related='connector_ids.app_id',store=True)
     api_key=fields.Char(related="connector_ids.api_key",store=True)
     
-
     identifier = fields.Char(string="Identifier")
     session_count = fields.Integer(string="Session Count")
     language = fields.Char(string="Language")
@@ -76,10 +73,7 @@ class User(models.Model):
     tags = fields.Text(string="Tags")
     external_id=fields.Char(string="External ID",store=True)
     token=fields.Char(string="Token")
-    current_timestamp = datetime.utcnow().strftime('%Y-%m-%d%H:%M:%S')
- 
-
-    
+    current_timestamp = datetime.utcnow().strftime('%Y-%m-%d%H:%M:%S') 
     channel = fields.Selection([
         ('webpush', 'Web Push'),
         ('email', 'Email'),
@@ -100,14 +94,11 @@ class User(models.Model):
     def write(self, vals):
         _logger.info("Write method triggered for user(s): %s", self.ids)  
         res = super(User, self).write(vals)
-    
         for record in self:
             _logger.info("Updating OneSignal for user: %s", record.id)  
             record.update_user_in_onesignal()
-
         return res
-        
-    
+       
     @api.model
     def check_users(self,app_id):
             signal_records = self.env['signal.connect'].search([('id','=',app_id)])  
@@ -121,14 +112,11 @@ class User(models.Model):
                     response = requests.get(url,headers=headers)
                     if response.status_code == 200 :
                         data=response.json()
-                
-
                         for player in data.get('players', []):
                             player_id = player.get('id')
                             existing_player = self.search([
                                 ('player_id', '=', player_id),
                             ], limit=1)
-                            
                             player_id = player.get('id', '')
                             existing_user=self.search([('player_id', '=', player_id)], limit=1)
                             values={
@@ -155,7 +143,6 @@ class User(models.Model):
                                     'ip': player.get('ip', ''),
                                     'tags': ', '.join(player.get('tags', {}).values()),
                                     'external_id':player.get('external_user_id', ''),
-                            
                             }
                             if existing_user:
                                 existing_user.write(values)
@@ -163,8 +150,7 @@ class User(models.Model):
                                 self.with_context(sync_user=True).create(values)          
                 except requests.exceptions.RequestException as e:
                     _logger.info("Error in sending notifiy",str(e))
-                
-    
+                    
     def create_user_in_onesignal(self):
             self.ensure_one()
             if self.channel == 'webpush':
@@ -179,7 +165,7 @@ class User(models.Model):
                              },
                     },
                     "subscriptions":[   {"type": tp,"token":self.token,"enabled":True}    ],
-                    "identity":{"external_id" : f"{self.token}_{self.current_timestamp}" },
+                    "identity":{"external_id" : f"{self.token}" },
                     }
             elif self.channel == 'email':
                 if not self.token:
@@ -193,7 +179,7 @@ class User(models.Model):
                     "properties":{
                          "tags": {  "subscription_status": "subscribed"  },
                     },
-                    "identity":{"external_id" : f"{self.token}_{self.current_timestamp}" },
+                    "identity":{"external_id" : f"{self.token}" },
                     }
             elif self.channel == 'sms':
                 if not self.token:
@@ -208,7 +194,7 @@ class User(models.Model):
                          "tags": {  "subscription_status": "subscribed"  },
                     },
                    
-                    "identity":{"external_id" : f"{self.token}_{self.current_timestamp}" },
+                    "identity":{"external_id" : f"{self.token}" },
                     } 
             else:
                 _logger.error("Invalid notification type specified")
@@ -225,8 +211,7 @@ class User(models.Model):
                 self.connector_ids.action_sync_user()          
             else:
                  _logger.error(f"User creation failed: {response.status_code}, {response.text}")
-            
-                                     
+                                             
     def update_user_in_onesignal(self):            
             url=f"https://api.onesignal.com/apps/{self.app_id}/users/by/external_id/{self.external_id}"
             
@@ -280,3 +265,27 @@ class User(models.Model):
             else:
                     _logger.error(f"User creation failed: {response.status_code}, {response.text}")
                     return
+    
+    @api.model
+    def sync_onesignal_users(self):
+        signal_records = self.env['signal.connect'].search([])
+        for signal_record in signal_records:
+            url = f"https://onesignal.com/api/v1/players?app_id={signal_record.app_id}"
+            headers = {
+                "Authorization": f"Basic {signal_record.api_key}",
+                "Content-Type": "application/json",
+            }
+            try:
+                response = requests.get(url, headers=headers)
+                if response.status_code == 200:
+                    onesignal_users = response.json().get('players', [])
+                    onesignal_player_ids = [player.get('id') for player in onesignal_users]
+                    odoo_users = self.search([('connector_ids', '=', signal_record.id)])
+                    for odoo_user in odoo_users:
+                        if odoo_user.player_id not in onesignal_player_ids:
+                            _logger.info(f"User {odoo_user.player_id} no longer exists in OneSignal. Deleting in Odoo.")
+                            odoo_user.unlink()  
+                else:
+                    _logger.error(f"Failed to fetch users from OneSignal: {response.status_code}, {response.text}")
+            except requests.exceptions.RequestException as e:
+                _logger.error(f"Error while syncing users from OneSignal: {str(e)}")

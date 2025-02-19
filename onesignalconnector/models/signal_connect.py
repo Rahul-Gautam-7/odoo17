@@ -14,15 +14,12 @@ class SignalConnect(models.Model):
     app_id=fields.Char(string="App ID",required=True)
     api_key=fields.Char(string="Api Key",required=True)
     partner_id = fields.Many2one('res.partner', string="Contact", ondelete='cascade')
-    
     status=fields.Selection([
         ('connected','Connected'),
         ('disconnected','Disconnected'),
     ],readonly=True,default="disconnected")
-    
     total_players=fields.Integer(string="Total Players",compute="_compute_total")
     
-   
     def action_connect(self):
         url=f"https://api.onesignal.com/apps/{self.app_id}"
         headers={
@@ -44,30 +41,23 @@ class SignalConnect(models.Model):
             _logger.error("Connection Failed: %s", str(e))  
         return True
     
-
     def action_sync_user(self):
         self.ensure_one()
         self.env['user.fetch'].check_users(self.id)
         _logger.info("Fetch Success")
         self._compute_total()
         
-    
-
     def action_sync_segments(self): 
         self.ensure_one()
         self.env['onesignal.segment'].check_segments(self.id)
         return True
         
-    
-   
-
     def action_sync_templates(self):
         self.ensure_one()
         self.env['onesignal.template'].check_templates(self.id)
         _logger.info("Template Sync Success")
         return True
     
-
     def _compute_total(self):
         for record in self:
             player_count = self.env['user.fetch'].search_count([('connector_ids','=',record.id)])
