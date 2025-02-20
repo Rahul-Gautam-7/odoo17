@@ -6,7 +6,6 @@ from odoo.exceptions import ValidationError
 import re
 
 
-
 _logger=logging.getLogger(__name__)
 
 
@@ -48,14 +47,19 @@ class ContactWiz(models.TransientModel):
     def subscribe_to_onesignal(self): 
         if self.email and self.notification_type == 'email':
             if self._is_already_subscribed(self.email):
-                _logger.info("---------------------------------------------VALIDATION ERROR EMAIL-------------------")
                 raise ValidationError("This email is already subscribed to OneSignal.")
             else:
                 self._subscribe_to_onesignal(self.email)
+                return {
+                    'effect':{
+                        'fadeout':'slow',
+                        'message':'Subscribed Success',
+                        'type':'rainbow_man'
+                    }
+                }
                 
         elif self.phone and self.notification_type == 'sms':
             if self._is_already_subscribed(self.phone):
-                _logger.info("---------------------------------------------VALIDATION ERROR PHONE-------------------")
                 raise ValidationError("This phone number is already subscribed to OneSignal.")
             else:
                 pattern = r'^\d{10,15}$'
@@ -63,26 +67,37 @@ class ContactWiz(models.TransientModel):
                     raise ValidationError("Invalid phone number format. The phone number must consist of 10 to 15 digits.")
                
                 self._subscribe_to_onesignal(self.phone)
+                return {
+                    'effect':{
+                        'fadeout':'slow',
+                        'message':'Subscribed Success',
+                        'type':'rainbow_man'
+                    }
+                }
         else:
             raise ValidationError("You Dont have Email and Phone number")
         
         
     def _is_already_subscribed(self, identifier):
-        _logger.info(f"---------------------------------------------{identifier}")
+        _logger.info(f"--------------------IDENTIFIER-------------------------{identifier}")
         onesignal_app_id = self.connector_ids.app_id
         onesignal_rest_api_key = self.connector_ids.api_key
-        onesignal_url = f"https://api.onesignal.com/apps/{onesignal_app_id}/users/by/external_id/+{identifier}"
-
+        if self.notification_type == 'email':
+            onesignal_url = f"https://api.onesignal.com/apps/{onesignal_app_id}/users/by/external_id/{identifier}"
+        else:
+            onesignal_url = f"https://api.onesignal.com/apps/{onesignal_app_id}/users/by/external_id/+{identifier}"
+            
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Basic {onesignal_rest_api_key}",
         }
-
+        
         response = requests.get(onesignal_url, headers=headers)
-        _logger.info(f"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%{response.status_code}")
+       
         if response.status_code == 200:
-                return True 
-        return False  
+                return True
+        else: 
+            return False  
 
     def _subscribe_to_onesignal(self, identifier):
         _logger.info(f"----------------------------------------------------------------{identifier}")

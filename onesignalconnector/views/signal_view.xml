@@ -28,11 +28,7 @@
                         <field name="app_id" />
                         <field name="api_key" invisible="status == 'connected'" />
                         <field name="status" />
-                        <button name="action_connect" class="btn-success" string="Connect" type="object"  />
-                         <button name="action_connect" class="btn-info" string="Test Connection" type="object"  />
-                    <button name="action_sync_user" class="btn-info" string="Sync Users" type="object"  />
-                    <button name="action_sync_segments" class="btn-info" string="Sync Segments" type="object"  />
-                    <button name="action_sync_templates" class="btn-info" string="Sync Templates" type="object"  />       
+                        <button name="action_connect" class="btn-success" string="Connect" type="object"  />    
                     </group>
                 </sheet>
             </form>

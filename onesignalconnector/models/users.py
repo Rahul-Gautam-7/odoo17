@@ -268,7 +268,7 @@ class User(models.Model):
     
     @api.model
     def sync_onesignal_users(self):
-        signal_records = self.env['signal.connect'].search([])
+        signal_records = self.env['signal.connect'].search([],limit=1)
         for signal_record in signal_records:
             url = f"https://onesignal.com/api/v1/players?app_id={signal_record.app_id}"
             headers = {
@@ -284,7 +284,8 @@ class User(models.Model):
                     for odoo_user in odoo_users:
                         if odoo_user.player_id not in onesignal_player_ids:
                             _logger.info(f"User {odoo_user.player_id} no longer exists in OneSignal. Deleting in Odoo.")
-                            odoo_user.unlink()  
+                            odoo_user.unlink()
+                            # self.connector_ids.action_sync_user()  
                 else:
                     _logger.error(f"Failed to fetch users from OneSignal: {response.status_code}, {response.text}")
             except requests.exceptions.RequestException as e:

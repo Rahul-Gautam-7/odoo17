@@ -175,6 +175,13 @@ class PushNotify(models.TransientModel):
                     _logger.info(response.text)
                     if response.status_code == 200:
                         _logger.info(f"Notification Sent Success: {response.text}")
+                        return {
+                            'effect':{
+                                'fadeout':'slow',
+                                'message':'Notification Sent Successfully',
+                                'type':'rainbow_man'
+                            }
+                        }
                     else:
                         _logger.error(f"Failed to send notification. Status code: {response.status_code}, Response: {response.text}")
                 except Exception as e:
