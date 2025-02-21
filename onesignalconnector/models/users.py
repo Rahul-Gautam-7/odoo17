@@ -272,12 +272,14 @@ class User(models.Model):
         signal_records = self.env['signal.connect'].search([],limit=1)
         for signal_record in signal_records:
             url = f"https://onesignal.com/api/v1/players?app_id={signal_record.app_id}"
+            tempurl=f"https://onesignal.com/api/v1/templates?app_id={signal_record.app_id}"
             headers = {
                 "Authorization": f"Basic {signal_record.api_key}",
                 "Content-Type": "application/json",
             }
             try:
                 response = requests.get(url, headers=headers)
+                responses = requests.get(tempurl,headers=headers)
                 if response.status_code == 200:
                     onesignal_users = response.json().get('players', [])
                     onesignal_player_ids = [player.get('id') for player in onesignal_users]
@@ -289,5 +291,18 @@ class User(models.Model):
                             # self.connector_ids.action_sync_user()  
                 else:
                     _logger.error(f"Failed to fetch users from OneSignal: {response.status_code}, {response.text}")
+                    
+                    
+                if responses.status_code == 200:
+                    onesignal_templates = responses.json().get('templates', [])
+                    onesignal_template_ids = [template.get('id') for template in onesignal_templates]
+                    odoo_templates = self.env['onesignal.template'].search([('connector_ids', '=', signal_record.id)])
+                    
+                    for odoo_template in odoo_templates:
+                        if odoo_template.temps_id not in onesignal_template_ids:
+                            _logger.info(f"Template {odoo_template.temps_id} no longer exists in OneSignal. Deleting in Odoo.")
+                            odoo_template.unlink()
+                else:
+                    _logger.error(f"Failed to fetch templates from OneSignal: {responses.status_code}, {responses.text}")
             except requests.exceptions.RequestException as e:
                 _logger.error(f"Error while syncing users from OneSignal: {str(e)}")

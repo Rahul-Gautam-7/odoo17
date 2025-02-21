@@ -270,3 +270,5 @@ class Templates(models.Model):
             self.unlink()
             _logger.info(f"user deleted ..........................................{response}")
         return
+    
+    
