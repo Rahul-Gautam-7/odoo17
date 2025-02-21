@@ -269,7 +269,7 @@ class User(models.Model):
     
     @api.model
     def sync_onesignal_users(self):
-        signal_records = self.env['signal.connect'].search([],limit=1)
+        signal_records = self.env['signal.connect'].search([])
         for signal_record in signal_records:
             url = f"https://onesignal.com/api/v1/players?app_id={signal_record.app_id}"
             tempurl=f"https://onesignal.com/api/v1/templates?app_id={signal_record.app_id}"
