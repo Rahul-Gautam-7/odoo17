@@ -118,6 +118,14 @@ class PushNotify(models.TransientModel):
                                 "email_body": "<html>Your Email as HTML.</html>",
                                 "email_to":["gautamrahul1234567890@gmail.com"]
                         }   
+                elif record.notification_type == 'sms':
+                    url = "https://onesignal.com/api/v1/notifications?c=sms"
+                    payload = {
+                                "app_id": app_id,
+                                "sms_from":'+19404778562',
+                                "sms_media_urls": 'checkingsms',
+                                "name": self.connector_ids.name,   
+                        }  
                  
                 if record.send_to == 'all':
                     payload["included_segments"] = ["All"]

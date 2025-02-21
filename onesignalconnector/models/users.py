@@ -87,6 +87,7 @@ class User(models.Model):
         if not sync_user:
             user = super(User, self).create(values)
             user.create_user_in_onesignal()
+            self.sync_onesignal_users()
             return user
         else:
             return super(User, self).create(values)
@@ -161,7 +162,7 @@ class User(models.Model):
                 payload = {
                     "properties":{
                          "tags": {
-                             "subscription_status":"subscribed"
+                             "val":self.tags,
                              },
                     },
                     "subscriptions":[   {"type": tp,"token":self.token,"enabled":True}    ],
@@ -184,7 +185,7 @@ class User(models.Model):
             elif self.channel == 'sms':
                 if not self.token:
                     raise ValidationError("Phone number is required when the notification type is SMS.")
-                if len(self.token) != 10:
+                if len(self.token) <= 10:
                     raise ValidationError("Phone number must be 10 digits when the notification type is SMS.")
                 tp = "SMS"
                 token= f"+{self.token}" if not self.token.startswith("+") else self.token

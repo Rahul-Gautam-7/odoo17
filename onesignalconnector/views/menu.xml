@@ -2,6 +2,7 @@
 <odoo>
     <menuitem
         id="signal_connect_menu"
+        web_icon='rg_library,static/description/icon.png'
         name="Signal Connector"
         sequence="1"/>
 </odoo>
