@@ -25,32 +25,31 @@
                 <sheet>
                     <group>
                         <group>
-                            <field name="name" />
-                             <field name="temps_id" />
-                            <field name="channel" />
-                         <field name="connector_ids" />
+                            <field name="name"  required="1"/>
+                             <field name="temps_id" readonly="1"/>
+                            <field name="channel" required="1" />
+                         <field name="connector_ids" required="1" />
                          </group>
                          <group>
-                         <field name="headings" />
-                         <field name="contents" />
-                         <field name="global_image" />
-                         <field name="url_link" />
+                         <field name="headings" required="channel != 'email'" invisible="channel == 'email'"/>
+                         <field name="contents" required="channel != 'email'" invisible="channel == 'email'" />
+                         <field name="global_image" invisible="channel != 'push'" />
+                         <field name="url_link" invisible="channel != 'push'"    />
                          </group>
-                        <group string="Email Settings">
-                        <field name="is_Email" string="Email Available"/>
-                        <field name="email_body" string="Email Body"/>
-                        <field name="email_subject" string="Email Subject"/>
-                        <field name="email_preheader" string="Email Preheader"/>
-                        <field name="email_reply_to_address" string="Reply-to Email Address"/>
-                        <field name="disable_email_click_tracking" string="Disable Click Tracking"/>
+                        <group string="Email Settings" invisible="channel != 'email'">
+                        <!-- <field name="is_Email" string="Email Available" required="channel == 'email'"/> -->
+                        <field name="email_body" string="Email Body" required="channel == 'email'" />
+                        <field name="email_subject" string="Email Subject" required="channel == 'email'" />
+                        <field name="email_preheader" string="Email Preheader" required="channel == 'email'" />
+                        <field name="email_reply_to_address" string="Reply-to Email Address" required="channel == 'email'" />
+                        <!-- <field name="disable_email_click_tracking" string="Disable Click Tracking" required="channel == 'email'" /> -->
                         </group>
-                        <group string="SMS Settings">
-                        <field name="is_SMS" string="SMS Available"/>
-                        <field name="sms_from" string="SMS From"/>
-                        <field name="sms_media_urls" string="SMS Media URLs"/>
+                        <group string="SMS Settings" invisible="channel != 'sms'">
+                        <field name="sms_from" string="SMS From" required="channel == 'sms'" />
+                        <field name="sms_media_urls" string="SMS Media URLs"  />
                         </group>
                     </group>
-                    <group string="Platform Availability">
+                    <group string="Platform Availability" invisible="channel != 'push'">
                         <group >
                             <field name="is_android" string="Android"/>
                             <field name="is_ios" string="iOS"/>

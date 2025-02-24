@@ -114,6 +114,7 @@ class PushNotify(models.TransientModel):
                     url = "https://onesignal.com/api/v1/notifications?c=email"
                     payload = {
                                 "app_id": app_id,
+                                "template_id": record.template_id.temps_id,
                                 "email_subject": "This is your email subject.",
                                 "email_body": "<html>Your Email as HTML.</html>",
                                 "email_to":["gautamrahul1234567890@gmail.com"]
@@ -122,6 +123,7 @@ class PushNotify(models.TransientModel):
                     url = "https://onesignal.com/api/v1/notifications?c=sms"
                     payload = {
                                 "app_id": app_id,
+                                "template_id": record.template_id.temps_id,
                                 "sms_from":'+19404778562',
                                 "sms_media_urls": 'checkingsms',
                                 "name": self.connector_ids.name,   

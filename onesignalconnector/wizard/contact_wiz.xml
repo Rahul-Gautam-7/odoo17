@@ -6,9 +6,9 @@
             <field name="arch" type="xml">
                 <form string="Subscribe to OneSignal">
                     <group>
-                        <field name="connector_ids" />
-                        <field name="contact_id" readonly="1"/>
-                        <field name="notification_type"  />
+                        <field name="connector_ids" required="1" />
+                        <field name="contact_id" readonly="1" required="1"/>
+                        <field name="notification_type" required="1" />
                         <field name="email" readonly="1" invisible="notification_type != 'email'"/>
                         <field name="phone" readonly="1" invisible="notification_type != 'sms'" />
                     </group>

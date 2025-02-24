@@ -6,13 +6,13 @@
         <field name="arch" type="xml">
             <form>
                 <group>
-                    <field name="connector_ids" />
-                    <field name="notification_type" />
+                    <field name="connector_ids" required="1"/>
+                    <field name="notification_type" required="1" />
                     <field name="abc" invisible="True"  />
-                    <field name="template" />
+                    <field name="template"  />
                     <field name="template_domain" invisible="True"/>
-                    <field name="template_id" invisible="template == False" domain="template_domain"/>
-                    <field name="send_to"  />
+                    <field name="template_id" invisible="template == False" required="template == True" domain="template_domain"/>
+                    <field name="send_to" required="1" />
                     <field name="subscription_domain" invisible="True" />
                     <field name="subscription_id"  invisible="send_to != 'subscription_id'" domain="subscription_domain"  />
                     <field name="segment_domain" invisible="True" />
@@ -20,20 +20,19 @@
                 </group>
         
                 <group invisible="notification_type == 'email'">
-                    <field name="heading"  invisible="template == True"/>
-                    <field name="content" invisible="template == True" />
+                    <field name="heading"  invisible="template == True" required="template == False and notification_type != 'email' " />
+                    <field name="content" invisible="template == True" required="template == False and notification_type != 'email'"  />
                     <field name="chrome_web_image" invisible="template == True" />
-                    <field name="redirect_url" invisible="template == True" />
-                    <field name="action_btn"  />
+                    <field name="redirect_url" invisible="template == True or notification_type != 'push'" />
+                    <field name="action_btn" invisible="template == True or notification_type != 'push'" />
                 </group>
-                <group invisible="notification_type != 'email'">
-                    <field name="email_subject" />
-                    <field name="email_body" />
-                    <field name="recipient_email" />
+                <group invisible="notification_type != 'email' or template == True">
+                    <field name="email_subject" required="template == False and notification_type == 'email'" />
+                    <field name="email_body" required="template == False and notification_type == 'email'"  />
+                    <field name="recipient_email" required="template == False and notification_type == 'email'" />
                 </group>
-                <notebook invisible="action_btn == False" >
+                <notebook invisible="action_btn == False or notification_type != 'push'" required="template == True" >
                     <page name="name" string="Action Buttons">
-           
                             <field name="action_btn_ids" >
                             <tree  editable="bottom">
                                 <field name="btn_id" />
@@ -41,7 +40,6 @@
                                 <field name="btn_url" />                         
                             </tree>
                             </field>
-              
                     </page>
                 </notebook>
                

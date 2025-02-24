@@ -88,10 +88,15 @@ class User(models.Model):
             user = super(User, self).create(values)
             user.create_user_in_onesignal()
             self.sync_onesignal_users()
-            return user
+            return user  
         else:
             return super(User, self).create(values)
         
+    
+
+    
+    
+    
     def write(self, vals):
         _logger.info("Write method triggered for user(s): %s", self.ids)  
         res = super(User, self).write(vals)
@@ -185,7 +190,7 @@ class User(models.Model):
             elif self.channel == 'sms':
                 if not self.token:
                     raise ValidationError("Phone number is required when the notification type is SMS.")
-                if len(self.token) <= 10:
+                if len(self.token) <= 10 :
                     raise ValidationError("Phone number must be 10 digits when the notification type is SMS.")
                 tp = "SMS"
                 token= f"+{self.token}" if not self.token.startswith("+") else self.token

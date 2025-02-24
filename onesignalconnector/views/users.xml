@@ -13,22 +13,22 @@
                  <sheet>
                    <group>
                         <group>
-                            <field name="connector_ids" />
-                            <field name="player_id" />
-                            <field name="device_type" />
-                             <field name="language" />
-                            <field name="amount_spent" />
-                            <field name="channel" /> 
-                            <field name="token" />
+                            <field name="connector_ids" required="1" />
+                            <field name="player_id"  readonly="1"/>
+                            <field name="device_type" readonly="1" />
+                             <field name="language"  />
+                            <field name="amount_spent" readonly="1"  />
+                            <field name="channel" required="1"/> 
+                            <field name="token" required="1" />
                         </group>
                         <group>
-                            <field name="device_os" />
-                            <field name="device_model" />
-                            <field name="created_at" />
-                             <field name="session_count" />
-                            <field name="ip" />
+                            <field name="device_os" readonly="1"  />
+                            <field name="device_model" readonly="1"  />
+                            <field name="created_at" readonly="1"  />
+                             <field name="session_count" readonly="1"  />
+                            <field name="ip" readonly="1" />
                             <field name="tags" widget="text" />
-                            <field name="external_id" />
+                            <field name="external_id" readonly="1"  />
                         </group>
                     </group>  
                     </sheet>

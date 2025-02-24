@@ -20,9 +20,9 @@
                 <sheet>
                     <group>
                         <group>
-                        <field name="seg_id" />
-                        <field name="name" />
-                        <field name="connector_ids" />
+                        <field name="seg_id" required="1"/>
+                        <field name="name" required="1" />
+                        <field name="connector_ids" required="1" />
                         </group>
                     </group>
                 </sheet>
