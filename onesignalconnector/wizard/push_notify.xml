@@ -42,7 +42,6 @@
                             </field>
                     </page>
                 </notebook>
-               
                 <footer>
                     <button name="action_send_notify" type="object" string="Fire Notification" class="btn-warning"  />
                     <button name="action_cancel" type="object" string="Discard"  class="btn-danger" />

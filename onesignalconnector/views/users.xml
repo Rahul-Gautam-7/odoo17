@@ -35,6 +35,16 @@
             </form>
         </field>
     </record>
+    <record id="push_notify_view_search" model="ir.ui.view">
+    <field name="name">push.notify.search.module.name</field>
+    <field name="model">user.fetch</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="token"/>
+            <field name="player_id"/>
+        </search>
+    </field>
+    </record>
 
     <record id="fetch_tree" model="ir.ui.view">
         <field name="name">fetch.tree</field>
@@ -42,12 +52,13 @@
         <field name="arch" type="xml">
             <tree string="Tree view">
                  <field name="connector_ids" />
+                 <field name="token" />
                  <field name="player_id"/>
                   <button name="delete_user" type="object" string="Delete User"  class="btn-danger"/>
             </tree>
         </field>
     </record>
-
+    
 
     <record id="user_view_action" model="ir.actions.act_window">
         <field name="name">Users</field>

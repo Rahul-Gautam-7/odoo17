@@ -43,12 +43,13 @@ TYPE_MAPPING = {
 class User(models.Model):
     _name="user.fetch"
     _description="Fetching users"
-    _rec_name="player_id"
+    _rec_name="token"
+   
     
     
     connector_ids=fields.Many2one('signal.connect',string="Name",ondelete='cascade')
 
-    player_id=fields.Char(string="Player Id")
+    player_id=fields.Char(string="Player Id",store=True)
     app_id=fields.Char(related='connector_ids.app_id',store=True)
     api_key=fields.Char(related="connector_ids.api_key",store=True)
     
@@ -72,7 +73,7 @@ class User(models.Model):
     ip = fields.Char(string="IP Address")
     tags = fields.Text(string="Tags")
     external_id=fields.Char(string="External ID",store=True)
-    token=fields.Char(string="Token")
+    token=fields.Char(string="Token",store=True)
     current_timestamp = datetime.utcnow().strftime('%Y-%m-%d%H:%M:%S') 
     channel = fields.Selection([
         ('webpush', 'Web Push'),
@@ -87,16 +88,12 @@ class User(models.Model):
         if not sync_user:
             user = super(User, self).create(values)
             user.create_user_in_onesignal()
-            self.sync_onesignal_users()
+            # self.sync_onesignal_users()
             return user  
         else:
             return super(User, self).create(values)
         
-    
 
-    
-    
-    
     def write(self, vals):
         _logger.info("Write method triggered for user(s): %s", self.ids)  
         res = super(User, self).write(vals)
@@ -307,6 +304,7 @@ class User(models.Model):
                         if odoo_template.temps_id not in onesignal_template_ids:
                             _logger.info(f"Template {odoo_template.temps_id} no longer exists in OneSignal. Deleting in Odoo.")
                             odoo_template.unlink()
+                           
                 else:
                     _logger.error(f"Failed to fetch templates from OneSignal: {responses.status_code}, {responses.text}")
             except requests.exceptions.RequestException as e:
