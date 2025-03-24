@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <!-- <template id="tester" name="Namess">
+        <title>Students</title>
+        <ul>
+            <t t-foreach="students" t-as="student">
+                <li><t t-esc="student"/></li> 
+            </t>
+        </ul>   
+    </template> -->
+
+
+    <template id="tempss" name="modelname">
+            <t t-call="website.layout">
+            <title>ModelData</title>
+            <div class='oe_structure' />
+            <div class="oe_structure">                
+                <div class="container">
+                <t t-foreach="datas" t-as="data">
+                  <a t-attf-href="/modelss/{{slug(data)}}" ><t t-esc="data.name"/></a>
+                </t>
+                </div>
+            </div>
+
+            </t>
+    </template>
+
+    <template id="temps_detail" >
+        <t t-call="website.layout">
+            <title>Students</title>
+            <div class="oe_structure" />
+            <div class="oe_structure">
+                <div class="container">
+                    <h1><t t-esc="data.name"/></h1>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>
