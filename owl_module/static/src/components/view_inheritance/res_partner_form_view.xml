@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates>
+    <t t-name="owl.ResPartnerFormView" t-inherit="web.FormView" owl="1">
+        <!-- We are selecting the button that has class o_form_button_create -->
+        <xpath expr="//t[@t-set-slot='control-panel-create-button']/t[@t-if='canCreate']/button[@class='btn btn-outline-primary o_form_button_create']" position="after">
+            <button type="button" class="btn btn-primary mx-3" t-on-click="()=>this.openWebsite(model.root.data.website)" >Go to Website</button>
+        </xpath>
+    </t>
+</templates>
