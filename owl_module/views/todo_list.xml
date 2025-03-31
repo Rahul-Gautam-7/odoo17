@@ -60,4 +60,19 @@
         parent="owl_todo"
         sequence="20"/>
 
+
+
+    <record id="action_increment_js" model="ir.actions.client">
+        <field name="name"> Increment </field>
+        <field name="tag">owl.increment_js</field>
+    </record>
+
+
+    <menuitem
+        id="menu_increment_js"
+        name="Increments"
+        action="action_increment_js"
+        parent="owl_todo"
+        sequence="30"/>
+
 </odoo>

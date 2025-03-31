@@ -29,7 +29,10 @@
             'owl_module/static/src/components/view_inheritance/res_partner_form_view.js',
             'owl_module/static/src/components/view_inheritance/res_partner_form_view.xml',
             'owl_module/static/src/components/view_inheritance/res_partner_kanban_view.xml',
-            'owl_module/static/src/components/view_inheritance/res_partner_kanban_view.scss',   
+            'owl_module/static/src/components/view_inheritance/res_partner_kanban_view.scss',
+            'owl_module/static/src/components/increments/increment.js',
+            'owl_module/static/src/components/increments/increment.xml',
+          
         ]
     }
 }
